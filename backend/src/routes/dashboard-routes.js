@@ -1,11 +1,9 @@
 import DashboardController from "../controllers/dashboard-controller.js";
+import Router from "../router.js";
 
-const dashboardRoutes = async (req, res) => {
-    switch (req.method) {
-        case 'GET':
-            await DashboardController.getDashboard(req, res)
-            break
-    }
-}
+const router = new Router()
 
-export default dashboardRoutes
+router.get('/dashboard', DashboardController.getDashboard)
+
+
+export default router

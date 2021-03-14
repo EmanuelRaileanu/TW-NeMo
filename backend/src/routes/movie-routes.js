@@ -1,13 +1,9 @@
 import MovieController from '../controllers/movie-controller.js'
+import Router from "../router.js";
 
-const movieRoutes  = async (req, res) => {
-    switch (req.method) {
-        case 'GET':
-            await MovieController.getMovies(req, res)
-            break
-        default:
-            res.end('Not implemented')
-    }
-}
+const router = new Router()
 
-export default movieRoutes
+router.get('/', MovieController.getMovies)
+router.get('/:movieId', (req, res) => res.end('You did it'))
+
+export default router

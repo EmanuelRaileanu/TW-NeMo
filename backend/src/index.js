@@ -1,18 +1,31 @@
 import http from 'http'
-import router from "./router.js";
+import movieRoutes from "./routes/movie-routes.js";
+import dashboardRouts from './routes/dashboard-routes.js'
 
-class Server {
+
+export class Server {
     constructor () {
         this.server = http.createServer(async (req, res) => {
-            await router(req, res)
+            switch (req.url.match(/\/[^\/]+/)[0]) {
+                case '/':
+                    res.end('Root')
+                    break
+                case '/movies':
+                    await movieRoutes.next(req, res)
+                    break
+                case '/dashboard':
+                    await dashboardRouts.next(req, res)
+                    break
+                default:
+                    res.end('Not implemented')
+            }
         })
     }
 
     listen (port) {
-        this.server.listen(port)
+        this.server.listen(port, () => console.log(`Listening on port ${port}...`))
     }
 }
 
 const server = new Server()
-console.log('Listening on port 8001...')
 server.listen(8001)
