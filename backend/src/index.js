@@ -1,7 +1,9 @@
 import http from 'http'
 import movieRoutes from "./routes/movie-routes.js";
 import dashboardRouts from './routes/dashboard-routes.js'
+import dotenv from 'dotenv';
 
+dotenv.config()
 
 export class Server {
     constructor () {
@@ -23,7 +25,7 @@ export class Server {
     }
 
     listen (port) {
-        this.server.listen(port, () => console.log(`Listening on port ${port}...`))
+        this.server.listen(process.env.SERVER_PORT, () => console.log(`Listening on port ${process.env.SERVER_PORT}...`))
     }
 }
 
