@@ -19,6 +19,10 @@ class Router {
         req.params = {}
         if (splitUrl.length > 1) {
             const methodOption = this.methods[req.method].find(item => item.hasParams)
+            if (!methodOption) {
+                res.writeHead(501, { 'Content-type': 'application/json' })
+                return res.end(JSON.stringify({ message: "Not implemented" }))
+            }
             req.params[methodOption.path.match(/(?<=:).*/)[0]] = splitUrl[1]
             hasParams = true
         }
