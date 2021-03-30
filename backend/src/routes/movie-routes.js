@@ -1,5 +1,5 @@
 import MovieController from '../controllers/movie-controller.js'
-import Router from '../util/router.js'
+import Router from '../../../shared-utilities/router.js'
 import catchErrors from '../middlewares/catchErrors.js'
 
 const router = new Router()

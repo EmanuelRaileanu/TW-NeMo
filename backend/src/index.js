@@ -6,7 +6,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 http.createServer(async (req, res) => {
-    switch (req.url.match(/\/[^\/]*/)[0]) {
+    switch (req.url.split('?')[0].match(/\/[^\/]*/)[0]) {
         case '/':
             res.writeHead(200, { 'Content-type': 'application/json' })
             res.end(JSON.stringify({
