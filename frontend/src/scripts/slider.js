@@ -17,10 +17,10 @@ const slider = {
         controls[current].classList.add('active');
         items[current].classList.add('active');
     },
-    nextSlide: function () { // Increment current slide and add active class
+    nextSlide: function () {
         slider.reset();
         if (current === items.length - 1) {
-            current = -1; // Check if current slide is last in array  
+            current = -1;
         }
         current++;
         controls[current].classList.add('active');
@@ -28,25 +28,25 @@ const slider = {
         slider.transitionDelay(headerItems);
         slider.transitionDelay(descriptionItems);
     },
-    clickedControl: function (e) { // Add active class to clicked control and corresponding slide
+    clickedControl: function (e) {
         slider.reset();
         clearInterval(intervalF);
 
-        const control = e.target,
-            dataIndex = Number(control.dataset.index);
+        const control = e.target;
+        const dataIndex = Number(control.dataset.index);
 
         control.classList.add('active');
         for (let i = 0; i < items.length; i++) {
-            if (i === dataIndex) { // Add active class to corresponding slide
+            if (i === dataIndex) {
                 items[i].classList.add('active');
             }
         }
-        current = dataIndex; // Update current slide
+        current = dataIndex;
         slider.transitionDelay(headerItems);
         slider.transitionDelay(descriptionItems);
-        intervalF = setInterval(slider.nextSlide, interval); // Fire that bad boi back up
+        intervalF = setInterval(slider.nextSlide, interval);
     },
-    reset: function () { // Remove active classes
+    reset: function () {
         for (let i = 0; i < items.length; i++) {
             items[i].classList.remove('active');
         }
@@ -54,10 +54,10 @@ const slider = {
             controls[i].classList.remove('active');
         }
     },
-    transitionDelay: function (items) { // Set incrementing css transition-delay for .item-header & .item-description, .vertical-part, b elements
+    transitionDelay: function (items) {
         let seconds;
         for (let i = 0; i < items.length; i++) {
-            const children = items[i].childNodes; // .vertical-part(s)
+            const children = items[i].childNodes;
             let count = 1
             let delay;
 
@@ -65,7 +65,7 @@ const slider = {
             for (let j = 0; j < children.length; j++) {
                 if (children[j].classList) {
                     items[i].parentNode.classList.contains('active') ? delay = count * seconds + activeDelay : delay = count * seconds;
-                    children[j].firstElementChild.style.transitionDelay = delay + 's'; // b element
+                    children[j].firstElementChild.style.transitionDelay = delay + 's';
                     count++;
                 }
             }

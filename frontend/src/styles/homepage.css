@@ -68,7 +68,6 @@ html, body {
     height: auto;
     opacity: 0;
     display: block;
-    /* transition: property name | duration | timing-function | delay  */
     transition: opacity .3s ease-out .45s;
 }
 
@@ -92,7 +91,6 @@ html, body {
     background: rgba(0, 0, 0, .02);
 }
 
-/* Staggered Vertical Items ------------------------------------------------------*/
 .item-header {
     position: absolute;
     top: 6%;
@@ -131,7 +129,6 @@ html, body {
     transform: translateY(0);
 }
 
-/* Controls ----------------------------------------------------------------------*/
 .controls {
     position: relative;
     text-align: right;
