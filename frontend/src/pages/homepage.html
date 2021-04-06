@@ -1,11 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta name="viewport">
-        <meta charset="UTF-8">
-        <title>Homepage</title>
-    </head>
-    <body>
-        <p>Homepage</p>
-    </body>
+<head>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../styles/homepage.css">
+    <title>Homepage</title>
+</head>
+<body>
+
+<div>
+    <button id="btnChange" class="button" onclick=""></button>
+</div>
+
+<div class="content-width">
+    <div class="slideshow">
+        <!-- Slideshow Items -->
+        <div class="slideshow-items">
+            <div class="item">
+                <div class="item-image-container">
+                    <img id="img0" class="item-image" src="" alt="Image not found"/>
+                </div>
+                <!-- Staggered Header Elements -->
+                <div class="item-header">
+                    <span class="vertical-part"><b id="name0"></b></span>
+                </div>
+                <!-- Staggered Description Elements -->
+                <div class="item-description">
+                    <span class="vertical-part">
+                      <b id="desc0"></b>
+                    </span>
+                    <span class="vertical-part">
+                      <b id="rat0"></b>
+                    </span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="item-image-container">
+                    <img id="img1" class="item-image" src="" alt="Image not found"/>
+                </div>
+                <div class="item-header">
+                    <span class="vertical-part"><b id="name1"></b></span>
+                </div>
+                <div class="item-description">
+                    <span class="vertical-part">
+                      <b id="desc1"></b>
+                    </span>
+                    <span class="vertical-part">
+                      <b id="rat1"></b>
+                    </span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="item-image-container">
+                    <img id="img2" class="item-image" src="" alt="Image not found"/>
+                </div>
+                <div class="item-header">
+                    <span class="vertical-part"><b id="name2"></b></span>
+                </div>
+                <div class="item-description">
+                    <span class="vertical-part">
+                      <b id="desc2"></b>
+                    </span>
+                    <span class="vertical-part">
+                      <b id="rat2"></b>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <ul>
+                <li class="control" data-index="0"></li>
+                <li class="control" data-index="1"></li>
+                <li class="control" data-index="2"></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script src="../scripts/slider.js"></script>
+
+<script src="../scripts/toggle.js"></script>
+
+</body>
 </html>
