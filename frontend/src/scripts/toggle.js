@@ -1,7 +1,7 @@
 function writeToHTML(descriptions, names, paths, ratings, btnName, fctName) {
     for (let i = 0; i < names.length; i++) {
         document.getElementById("name" + i).innerHTML = names[i];
-        document.getElementById("img" + i).setAttribute("src", paths[i]);
+        document.getElementById("img" + i).setAttribute("src","../images/" + paths[i]);
         document.getElementById("desc" + i).innerHTML = descriptions[i];
         document.getElementById("rat" + i).innerHTML = ratings[i];
     }
