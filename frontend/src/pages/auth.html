@@ -5,65 +5,73 @@
     <meta charset="UTF-8">
     <title>Sign Up</title>
     <link rel="stylesheet" type="text/css" href="../styles/auth.css">
+    <script>
+        function changeToForm (id) {
+            document.getElementById(id).style.display = 'flex'
+            if (id === 'signup') {
+                document.getElementById('login').style.display = 'none'
+            } else {
+                document.getElementById('signup').style.display = 'none'
+            }
+        }
+    </script>
 </head>
 <body>
 <div class="auth-form">
     <ul class="tab-switcher">
-        <li class="tab active"><a href="#signup">Sign Up</a></li>
-        <li class="tab"><a href="#login">Login</a></li>
+        <li class="tab" onclick="changeToForm('login')">Login</li>
+        <li class="tab active" onclick="changeToForm('signup')">Sign Up</li>
     </ul>
 
-    <div class="form-fields">
-        <div id="signup">
-            <h1>Sigh Up for free</h1>
-            <form action="/" method="POST">
-                <div class="field-wrap">
-                    <label>
-                        Username<span class="req">*</span>
-                        <input required autocomplete="off"/>
-                    </label>
-                </div>
-
-                <div class="field-wrap">
-                    <label>
-                        Email<span class="req">*</span>
-                        <input type="email" required autocomplete="off"/>
-                    </label>
-                </div>
-
-                <div class="field-wrap">
-                    <label>
-                        Password<span class="req">*</span>
-                        <input type="password" required autocomplete="off"/>
-                    </label>
-                </div>
-
-                <div class="field-wrap">
-                    <label>
-                        Confirm password<span class="req">*</span>
-                        <input type="password" required autocomplete="off"/>
-                    </label>
-                </div>
-            </form>
-        </div>
+    <div class="form-variants">
         <div id="login">
             <h1>Login</h1>
             <form action="/" method="POST">
                 <div class="field-wrap">
                     <label>
-                        Username / Email<span class="req">*</span>
-                        <input type="email" required autocomplete="off"/>
+                        <input placeholder="Username / Email" type="email" required/>
                     </label>
                 </div>
 
                 <div class="field-wrap">
                     <label>
-                        Password<span class="req">*</span>
-                        <input type="password" required autocomplete="off"/>
+                        <input placeholder="Password" type="password" required autocomplete="off"/>
                     </label>
                 </div>
             </form>
         </div>
+
+        <div id="signup">
+            <h1>Sign Up for free</h1>
+            <form action="/" method="POST">
+                <div class="field-wrap">
+                    <label>
+                        <input placeholder="Username" required/>
+                    </label>
+                </div>
+
+                <div class="field-wrap">
+                    <label>
+                        <input placeholder="Email" type="email" required/>
+                    </label>
+                </div>
+
+                <div class="field-wrap">
+                    <label>
+                        <input placeholder="Password" type="password" required autocomplete="off"/>
+                    </label>
+                </div>
+
+                <div class="field-wrap">
+                    <label>
+                        <input placeholder="Confirm password" type="password" required autocomplete="off"/>
+                    </label>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="submit">
+        <button>Submit</button>
     </div>
 </div>
 </body>
