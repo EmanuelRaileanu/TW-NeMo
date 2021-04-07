@@ -1,12 +1,17 @@
-function writeToHTML(descriptions, names, paths, ratings, btnName, fctName) {
+function writeToHTML(descriptions, names, paths, ratings,btnMode) {
     for (let i = 0; i < names.length; i++) {
         document.getElementById("name" + i).innerHTML = names[i];
         document.getElementById("img" + i).setAttribute("src","../images/" + paths[i]);
         document.getElementById("desc" + i).innerHTML = descriptions[i];
         document.getElementById("rat" + i).innerHTML = ratings[i];
     }
-    document.getElementById("btnChange").innerHTML = btnName;
-    document.getElementById("btnChange").setAttribute("onclick", fctName);
+    if(btnMode){
+        document.getElementById("mvBtn").innerHTML="<h1>" + document.getElementById("mvBtn").innerHTML + "</h1>";
+        document.getElementById("shBtn").innerHTML="TV Shows";
+    }else{
+        document.getElementById("shBtn").innerHTML="<h1>" + document.getElementById("shBtn").innerHTML + "</h1>";
+        document.getElementById("mvBtn").innerHTML="Movies";
+    }
 }
 
 function changeToShows() {
@@ -22,7 +27,7 @@ function changeToShows() {
     const showsName = ["The Big Bang Theory",
         "Lucifer",
         "The Witcher"];
-    writeToHTML(showsDesc, showsName, showsPath, showsRat, "Movies", "changeToFilms()");
+    writeToHTML(showsDesc, showsName, showsPath, showsRat,false);
 }
 
 function changeToFilms() {
@@ -38,7 +43,7 @@ function changeToFilms() {
     const filmsName = ["Batman",
         "Flash",
         "Superman"];
-    writeToHTML(filmsDesc, filmsName, filmsPath, filmsRat, "TV Shows", "changeToShows()");
+    writeToHTML(filmsDesc, filmsName, filmsPath, filmsRat,true);
 }
 
 changeToFilms();
