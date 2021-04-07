@@ -25,6 +25,7 @@
             } else {
                 username = document.getElementById('registerUsername').value;
             }
+            sessionStorage.setItem('contentPage', 'homepage')
             sessionStorage.setItem('username', username);
             parent.document.getElementById('auth').innerText = username;
             window.location.replace('./homepage.html')
