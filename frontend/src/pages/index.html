@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width; initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Netflix movies and TV Shows">
     <meta name="theme-color" content="#000000">
     <meta charset="UTF-8">
@@ -19,21 +19,23 @@
             }
         }
 
-        function navigateTo(id) {
+        function navigateTo (id) {
             document.getElementById('mainFrame').src = id + '.html'
             sessionStorage.setItem('contentPage', id)
         }
     </script>
 </head>
 <body>
-<nav>
-    <ul>
-        <li id="homepage" onclick="navigateTo(this.id)">NeMo</li>
-        <li id="movies" onclick="navigateTo(this.id)">Movies</li>
-        <li id="tv-shows" onclick="navigateTo(this.id)">TV Shows</li>
-        <li id="auth" onclick="navigateTo(this.id)">Sign up</li>
-    </ul>
-</nav>
-<iframe title="content" id="mainFrame"></iframe>
+<div class="layer">
+    <nav>
+        <ul>
+            <li id="homepage" onclick="navigateTo(this.id)">NeMo</li>
+            <li id="movies" onclick="navigateTo(this.id)">Movies</li>
+            <li id="tv-shows" onclick="navigateTo(this.id)">TV Shows</li>
+            <li id="auth" onclick="navigateTo(this.id)">Login</li>
+        </ul>
+    </nav>
+    <iframe title="content" id="mainFrame"></iframe>
+</div>
 </body>
 </html>
