@@ -8,12 +8,17 @@
 </head>
 <body>
 
-<div>
-    <button id="btnChange" class="button" onclick=""></button>
-</div>
 
 <div class="content-width">
     <div class="slideshow">
+        <header>
+            <h1>Featured</h1>
+            <ul class="toggle">
+                <li id="mvBtn" class="button" onclick="changeToFilms()">Movies</li>
+                <li class="button"><h1>/</h1></li>
+                <li id="shBtn" class="button" onclick="changeToShows()">TV Shows</li>
+            </ul>
+        </header>
         <div class="slideshow-items">
             <div class="item">
                 <div class="item-image-container">
