@@ -1,0 +1,682 @@
+{
+  "results": [
+    {
+      "adult": false,
+      "backdrop_path": "/8kiPIqPWJaeTNQlHvGyHodeh9lU.jpg",
+      "belongs_to_collection": null,
+      "budget": 100000,
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 14,
+          "name": "Fantasy"
+        },
+        {
+          "id": 10749,
+          "name": "Romance"
+        }
+      ],
+      "homepage": "https://a24films.com/films/a-ghost-story",
+      "id": 428449,
+      "imdb_id": "tt6265828",
+      "original_language": "en",
+      "original_title": "A Ghost Story",
+      "overview": "Recently deceased, a white-sheeted ghost returns to his suburban home to console his bereft wife, only to find that in his spectral state he has become unstuck in time, forced to watch passively as the life he knew and the woman he loves slowly slip away.",
+      "popularity": 17.752,
+      "poster_path": "/rp5JPIyZi9sMob15l46zNQLe5cO.jpg",
+      "production_companies": [
+        {
+          "id": 14634,
+          "logo_path": null,
+          "name": "Sailor Bear",
+          "origin_country": "US"
+        },
+        {
+          "id": 49471,
+          "logo_path": null,
+          "name": "Zero Trans Fat Productions",
+          "origin_country": "US"
+        },
+        {
+          "id": 127421,
+          "logo_path": null,
+          "name": "Scared Sheetless",
+          "origin_country": ""
+        }
+      ],
+      "production_countries": [
+        {
+          "iso_3166_1": "US",
+          "name": "United States of America"
+        }
+      ],
+      "release_date": "2017-04-24",
+      "revenue": 1596371,
+      "runtime": 93,
+      "spoken_languages": [
+        {
+          "english_name": "English",
+          "iso_639_1": "en",
+          "name": "English"
+        }
+      ],
+      "status": "Released",
+      "tagline": "It's all about time",
+      "title": "A Ghost Story",
+      "video": false,
+      "vote_average": 7.1,
+      "vote_count": 1621
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/9eVx87O18kLs7LpsOrruOU45jXA.jpg",
+      "belongs_to_collection": null,
+      "budget": 0,
+      "genres": [
+        {
+          "id": 878,
+          "name": "Science Fiction"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "homepage": "",
+      "id": 308457,
+      "imdb_id": "tt3090670",
+      "original_language": "en",
+      "original_title": "Advantageous",
+      "overview": "In a near-future city where soaring opulence overshadows economic hardship, Gwen and her daughter, Jules, do all they can to hold on to their joy, despite the instability surfacing in their world.",
+      "popularity": 6.701,
+      "poster_path": "/xVJdSbDxKTanwZtD6qUyc7cGNpG.jpg",
+      "production_companies": [
+        {
+          "id": 112342,
+          "logo_path": null,
+          "name": "Good Neighbors Media",
+          "origin_country": ""
+        },
+        {
+          "id": 103131,
+          "logo_path": null,
+          "name": "DK Entertainment",
+          "origin_country": "RU"
+        },
+        {
+          "id": 112343,
+          "logo_path": null,
+          "name": "I Ain't Playin' Films",
+          "origin_country": ""
+        }
+      ],
+      "production_countries": [
+        {
+          "iso_3166_1": "US",
+          "name": "United States of America"
+        }
+      ],
+      "release_date": "2015-06-23",
+      "revenue": 0,
+      "runtime": 92,
+      "spoken_languages": [
+        {
+          "english_name": "English",
+          "iso_639_1": "en",
+          "name": "English"
+        }
+      ],
+      "status": "Released",
+      "tagline": "",
+      "title": "Advantageous",
+      "video": false,
+      "vote_average": 5.9,
+      "vote_count": 112
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/rAEA1O6gFKpzlzGqqWVL1ASkxH4.jpg",
+      "belongs_to_collection": {
+        "id": 140910,
+        "name": "All Dogs Go to Heaven Collection",
+        "poster_path": "/nwd1Vu3E4A23vIUFAvPVNu00vdV.jpg",
+        "backdrop_path": "/5JaMQn0PtPWGDIeGV8oqXSvJDKk.jpg"
+      },
+      "budget": 13800000,
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 16,
+          "name": "Animation"
+        },
+        {
+          "id": 10751,
+          "name": "Family"
+        },
+        {
+          "id": 35,
+          "name": "Comedy"
+        },
+        {
+          "id": 14,
+          "name": "Fantasy"
+        }
+      ],
+      "homepage": "",
+      "id": 11497,
+      "imdb_id": "tt0096787",
+      "original_language": "en",
+      "original_title": "All Dogs Go to Heaven",
+      "overview": "When a casino owning dog named Charlie is murdered by his rival Carface, he finds himself in Heaven basically by default since all dogs go to heaven. However, since he wants to get back at his killer, he cons his way back to the living with the warning that doing that damns him to Hell. Once back, he teams with his old partner, Itchy to prep his retaliation. He also stumbles on to an orphan girl who can talk to the animals, thus allowing him to get the inside info on the races to ensure his wins to finance his plans. However, all the while, he is still haunted by nightmares on what's waiting for him on the other side unless he can prove that he is worthy of Heaven again.",
+      "popularity": 11.822,
+      "poster_path": "/nmWh1NglDinfkHD9zCNqGWyhl7Q.jpg",
+      "production_companies": [
+        {
+          "id": 60,
+          "logo_path": "/oJXpAs4I3W46e4dkaOEzCa4yBko.png",
+          "name": "United Artists",
+          "origin_country": "US"
+        },
+        {
+          "id": 500,
+          "logo_path": null,
+          "name": "Goldcrest",
+          "origin_country": "GB"
+        },
+        {
+          "id": 6422,
+          "logo_path": null,
+          "name": "Sullivan Bluth Studios",
+          "origin_country": "US"
+        }
+      ],
+      "production_countries": [
+        {
+          "iso_3166_1": "IE",
+          "name": "Ireland"
+        },
+        {
+          "iso_3166_1": "GB",
+          "name": "United Kingdom"
+        },
+        {
+          "iso_3166_1": "US",
+          "name": "United States of America"
+        }
+      ],
+      "release_date": "1989-11-17",
+      "revenue": 27100027,
+      "runtime": 89,
+      "spoken_languages": [
+        {
+          "english_name": "English",
+          "iso_639_1": "en",
+          "name": "English"
+        }
+      ],
+      "status": "Released",
+      "tagline": "But not all dogs stay there!",
+      "title": "All Dogs Go to Heaven",
+      "video": false,
+      "vote_average": 6.7,
+      "vote_count": 732
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/2uvfioN7TjQCSlLmRFedRCya2Hd.jpg",
+      "belongs_to_collection": null,
+      "budget": 0,
+      "genres": [
+        {
+          "id": 27,
+          "name": "Horror"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        }
+      ],
+      "homepage": "",
+      "id": 513510,
+      "imdb_id": "tt6023386",
+      "original_language": "en",
+      "original_title": "All Light Will End",
+      "overview": "When a capricious young author with a dark secret returns home for her brother's graduation, she finds herself haunted by the past and tormented by night terrors.",
+      "popularity": 7.975,
+      "poster_path": "/nIHNOB3So7Jx9HBcf4s26kFutLl.jpg",
+      "production_companies": [
+        {
+          "id": 111454,
+          "logo_path": null,
+          "name": "Red Vessel Entertainment",
+          "origin_country": ""
+        },
+        {
+          "id": 109533,
+          "logo_path": "/xtQJYJg54jp5QVSZsvo9CEvNI8F.png",
+          "name": "Movie City Films",
+          "origin_country": "US"
+        },
+        {
+          "id": 111455,
+          "logo_path": null,
+          "name": "Ghost Horse",
+          "origin_country": ""
+        },
+        {
+          "id": 111456,
+          "logo_path": null,
+          "name": "Downbeat Films",
+          "origin_country": ""
+        }
+      ],
+      "production_countries": [
+        {
+          "iso_3166_1": "US",
+          "name": "United States of America"
+        }
+      ],
+      "release_date": "2018-03-24",
+      "revenue": 0,
+      "runtime": 85,
+      "spoken_languages": [
+        {
+          "english_name": "English",
+          "iso_639_1": "en",
+          "name": "English"
+        }
+      ],
+      "status": "Released",
+      "tagline": "Sometimes the demons win",
+      "title": "All Light Will End",
+      "video": false,
+      "vote_average": 5.5,
+      "vote_count": 20
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/wdAnSB4Udp2pP3RXOX6p92WxeJ7.jpg",
+      "belongs_to_collection": {
+        "id": 716025,
+        "name": "The Alexandria Trilogy",
+        "poster_path": "/RpwyP5zMmKBuYJx2gZigM2QEZK.jpg",
+        "backdrop_path": null
+      },
+      "budget": 0,
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 14,
+          "name": "Fantasy"
+        }
+      ],
+      "homepage": "",
+      "id": 123651,
+      "imdb_id": "tt0084042",
+      "original_language": "ar",
+      "original_title": "حدوتة مصرية",
+      "overview": "Acclaimed actor Nour El Cherif here plays Egyptian filmmaker Yehia Mourad some thirty years after we last see him in \"Alexandria, Why?\"  Though successful in his work, Yehia has grown distant from his wife and children and suﬀers a symbolic blockage of the heart while shooting the final scenes of his latest film. After being flown to England for evaluation, it's determined that Yehia must undergo emergency surgery.  Fact and fiction blend seamlessly—with healthy doses of cleverly  absurdist fantasy—as the film explores the various personalities and forces that have made Yehia (and Youssef Chahine) the man he has become.",
+      "popularity": 1.4,
+      "poster_path": "/l9wTvRMX4ehk73WST5alwR6JW2E.jpg",
+      "production_companies": [
+        {
+          "id": 11574,
+          "logo_path": null,
+          "name": "MISR International Films",
+          "origin_country": ""
+        }
+      ],
+      "production_countries": [
+        {
+          "iso_3166_1": "EG",
+          "name": "Egypt"
+        }
+      ],
+      "release_date": "1982-09-27",
+      "revenue": 0,
+      "runtime": 129,
+      "spoken_languages": [
+        {
+          "english_name": "Arabic",
+          "iso_639_1": "ar",
+          "name": "العربية"
+        }
+      ],
+      "status": "Released",
+      "tagline": "",
+      "title": "An Egyptian Story",
+      "video": false,
+      "vote_average": 6.6,
+      "vote_count": 5
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/noVzAzFi6ZVMBcese44RY3r7fmt.jpg",
+      "belongs_to_collection": {
+        "id": 422361,
+        "name": "Barbie A Mermaid Tale Collection",
+        "poster_path": "/xvvY9hj10DQjAwN2NCaFJS1Moii.jpg",
+        "backdrop_path": "/hw43q6AkuoRDFvuSWsxDG0A5AK6.jpg"
+      },
+      "budget": 0,
+      "genres": [
+        {
+          "id": 16,
+          "name": "Animation"
+        },
+        {
+          "id": 10751,
+          "name": "Family"
+        },
+        {
+          "id": 14,
+          "name": "Fantasy"
+        }
+      ],
+      "homepage": "http://www.barbie.com/mermaid-tale/",
+      "id": 34134,
+      "imdb_id": "tt1610301",
+      "original_language": "en",
+      "original_title": "Barbie in A Mermaid Tale",
+      "overview": "Barbie stars as Merliah, a surfer who learns a shocking secret: she's a mermaid! She and her dolphin friend set out for an undersea adventure to rescue her mother, the queen of Oceana.",
+      "popularity": 39.424,
+      "poster_path": "/jtOlo3AaXVBnqfMeKGFrZUMPFui.jpg",
+      "production_companies": [
+        {
+          "id": 49983,
+          "logo_path": null,
+          "name": "Mattel Entertainment",
+          "origin_country": ""
+        },
+        {
+          "id": 102897,
+          "logo_path": "/ackYRJXIse2uoLDawNVs1HzEJgm.png",
+          "name": "Rainmaker Entertainment",
+          "origin_country": "CA"
+        }
+      ],
+      "production_countries": [
+        {
+          "iso_3166_1": "US",
+          "name": "United States of America"
+        }
+      ],
+      "release_date": "2010-01-25",
+      "revenue": 16441438,
+      "runtime": 75,
+      "spoken_languages": [
+        {
+          "english_name": "English",
+          "iso_639_1": "en",
+          "name": "English"
+        }
+      ],
+      "status": "Released",
+      "tagline": "",
+      "title": "Barbie in A Mermaid Tale",
+      "video": false,
+      "vote_average": 7.2,
+      "vote_count": 491
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/mnXOfgasuAldIwmTRB0wQKJSsz4.jpg",
+      "belongs_to_collection": null,
+      "budget": 116000000,
+      "genres": [
+        {
+          "id": 28,
+          "name": "Action"
+        },
+        {
+          "id": 12,
+          "name": "Adventure"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "homepage": "",
+      "id": 9619,
+      "imdb_id": "tt0118928",
+      "original_language": "en",
+      "original_title": "Dante's Peak",
+      "overview": "Volcanologist Harry Dalton comes to the sleepy town of Dante's Peak to investigate the recent rumblings of the dormant volcano the burg is named for. Before long, his worst fears are realized when a massive eruption hits, and immediately, Harry, the mayor and the townspeople find themselves fighting for their lives amid a catastrophic nightmare.",
+      "popularity": 17.918,
+      "poster_path": "/chApdYLprUhuAVpeBXn2Ytytyo6.jpg",
+      "production_companies": [
+        {
+          "id": 1280,
+          "logo_path": null,
+          "name": "Pacific Western",
+          "origin_country": "US"
+        },
+        {
+          "id": 33,
+          "logo_path": "/8lvHyhjr8oUKOOy2dKXoALWKdp0.png",
+          "name": "Universal Pictures",
+          "origin_country": "US"
+        }
+      ],
+      "production_countries": [
+        {
+          "iso_3166_1": "US",
+          "name": "United States of America"
+        }
+      ],
+      "release_date": "1997-02-07",
+      "revenue": 178127760,
+      "runtime": 108,
+      "spoken_languages": [
+        {
+          "english_name": "English",
+          "iso_639_1": "en",
+          "name": "English"
+        }
+      ],
+      "status": "Released",
+      "tagline": "The pressure is building...",
+      "title": "Dante's Peak",
+      "video": false,
+      "vote_average": 6.1,
+      "vote_count": 1218
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/b3u3ayecSfwak4hyRbvRiI3pxTM.jpg",
+      "belongs_to_collection": null,
+      "budget": 0,
+      "genres": [
+        {
+          "id": 99,
+          "name": "Documentary"
+        }
+      ],
+      "homepage": "https://www.netflix.com/title/81050375",
+      "id": 634754,
+      "imdb_id": "tt11127056",
+      "original_language": "en",
+      "original_title": "Fire in Paradise",
+      "overview": "In this documentary, survivors recall the catastrophic 2018 Camp Fire, which razed the town of Paradise and became California’s deadliest wildfire.",
+      "popularity": 5.047,
+      "poster_path": "/aCfZ4eefGdJiZ1Qmt6uAbkEHzqX.jpg",
+      "production_companies": [],
+      "production_countries": [
+        {
+          "iso_3166_1": "US",
+          "name": "United States of America"
+        }
+      ],
+      "release_date": "2019-09-01",
+      "revenue": 0,
+      "runtime": 39,
+      "spoken_languages": [
+        {
+          "english_name": "English",
+          "iso_639_1": "en",
+          "name": "English"
+        }
+      ],
+      "status": "Released",
+      "tagline": "",
+      "title": "Fire in Paradise",
+      "video": false,
+      "vote_average": 6.8,
+      "vote_count": 20
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/hU5pLCxvQfgxr2lMQULNx7QGXHm.jpg",
+      "belongs_to_collection": null,
+      "budget": 0,
+      "genres": [
+        {
+          "id": 35,
+          "name": "Comedy"
+        }
+      ],
+      "homepage": "",
+      "id": 542968,
+      "imdb_id": "tt7051624",
+      "original_language": "en",
+      "original_title": "For Love or Money",
+      "overview": "What started off as a whirlwind romance takes an unexpected turn when Mark discovers his beautiful bride-to-be is plotting against him. In cahoots with an old school buddy, they hatch a plan to take half of Mark’s £20 million fortune and use it for their own happy ending. What they don’t realize is that Mark is one step ahead of them.",
+      "popularity": 11.73,
+      "poster_path": "/mGNKckwAfHzPE73VFGhDS5YIWvB.jpg",
+      "production_companies": [
+        {
+          "id": 102290,
+          "logo_path": "/oAHohSArs894M7z0LwVLbd38bFA.png",
+          "name": "Goldfinch Studios",
+          "origin_country": "GB"
+        },
+        {
+          "id": 599,
+          "logo_path": null,
+          "name": "Solar Productions",
+          "origin_country": ""
+        }
+      ],
+      "production_countries": [
+        {
+          "iso_3166_1": "GB",
+          "name": "United Kingdom"
+        }
+      ],
+      "release_date": "2019-03-15",
+      "revenue": 0,
+      "runtime": 95,
+      "spoken_languages": [
+        {
+          "english_name": "English",
+          "iso_639_1": "en",
+          "name": "English"
+        }
+      ],
+      "status": "Released",
+      "tagline": "An unromantic comedy",
+      "title": "For Love or Money",
+      "video": false,
+      "vote_average": 5.8,
+      "vote_count": 27
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/wlK3OUI676ozMOkSsnU6bQNOZLB.jpg",
+      "belongs_to_collection": {
+        "id": 373918,
+        "name": "Garfield CGI Collection",
+        "poster_path": "/1oxAWOKx6ojExaF0gljiDZwlYrs.jpg",
+        "backdrop_path": "/omkeyXvAhrsAVOtAQGtU6REr5my.jpg"
+      },
+      "budget": 0,
+      "genres": [
+        {
+          "id": 35,
+          "name": "Comedy"
+        },
+        {
+          "id": 16,
+          "name": "Animation"
+        },
+        {
+          "id": 10751,
+          "name": "Family"
+        }
+      ],
+      "homepage": "",
+      "id": 26728,
+      "imdb_id": "tt1135929",
+      "original_language": "en",
+      "original_title": "Garfield's Fun Fest",
+      "overview": "Garfield emerges victorious at the end of every single Fun Fest, a competition for the best in comic strip characters. It's a given; he can do it with his paws tied behind his back. But this year, it looks like a dashing new contestant by the name of Ramone is going to give everyone's favorite fat cat a run for his lasagna, especially after the G-Man's usual partner-in-fun, Arlene, decides to pair",
+      "popularity": 8.674,
+      "poster_path": "/vsCHc3vb5xdS9nJ5YdFSY8p2ujO.jpg",
+      "production_companies": [
+        {
+          "id": 4569,
+          "logo_path": null,
+          "name": "Paws",
+          "origin_country": ""
+        },
+        {
+          "id": 1302,
+          "logo_path": "/kQZtJdyphCmq292iGDqlUx0yk2D.png",
+          "name": "Davis Entertainment",
+          "origin_country": "US"
+        },
+        {
+          "id": 15196,
+          "logo_path": null,
+          "name": "Animation Picture Company",
+          "origin_country": ""
+        }
+      ],
+      "production_countries": [
+        {
+          "iso_3166_1": "KR",
+          "name": "South Korea"
+        },
+        {
+          "iso_3166_1": "US",
+          "name": "United States of America"
+        }
+      ],
+      "release_date": "2008-08-30",
+      "revenue": 0,
+      "runtime": 79,
+      "spoken_languages": [
+        {
+          "english_name": "English",
+          "iso_639_1": "en",
+          "name": "English"
+        },
+        {
+          "english_name": "Portuguese",
+          "iso_639_1": "pt",
+          "name": "Português"
+        }
+      ],
+      "status": "Released",
+      "tagline": "",
+      "title": "Garfield's Fun Fest",
+      "video": false,
+      "vote_average": 5.2,
+      "vote_count": 31
+    }
+  ]
+}
