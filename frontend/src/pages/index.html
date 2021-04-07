@@ -17,6 +17,12 @@
             } else {
                 document.getElementById('mainFrame').src = 'homepage.html'
             }
+            const username = sessionStorage.getItem('username')
+            if (username) {
+                document.getElementById('auth').innerText = username;
+            } else {
+                document.getElementById('auth').innerText = 'Log In';
+            }
         }
 
         function navigateTo (id) {
@@ -32,7 +38,7 @@
             <li id="homepage" onclick="navigateTo(this.id)">NeMo</li>
             <li id="movies" onclick="navigateTo(this.id)">Movies</li>
             <li id="tv-shows" onclick="navigateTo(this.id)">TV Shows</li>
-            <li id="auth" onclick="navigateTo(this.id)">Login</li>
+            <li id="auth" onclick="navigateTo(this.id)"></li>
         </ul>
     </nav>
     <iframe title="content" id="mainFrame"></iframe>

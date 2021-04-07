@@ -6,20 +6,35 @@
     <title>Sign Up</title>
     <link rel="stylesheet" type="text/css" href="../styles/auth.css">
     <script>
+        let isLogin = true;
         function changeToForm (id) {
-            document.getElementById(id).style.display = 'flex'
+            document.getElementById(id).style.display = 'flex';
             if (id === 'signup') {
-                document.getElementById('login').style.display = 'none'
+                isLogin = false;
+                document.getElementById('login').style.display = 'none';
             } else {
-                document.getElementById('signup').style.display = 'none'
+                isLogin = true;
+                document.getElementById('signup').style.display = 'none';
             }
+        }
+
+        function login () {
+            let username
+            if (isLogin) {
+                username = document.getElementById('loginUsername').value;
+            } else {
+                username = document.getElementById('registerUsername').value;
+            }
+            sessionStorage.setItem('username', username);
+            parent.document.getElementById('auth').innerText = username;
+            window.location.replace('./homepage.html')
         }
     </script>
 </head>
 <body>
 <div class="auth-form">
     <ul class="tab-switcher">
-        <li class="tab" onclick="changeToForm('login')">Login</li>
+        <li class="tab" onclick="changeToForm('login')">Log In</li>
         <li class="tab active" onclick="changeToForm('signup')">Sign Up</li>
     </ul>
 
@@ -29,13 +44,13 @@
             <form action="/" method="POST">
                 <div class="field-wrap">
                     <label>
-                        <input placeholder="Username / Email" type="email" required/>
+                        <input id="loginUsername" placeholder="Username / Email" type="email" required/>
                     </label>
                 </div>
 
                 <div class="field-wrap">
                     <label>
-                        <input placeholder="Password" type="password" required autocomplete="off"/>
+                        <input id="loginPassword" placeholder="Password" type="password" required autocomplete="off"/>
                     </label>
                 </div>
             </form>
@@ -46,32 +61,32 @@
             <form action="/" method="POST">
                 <div class="field-wrap">
                     <label>
-                        <input placeholder="Username" required/>
+                        <input id="registerUsername" placeholder="Username" required/>
                     </label>
                 </div>
 
                 <div class="field-wrap">
                     <label>
-                        <input placeholder="Email" type="email" required/>
+                        <input id="registerEmail" placeholder="Email" type="email" required/>
                     </label>
                 </div>
 
                 <div class="field-wrap">
                     <label>
-                        <input placeholder="Password" type="password" required autocomplete="off"/>
+                        <input id="registerPassword" placeholder="Password" type="password" required autocomplete="off"/>
                     </label>
                 </div>
 
                 <div class="field-wrap">
                     <label>
-                        <input placeholder="Confirm password" type="password" required autocomplete="off"/>
+                        <input id="registerConfirmPassword" placeholder="Confirm password" type="password" required autocomplete="off"/>
                     </label>
                 </div>
             </form>
         </div>
     </div>
     <div id="submit">
-        <button>Submit</button>
+        <button onclick="login()">Submit</button>
     </div>
 </div>
 </body>

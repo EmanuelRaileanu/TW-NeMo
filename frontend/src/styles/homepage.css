@@ -150,12 +150,12 @@ ul li{
     width: 10px;
     height: 10px;
     margin: 3px;
-    background: #bdbdd5;
+    background: #6a6a77;
     cursor: pointer;
 }
 
 .controls ul li.active {
-    background: #6a6a77;
+    background: #bdbdd5;
 }
 
 
