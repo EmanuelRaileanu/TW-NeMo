@@ -1,14 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta name="viewport">
-        <meta charset="UTF-8">
-        <title>Sign Up</title>
-        <link rel = "stylesheet" type="text/css" href="../styles/auth.css">
-    </head>
-    <body>
-        <div id="authForm">
+<head>
+    <meta name="viewport">
+    <meta charset="UTF-8">
+    <title>Sign Up</title>
+    <link rel="stylesheet" type="text/css" href="../styles/auth.css">
+</head>
+<body>
+<div class="auth-form">
+    <ul class="tab-switcher">
+        <li class="tab active"><a href="#signup">Sign Up</a></li>
+        <li class="tab"><a href="#login">Login</a></li>
+    </ul>
 
+    <div class="form-fields">
+        <div id="signup">
+            <h1>Sigh Up for free</h1>
+            <form action="/" method="POST">
+                <div class="field-wrap">
+                    <label>
+                        Username<span class="req">*</span>
+                        <input required autocomplete="off"/>
+                    </label>
+                </div>
+
+                <div class="field-wrap">
+                    <label>
+                        Email<span class="req">*</span>
+                        <input type="email" required autocomplete="off"/>
+                    </label>
+                </div>
+
+                <div class="field-wrap">
+                    <label>
+                        Password<span class="req">*</span>
+                        <input type="password" required autocomplete="off"/>
+                    </label>
+                </div>
+
+                <div class="field-wrap">
+                    <label>
+                        Confirm password<span class="req">*</span>
+                        <input type="password" required autocomplete="off"/>
+                    </label>
+                </div>
+            </form>
         </div>
-    </body>
+        <div id="login">
+            <h1>Login</h1>
+            <form action="/" method="POST">
+                <div class="field-wrap">
+                    <label>
+                        Username / Email<span class="req">*</span>
+                        <input type="email" required autocomplete="off"/>
+                    </label>
+                </div>
+
+                <div class="field-wrap">
+                    <label>
+                        Password<span class="req">*</span>
+                        <input type="password" required autocomplete="off"/>
+                    </label>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
 </html>
