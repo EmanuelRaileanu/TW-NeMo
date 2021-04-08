@@ -15,8 +15,8 @@ html, body {
     color: #bdbdd5;
 }
 
-ul li{
-    margin:0;
+ul li {
+    margin: 0;
 }
 
 .content-width {
@@ -161,7 +161,7 @@ ul li{
 
 .button {
     border: none;
-    cursor:pointer;
+    cursor: pointer;
     color: white;
     text-align: center;
     text-decoration: none;
@@ -170,17 +170,19 @@ ul li{
 }
 
 .toggle {
-    display:flex;
+    display: flex;
     align-items: center;
-    z-index:2;
+    z-index: 2;
+    margin: 0;
 }
 
 .toggle li {
-    font-size:1.2vw;
+    font-size: 2vh;
+    margin: 5px;
 }
 
-.toggle li h1{
-    font-size:2.5vw;
+.toggle li h1 {
+    font-size: 3.5vh;
 }
 
 header {
@@ -191,14 +193,25 @@ header {
 }
 
 header h1 {
-    font-size: 3vw;
+    font-size: 5vh;
     color: white;
 }
 
-@media only screen and (max-width: 1000px) {
+@media only screen and (max-width: 1024px) {
     .item-image-container {
         width: 90%;
         position: center;
+    }
+
+    header {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        z-index: 3;
+    }
+
+    header ul {
+        padding-top: 10%;
     }
 
     .item-description {
@@ -206,7 +219,6 @@ header h1 {
     }
 
     .button {
-        padding: 5% 7.5%;
         font-size: 2.5vw;
     }
 }
