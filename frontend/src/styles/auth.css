@@ -44,7 +44,7 @@ form {
     flex-direction: column;
 }
 
-form > *  {
+form > * {
     margin-top: 6%;
     margin-bottom: 6%;
 }
