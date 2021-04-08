@@ -1,4 +1,4 @@
-const posterBaseUrl = 'http://image.tmdb.org/t/p/w500'
+const posterBaseUrl = 'https://image.tmdb.org/t/p/original/'
 
 window.onload = async function () {
     const movies = (await (await fetch('../movies.json')).json()).results
