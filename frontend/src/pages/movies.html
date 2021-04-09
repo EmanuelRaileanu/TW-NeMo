@@ -8,11 +8,39 @@
     <script src="../scripts/movies.js"></script>
 </head>
 <body>
-    <div class="content-container">
-        <div id="controls">
+<div class="topnav">
+    <form onsubmit="searchMovie()">
+        <input type="text" placeholder="Search.." name="mvSch">
+    </form>
+    <div class="dropdown">
+        <button class="dropbtn">Sort</button>
+        <div class="dropdown-content">
 
         </div>
-        <ul id="list"></ul>
     </div>
+    <div class="dropdown">
+        <button class="dropbtn">Filters</button>
+        <div class="dropdown-content">
+            <li>Genres:</li>
+            <li><input class="genres" type="checkbox"/>Drama</li>
+            <li><input class="genres" type="checkbox"/>Romance</li>
+            <li>Production Companies:</li>
+            <li><input class="prodComp" type="checkbox"/>United Artists</li>
+            <li>
+                <button onclick="resetFilters()">Reset Filters</button>
+            </li>
+            <li>
+                <button onclick="applyFilters()">Apply filters</button>
+            </li>
+        </div>
+    </div>
+</div>
+
+<div class="content-container">
+    <div id="controls">
+
+    </div>
+    <ul id="list"></ul>
+</div>
 </body>
 </html>
