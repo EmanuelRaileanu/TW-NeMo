@@ -1,7 +1,10 @@
 const posterBaseUrl = 'https://image.tmdb.org/t/p/original/'
-
 window.onload = async function () {
     await renderMovies();
+    document.getElementById("mvSch").addEventListener('keydown', async event => {
+        if(event.code==='Enter')
+            await searchMovie();
+    });
 }
 
 async function renderMovies(filters=null){
@@ -23,7 +26,6 @@ async function renderMovies(filters=null){
 }
 
 async function getMovies(filters = null) {
-    console.log(filters);
     let movies = (await (await fetch('../movies.json')).json()).results;
     if (filters && filters !== {}) {
         if (filters.genres && filters.genres.length) {
@@ -67,7 +69,8 @@ async function resetFilters(){
     await renderMovies();
 }
 
+
 async function searchMovie(){
-    let name=document.getElementsByName("mvSch").value;
+    let name=document.getElementById("mvSch").value;
     console.log(name);
 }

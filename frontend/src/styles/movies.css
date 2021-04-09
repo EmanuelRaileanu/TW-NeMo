@@ -141,7 +141,7 @@ img {
 
 
 /* Style the search box inside the navigation bar */
-.topnav form input[type=text] {
+.topnav input[type=text] {
     padding: 10px;
     margin:1vw;
     width:100%;
@@ -153,7 +153,7 @@ img {
     outline: none;
 }
 
-.topnav form input[type=text]:focus {
+.topnav input[type=text]:focus {
     background: rgba(78, 97, 124, 0.4);
 }
 
@@ -163,14 +163,14 @@ img {
 
 /* When the screen is less than 600px wide, stack the links and the search field vertically instead of horizontally */
 @media screen and (max-width: 600px) {
-    .topnav .topnav form input[type=text] {
+    .topnav .topnav input[type=text] {
         text-align: left;
         width: 100%;
         margin: 0;
         padding: 14px;
     }
 
-    .topnav form input[type=text] {
+    .topnav input[type=text] {
         border: 1px solid #ccc;
     }
 }
