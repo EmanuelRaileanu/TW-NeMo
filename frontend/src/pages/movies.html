@@ -18,7 +18,7 @@
                     <input type="radio" id="name" name="sortType" onclick="applyFilters('name')" checked>By name
                 </li>
                 <li>
-                    <input type="radio" id="rating" name="sortType" onclick="applyFilters('rating')">By rating
+                    <input type="radio" id="rat" name="sortType" onclick="applyFilters('rating')">By rating
                 </li>
                 <li>
                     <input type="radio" id="asc" name="orderType" onclick="applyFilters()" checked>Ascending
@@ -49,8 +49,18 @@
         <div id="movie-content">
             <div id="poster"></div>
             <div id="title"></div>
+            <div id="tagline"></div>
+            <div id="genres">
+                <ul id="genre-list"></ul>
+            </div>
+            <div id="lang"></div>
+            <div id="release"></div>
             <div id="rating"></div>
+            <div id="runtime"></div>
             <div id="description"></div>
+            <div id="production-companies">
+                <ul id="production-companies-list"></ul>
+            </div>
         </div>
         <footer></footer>
     </div>

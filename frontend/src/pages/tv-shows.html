@@ -7,40 +7,65 @@
     <script src="../scripts/tv-shows.js"></script>
     <title>Tv Shows</title>
 </head>
-<body>
-<nav class="topnav">
-    <label for="shSch"></label>
-    <input id="shSch" type="text" placeholder="Search.." name="sh">
-    <div class="dropdown">
-        <button class="dropbtn">Sort</button>
-        <ul class="dropdown-content">
-            <li>
-                <input type="radio" id="name" name="sortType" onclick="applyFilters('name')" checked>By name
-            </li>
-            <li>
-                <input type="radio" id="rating" name="sortType" onclick="applyFilters('rating')">By rating
-            </li>
-            <li>
-                <input type="radio" id="asc" name="orderType" onclick="applyFilters()" checked>Ascending
-            </li>
-            <li>
-                <input type="radio" id="desc" name="orderType" onclick="applyFilters()">Descending
-            </li>
-        </ul>
-    </div>
-    <div class="dropdown">
-        <button class="dropbtn">Filters</button>
-        <ul id="filters" class="dropdown-content">
+<body id="movies-body">
+    <nav class="topnav">
+        <label for="shSch"></label>
+        <input id="shSch" type="text" placeholder="Search.." name="sh">
+        <div class="dropdown">
+            <button class="dropbtn">Sort</button>
+            <ul class="dropdown-content">
+                <li>
+                    <input type="radio" id="name" name="sortType" onclick="applyFilters('name')" checked>By name
+                </li>
+                <li>
+                    <input type="radio" id="rat" name="sortType" onclick="applyFilters('rating')">By rating
+                </li>
+                <li>
+                    <input type="radio" id="asc" name="orderType" onclick="applyFilters()" checked>Ascending
+                </li>
+                <li>
+                    <input type="radio" id="desc" name="orderType" onclick="applyFilters()">Descending
+                </li>
+            </ul>
+        </div>
+        <div class="dropdown">
+            <button class="dropbtn">Filters</button>
+            <ul id="filters" class="dropdown-content">
 
-        </ul>
-    </div>
-</nav>
+            </ul>
+        </div>
+    </nav>
 
-<div class="content-container">
-    <div id="controls">
+    <div class="content-container">
+        <div id="controls">
 
+        </div>
+        <ul id="list"></ul>
     </div>
-    <ul id="list"></ul>
-</div>
+    <div id="movie-container">
+        <nav id="top-menu">
+            <button onclick="exitShowView()">✕</button>
+        </nav>
+        <div id="movie-content">
+            <div id="poster"></div>
+            <div id="title"></div>
+            <div id="tagline"></div>
+            <div id="genres">
+                <ul id="genre-list"></ul>
+            </div>
+            <div id="lang"></div>
+            <div id="release"></div>
+            <div id="rating"></div>
+            <div id="runtime"></div>
+            <div id="description"></div>
+            <div id="seasons">
+                <ul id="seasons-list"></ul>
+            </div>
+            <div id="production-companies">
+                <ul id="production-companies-list"></ul>
+            </div>
+        </div>
+        <footer></footer>
+    </div>
 </body>
 </html>
