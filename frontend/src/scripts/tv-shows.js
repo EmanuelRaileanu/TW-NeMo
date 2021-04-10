@@ -9,27 +9,6 @@ window.onload = async function () {
         if (event.code === 'Enter')
             await applyFilters();
     });
-
-    // Used to override browser back button to closing tv show popup
-    if (typeof history.pushState === "function") {
-        history.pushState("randomstuff", null, null);
-        window.onpopstate = function () {
-            history.pushState('morerandomstuff', null, null);
-            exitShowView();
-        };
-    }
-    else {
-        let ignoreHashChange = true;
-        window.onhashchange = function () {
-            if (!ignoreHashChange) {
-                ignoreHashChange = true;
-                window.location.hash = Math.random();
-            }
-            else {
-                ignoreHashChange = false;
-            }
-        };
-    }
 }
 
 function createFiltersMenu () {
