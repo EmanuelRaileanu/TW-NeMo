@@ -154,7 +154,7 @@ async function displayShow (showId) {
                     </div>
                 </nav>
                 <div class="season-content">
-                    <img src="${posterBaseUrl}/${season.poster_path}" alt="">
+                    <img src="${season.poster_path ? `${posterBaseUrl}/${season.poster_path}` : ''}" alt="">
                     <h3>Air date: ${season.air_date}</h3>
                     <p>${season.overview}</p>
                 </div>
@@ -167,7 +167,7 @@ async function displayShow (showId) {
         productionCompaniesList.innerHTML += `
             <li>
                 <h6>${productionCompany.name} ${productionCompany.origin_country}</h6>
-                <img src="${posterBaseUrl}/${productionCompany.logo_path}" alt="">
+                <img src="${productionCompany.logo_path ? `${posterBaseUrl}/${productionCompany.logo_path}` : ''}" alt="">
             </li>
         `;
     }
