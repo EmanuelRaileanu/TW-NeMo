@@ -5,6 +5,8 @@ html, body {
     background: linear-gradient(rgba(19, 35, 47, 0.95), rgba(19, 35, 47, 0.95)), url('../images/movie-poster.jpg') no-repeat center fixed;
 }
 
+
+
 nav ul {
     margin: 0;
     padding: 0;
