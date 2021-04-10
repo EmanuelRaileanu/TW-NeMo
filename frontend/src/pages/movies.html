@@ -6,15 +6,6 @@
     <title>Movies</title>
     <link rel="stylesheet" type="text/css" href="../styles/movies.css">
     <script src="../scripts/movies.js"></script>
-    <script>
-        window.onload = async function () {
-            await renderMovies();
-            document.getElementById("mvSch").addEventListener('keydown', async event => {
-                if (event.code === 'Enter')
-                    await searchMovie();
-            });
-        }
-    </script>
 </head>
 <body id="movies-body">
     <nav class="topnav">

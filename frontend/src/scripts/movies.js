@@ -4,7 +4,9 @@ const prodComps = ['Animation Picture Company', 'Davis Entertainment', 'DK Enter
 
 window.onload = async function () {
     await renderMovies();
+    console.log('fct')
     createFiltersMenu();
+    console.log('fct2')
     document.getElementById("mvSch").addEventListener('keydown', async event => {
         if (event.code === 'Enter')
             await applyFilters();
@@ -95,7 +97,6 @@ async function resetFilters() {
     for (let item of document.getElementsByClassName('prodComp')) {
         item.checked = false;
     }
-    movieName = '';
     document.getElementById("mvSch").value = '';
     await renderMovies();
 }
@@ -113,7 +114,6 @@ async function getMovieById (movieId) {
 async function displayMovie (movieId) {
     const movie = await getMovieById(movieId);
     document.getElementById('movies-body').style.overflow = 'hidden';
-    // document.querySelector('body > *:not(#movie-container)').style.filter = 'blur(8px)';
     const sheet = window.document.styleSheets[0];
     sheet.insertRule('body > *:not(#movie-container) { filter: blur(8px); }', sheet.cssRules.length);
     sheet.insertRule(`#movie-container { background: linear-gradient(rgba(19, 35, 47, 0.90), rgba(19, 35, 47, 0.90)), url('${posterBaseUrl}/${movie.backdrop_path}') }`, sheet.cssRules.length);

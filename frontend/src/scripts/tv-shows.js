@@ -12,6 +12,7 @@ window.onload = async function () {
 }
 
 function createFiltersMenu() {
+    console.log('fct')
     let menu = document.getElementById('filters');
     menu.innerHTML += '<li>Genres:</li>';
     for (let item of genres) {
