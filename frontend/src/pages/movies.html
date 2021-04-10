@@ -6,8 +6,17 @@
     <title>Movies</title>
     <link rel="stylesheet" type="text/css" href="../styles/movies.css">
     <script src="../scripts/movies.js"></script>
+    <script>
+        window.onload = async function () {
+            await renderMovies();
+            document.getElementById("mvSch").addEventListener('keydown', async event => {
+                if (event.code === 'Enter')
+                    await searchMovie();
+            });
+        }
+    </script>
 </head>
-<body>
+<body id="movies-body">
     <nav class="topnav">
         <label for="mvSch"></label>
         <input id="mvSch" type="text" placeholder="Search.." name="mv">
@@ -40,6 +49,19 @@
 
         </div>
         <ul id="list"></ul>
+    </div>
+
+    <div id="movie-container">
+        <nav id="top-menu">
+            <button onclick="exitMovieView()">✕</button>
+        </nav>
+        <div id="movie-content">
+            <div id="poster"></div>
+            <div id="title"></div>
+            <div id="rating"></div>
+            <div id="description"></div>
+        </div>
+        <footer></footer>
     </div>
 </body>
 </html>

@@ -52,7 +52,7 @@ body::-webkit-scrollbar-thumb {
     margin: 1vh 1vw;
 }
 
-img {
+#list li img {
     height: 25vh;
 }
 
@@ -67,6 +67,105 @@ img {
     margin-left: auto;
 }
 
+#movie-container {
+    display: none;
+    border-radius: 25px;
+    position: fixed;
+    width: 80vw;
+    height: 80vh;
+    margin-top: 5vh;
+    background: rgba(13, 27, 36, 0.99);
+    animation: .3s ease-out growFromCenter;
+}
+
+@keyframes growFromCenter {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+#top-menu {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 5vh;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    padding-right: 10px;
+}
+
+#top-menu button {
+    cursor: pointer;
+    position: absolute;
+    background: inherit;
+    border: none;
+    color: white;
+    font-size: 30px;
+    border-radius: inherit;
+}
+
+#movie-container footer {
+    height: 5vh;
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+}
+
+#poster {
+    grid-area: poster;
+}
+
+#title {
+    grid-area: title;
+}
+
+#description {
+    grid-area: description;
+    padding: 5vw;
+}
+
+#rating {
+    grid-area: rating;
+}
+
+#movie-content {
+    padding: 2.5vh 5vw;
+    overflow-x: hidden;
+    overflow-y: auto;
+    text-align: justify;
+    display: grid;
+    color: white;
+    grid-template-areas:
+            'poster title rating'
+            'poster description description';
+    font-family: 'Titillium Web', sans-serif;
+}
+
+#movie-content > * {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#movie-content img {
+    height: 60vh;
+}
+
+#movie-content::-webkit-scrollbar {
+    width: 0.5em;
+}
+
+#movie-content::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+#movie-content::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+    outline: 1px solid slategrey;
+}
+
 @media only screen and (max-width: 1024px) {
     .content-container {
         width: 100vw;
@@ -74,6 +173,13 @@ img {
 
     .written-content span {
         display: none;
+    }
+
+    #movie-container {
+        width: 100vw;
+        height: 100vh;
+        border: none;
+        margin: 0;
     }
 }
 
@@ -100,7 +206,7 @@ img {
     background-color: #f1f1f1;
     min-width: 160px;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-    margin-left:-5%;
+    margin-left: -5%;
     z-index: 1;
     overflow: hidden;
     overflow-y: scroll;
@@ -139,15 +245,15 @@ img {
     margin-top: 10vh;
     overflow: hidden;
     width: 70vw;
-    height:100%;
+    height: 100%;
 }
 
 
 /* Style the search box inside the navigation bar */
 .topnav input[type=text] {
     padding: 10px;
-    margin:1vw;
-    width:100%;
+    margin: 1vw;
+    width: 100%;
     background: inherit;
     color: white;
     border: 1px solid #1ab188;
@@ -177,3 +283,4 @@ img {
         border: 1px solid #ccc;
     }
 }
+
