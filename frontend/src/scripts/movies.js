@@ -6,9 +6,30 @@ window.onload = async function () {
     await renderMovies({ sorting: 'name' });
     createFiltersMenu();
     document.getElementById("mvSch").addEventListener('keydown', async event => {
-        if (event.code === 'Enter')
+        if (event.code === 'Enter') {
             await applyFilters();
+        }
     });
+
+    // Used to override browser back button to closing movie popup
+    if (typeof history.pushState === "function") {
+        history.pushState("randomstuff", null, null);
+        window.onpopstate = function () {
+            history.pushState('morerandomstuff', null, null);
+            exitMovieView();
+        };
+    } else {
+        let ignoreHashChange = true;
+        window.onhashchange = function () {
+            if (!ignoreHashChange) {
+                ignoreHashChange = true;
+                window.location.hash = Math.random();
+            }
+            else {
+                ignoreHashChange = false;
+            }
+        };
+    }
 }
 
 function createFiltersMenu () {
