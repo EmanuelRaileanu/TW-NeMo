@@ -39,11 +39,13 @@ body::-webkit-scrollbar-thumb {
     justify-content: space-between;
     align-items: center;
     color: white;
+    transition: all .2s ease-in-out;
 }
 
 #list li:hover {
-    background-color: rgba(31, 52, 71, 0.5);
+    background-color: rgba(63, 95, 118, 0.43);
     cursor: pointer;
+    transform: scale(1.1);
 }
 
 #list li > * {
@@ -125,7 +127,8 @@ img {
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {
-    background-color: #3e8e41;
+    background-color: rgba(63, 95, 118, 0.43);
+    cursor: pointer;
 }
 
 
@@ -154,7 +157,7 @@ img {
 }
 
 .topnav input[type=text]:focus {
-    background: rgba(78, 97, 124, 0.4);
+    background: rgba(63, 95, 118, 0.43);
 }
 
 .topnav :last-child {
