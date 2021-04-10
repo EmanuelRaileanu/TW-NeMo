@@ -8,38 +8,39 @@
     <title>Tv Shows</title>
 </head>
 <body>
-    <nav class="topnav">
-        <label for="mvSch"></label>
-        <input id="mvSch" type="text" placeholder="Search.." name="mv">
-        <div class="dropdown">
-            <button class="dropbtn">Sort</button>
-            <div class="dropdown-content">
-
-            </div>
-        </div>
-        <div class="dropdown">
-            <button class="dropbtn">Filters</button>
-            <ul class="dropdown-content">
-                <li>Genres:</li>
-                <li><input class="genres" type="checkbox"/>Drama</li>
-                <li><input class="genres" type="checkbox"/>Romance</li>
-                <li>Production Companies:</li>
-                <li><input class="prodComp" type="checkbox"/>United Artists</li>
-                <li>
-                    <button onclick="resetFilters()">Reset Filters</button>
-                </li>
-                <li>
-                    <button onclick="applyFilters()">Apply filters</button>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <div class="content-container">
-        <div id="controls">
-
-        </div>
-        <ul id="list"></ul>
+<nav class="topnav">
+    <label for="shSch"></label>
+    <input id="shSch" type="text" placeholder="Search.." name="sh">
+    <div class="dropdown">
+        <button class="dropbtn">Sort</button>
+        <ul class="dropdown-content">
+            <li>
+                <input type="radio" id="name" name="sortType" onclick="applyFilters('name')" checked>By name
+            </li>
+            <li>
+                <input type="radio" id="rating" name="sortType" onclick="applyFilters('rating')">By rating
+            </li>
+            <li>
+                <input type="radio" id="asc" name="orderType" onclick="applyFilters()" checked>Ascending
+            </li>
+            <li>
+                <input type="radio" id="desc" name="orderType" onclick="applyFilters()">Descending
+            </li>
+        </ul>
     </div>
+    <div class="dropdown">
+        <button class="dropbtn">Filters</button>
+        <ul id="filters" class="dropdown-content">
+
+        </ul>
+    </div>
+</nav>
+
+<div class="content-container">
+    <div id="controls">
+
+    </div>
+    <ul id="list"></ul>
+</div>
 </body>
 </html>
