@@ -6,7 +6,7 @@ window.onload = async function () {
     await renderShows({ sorting: 'name' });
     createFiltersMenu();
     document.getElementById("shSch").addEventListener('keydown', async event => {
-        if (event.code === 'Enter')
+        if (event.code === 'Enter' || event.keyCode === 13)
             await applyFilters();
     });
 }
