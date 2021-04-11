@@ -6,7 +6,7 @@ window.onload = async function () {
     await renderMovies({ sorting: 'name' });
     createFiltersMenu();
     document.getElementById("mvSch").addEventListener('keydown', async event => {
-        if (event.code === 'Enter') {
+        if (event.code === 'Enter' || event.keyCode === 13) {
             await applyFilters();
         }
     });

@@ -452,5 +452,56 @@ h6 {
         padding: 14px;
         border: 1px solid #ccc;
     }
+
+    #movie-content {
+        padding: 2.5vh 5vw;
+        overflow-x: hidden;
+        overflow-y: scroll;
+        text-align: justify;
+        line-height: 150%;
+        height: 80%;
+        display: grid;
+        color: white;
+        grid-template-areas:
+            'poster'
+            'title'
+            'tagline'
+            'genres'
+            'language'
+            'release'
+            'runtime'
+            'rating'
+            'description'
+            'seasons'
+            'prodcomp';
+        font-family: 'Titillium Web', sans-serif;
+    }
+
+    #production-companies {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #production-companies-list {
+        padding-left: 5%;
+    }
+
+    .season-content {
+        display: none;
+        grid-template-areas:
+            'poster'
+            'airdate'
+            'overview';
+    }
+
+    .season-content > * {
+        margin: 5% 0;
+        padding: 0;
+    }
+
+    .season-content img {
+        margin-left: -2%;
+    }
 }
 
