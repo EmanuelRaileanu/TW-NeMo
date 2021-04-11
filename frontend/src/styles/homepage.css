@@ -8,7 +8,7 @@ html, body {
     width: 100%;
     height: 100vh;
     overflow: hidden;
-    font-family: 'Fira Mono', monospace;
+    font-family: 'Titillium Web', sans-serif;
     -webkit-font-smoothing: antialiased;
     font-size: .88rem;
     color: #bdbdd5;
