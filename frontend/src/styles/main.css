@@ -1,6 +1,6 @@
 body {
     margin: 0;
-    font-family: 'Source Sans Pro', sans-serif;
+    font-family: 'Titillium Web', sans-serif;
     font-size: 20px;
     background: linear-gradient(rgba(19, 35, 47, 0.95), rgba(19, 35, 47, 0.95)), url('../images/movie-poster.jpg') no-repeat center fixed;
     width: 100vw;
