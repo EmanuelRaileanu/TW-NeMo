@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "bookshelf": "^1.2.0",
+    "bookshelf-uuid": "^1.0.1",
     "dotenv": "^8.2.0",
     "knex": "^0.21.19",
     "mysql": "^2.18.1"
