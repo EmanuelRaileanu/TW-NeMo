@@ -193,9 +193,18 @@ export const up = async (knex) => {
             table.uuid('actorId').references('actors.id')
         })
     }
+    if (!await knex.schema.hasTable('tv_shows_production_companies')) {
+        await knex.schema.createTable('tv_shows_production_companies', table => {
+            table.uuid('tvShowId').references('tv_shows.id')
+            table.uuid('productionCompanyId').references('production_companies.id')
+        })
+    }
 }
 
 export const down = async (knex) => {
+    if (await knex.schema.hasTable('tv_shows_production_companies')) {
+        await knex.schema.dropTable('tv_shows_production_companies')
+    }
     if (await knex.schema.hasTable('tv_shows_actors')) {
         await knex.schema.dropTable('tv_shows_actors')
     }
