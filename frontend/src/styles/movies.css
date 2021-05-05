@@ -1,0 +1,508 @@
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'Titillium Web', sans-serif;
+}
+
+body::-webkit-scrollbar {
+    width: 0.5em;
+}
+
+body::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+    outline: 1px solid slategrey;
+}
+
+.content-container {
+    display: flex;
+    justify-content: center;
+    margin: 5vh 2vw 20vh;
+    width: 70vw;
+}
+
+#list {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    padding: 0;
+}
+
+#list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    transition: all .2s ease-in-out;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    margin-bottom: 15px;
+}
+
+#list li:hover {
+    background-color: rgba(63, 95, 118, 0.43);
+    cursor: pointer;
+    transform: scale(1.1);
+}
+
+#list li > * {
+    margin: 1vh 1vw;
+}
+
+#list li img {
+    height: 25vh;
+}
+
+.written-content {
+    display: flex;
+    justify-content: space-around;
+    height: 100%;
+    flex-direction: column;
+}
+
+.vertical-info {
+    margin-left: auto;
+}
+
+#movie-container {
+    display: none;
+    border-radius: 25px;
+    position: fixed;
+    width: 80vw;
+    height: 80vh;
+    margin-top: 5vh;
+    background: rgba(13, 27, 36, 0.99);
+    animation: .3s ease-out growFromCenter;
+}
+
+@keyframes growFromCenter {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+#top-menu {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 5vh;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    padding-right: 10px;
+}
+
+#top-menu button {
+    cursor: pointer;
+    position: absolute;
+    background: inherit;
+    border: none;
+    color: white;
+    font-size: 30px;
+    border-radius: inherit;
+}
+
+#movie-container footer {
+    height: 5vh;
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+}
+
+#poster {
+    grid-area: poster;
+}
+
+#title {
+    grid-area: title;
+}
+
+#title h1 {
+    line-height: 150%;
+    text-align: center;
+}
+
+#tagline {
+    grid-area: tagline;
+}
+
+#genres {
+    grid-area: genres;
+}
+
+#production-companies {
+    grid-area: prodcomp;
+    font-size: 30px;
+    display: flex;
+    flex-direction: column;
+    margin-right: auto;
+    margin-top: 10%;
+}
+
+#description {
+    grid-area: description;
+    padding: 5vw;
+}
+
+#lang {
+    grid-area: language;
+    font-size: 25px;
+}
+
+#release {
+    grid-area: release;
+    font-size: 22px;
+}
+
+#rating {
+    grid-area: rating;
+    font-size: 22px;
+}
+
+#runtime {
+    grid-area: runtime;
+    font-size: 22px;
+}
+
+#seasons {
+    grid-area: seasons;
+}
+
+#movie-content {
+    padding: 2.5vh 5vw;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    text-align: justify;
+    line-height: 150%;
+    height: 80%;
+    display: grid;
+    color: white;
+    grid-template-areas:
+            'poster title language'
+            'poster tagline release'
+            'poster genres runtime'
+            'poster genres rating   '
+            'poster description description'
+            'seasons seasons seasons'
+            'prodcomp prodcomp prodcomp';
+    font-family: 'Titillium Web', sans-serif;
+}
+
+#movie-content > * {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#movie-content img {
+    height: 60vh;
+}
+
+#movie-content::-webkit-scrollbar {
+    width: 0.5em;
+}
+
+#movie-content::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+#movie-content::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+    outline: 1px solid slategrey;
+}
+
+#genre-list {
+    padding: 0;
+    list-style-type: none;
+    display: flex;
+    justify-content: space-around   ;
+    width: 50%;
+    text-align: center;
+}
+
+#genre-list > * {
+    padding: 10px;
+    background: rgb(63, 95, 118);
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+}
+
+#production-companies-list {
+    list-style-type: none;
+    width: 100%;
+}
+
+#production-companies-list > * {
+    padding: 10px;
+    margin: 0;
+    background: rgba(63, 95, 118, 0.43);
+    display: flex;
+    justify-content: space-between;
+}
+
+#production-companies-list > * img {
+    height: 25px;
+}
+
+h6 {
+    margin: 0;
+}
+
+#seasons-list {
+    margin-top: 5%;
+    padding: 5% 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    font-size: 25px;
+}
+
+#seasons-list > * {
+    display: flex;
+    flex-direction: column;
+    padding: 3%;
+}
+
+#seasons-list > * > *:last-child {
+    margin: 5% 0;
+}
+
+#seasons-list > * nav {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+#seasons-list > * h6 {
+    font-size: 30px;
+}
+
+#seasons-list > *:hover {
+    background-color: rgba(63, 95, 118, 0.43);
+    cursor: pointer;
+}
+
+.season-content img {
+    grid-area: poster;
+}
+
+.season-content h3 {
+    grid-area: airdate;
+}
+
+.season-content p {
+    grid-area: overview;
+}
+
+.season-content {
+    display: none;
+    grid-template-areas:
+            'poster airdate'
+            'poster overview';
+}
+
+.season-content > * {
+    margin: 10%;
+}
+
+@media only screen and (max-width: 1024px) {
+    .content-container {
+        width: 100vw;
+    }
+
+    #list {
+        width: 95vw;
+    }
+
+    .written-content span {
+        display: none;
+    }
+
+    #movie-container {
+        width: 100vw;
+        height: 100vh;
+        border: none;
+        border-radius: 0;
+        margin: 0;
+    }
+}
+
+
+/* Dropdown Button */
+.dropbtn {
+    background: inherit;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: 1px solid #1ab188;
+    border-radius: 10px;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+    display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    min-width: 160px;
+    max-height: 300px;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    margin-left: -5%;
+    margin-top: 0;
+    z-index: 1;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    background: inherit;
+    border: 1px solid #1ab188;
+}
+
+/* Links inside the dropdown */
+.dropdown-content li {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    margin-left: 0;
+}
+
+.topnav .dropdown .dropdown-content :last-child {
+    margin: 0;
+}
+
+.dropdown-content::-webkit-scrollbar {
+    width: 0.5em;
+}
+
+.dropdown-content::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+.dropdown-content::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+    outline: 1px solid slategrey;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+    background-color: #ddd;
+    display: block;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+    background-color: rgba(63, 95, 118, 0.43);
+    cursor: pointer;
+}
+
+
+/* Add a black background color to the top navigation bar */
+.topnav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 10vh;
+    width: 70vw;
+    height: 100%;
+}
+
+
+/* Style the search box inside the navigation bar */
+.topnav input[type=text] {
+    padding: 10px;
+    margin: 1vw;
+    width: 100%;
+    background: inherit;
+    color: white;
+    border: 1px solid #1ab188;
+    border-radius: 10px;
+    font-size: 25px;
+    outline: none;
+}
+
+.topnav input[type=text]:focus {
+    background: rgba(63, 95, 118, 0.43);
+}
+
+.topnav :last-child {
+    margin-left: 1vw;
+
+}
+
+/* When the screen is less than 600px wide, stack the links and the search field vertically instead of horizontally */
+@media screen and (max-width: 600px) {
+    .topnav input[type=text] {
+        text-align: left;
+        width: 100%;
+        margin: 0;
+        padding: 14px;
+        border: 1px solid #ccc;
+    }
+
+    #movie-content {
+        padding: 2.5vh 5vw;
+        overflow-x: hidden;
+        overflow-y: scroll;
+        text-align: justify;
+        line-height: 150%;
+        height: 80%;
+        display: grid;
+        color: white;
+        grid-template-areas:
+            'poster'
+            'title'
+            'tagline'
+            'genres'
+            'language'
+            'release'
+            'runtime'
+            'rating'
+            'description'
+            'seasons'
+            'prodcomp';
+        font-family: 'Titillium Web', sans-serif;
+    }
+
+    #production-companies {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #production-companies-list {
+        padding-left: 5%;
+    }
+
+    .season-content {
+        display: none;
+        grid-template-areas:
+            'poster'
+            'airdate'
+            'overview';
+    }
+
+    .season-content > * {
+        margin: 5% 0;
+        padding: 0;
+    }
+
+    .season-content img {
+        margin-left: -2%;
+    }
+}
+

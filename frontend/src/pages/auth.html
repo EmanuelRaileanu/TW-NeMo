@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport">
+    <meta charset="UTF-8">
+    <title>Sign Up</title>
+    <link rel="stylesheet" type="text/css" href="../styles/auth.css">
+    <script src="../scripts/auth.js"></script>
+</head>
+<body>
+    <div class="auth-form">
+        <ul class="tab-switcher">
+            <li class="tab" onclick="changeToForm('login')">Log In</li>
+            <li class="tab active" onclick="changeToForm('signup')">Sign Up</li>
+        </ul>
+
+        <div class="form-variants">
+            <div id="login">
+                <h1>Login</h1>
+                <form action="/" method="POST">
+                    <div class="field-wrap">
+                        <label>
+                            <input id="loginUsername" placeholder="Username / Email" type="email" required/>
+                        </label>
+                    </div>
+
+                    <div class="field-wrap">
+                        <label>
+                            <input id="loginPassword" placeholder="Password" type="password" required
+                                   autocomplete="off"/>
+                        </label>
+                    </div>
+                </form>
+            </div>
+
+            <div id="signup">
+                <h1>Sign Up for free</h1>
+                <form action="/" method="POST">
+                    <div class="field-wrap">
+                        <label>
+                            <input id="registerUsername" placeholder="Username" required/>
+                        </label>
+                    </div>
+
+                    <div class="field-wrap">
+                        <label>
+                            <input id="registerEmail" placeholder="Email" type="email" required/>
+                        </label>
+                    </div>
+
+                    <div class="field-wrap">
+                        <label>
+                            <input id="registerPassword" placeholder="Password" type="password" required
+                                   autocomplete="off"/>
+                        </label>
+                    </div>
+
+                    <div class="field-wrap">
+                        <label>
+                            <input id="registerConfirmPassword" placeholder="Confirm password" type="password" required
+                                   autocomplete="off"/>
+                        </label>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="submit">
+            <button onclick="login()">Submit</button>
+        </div>
+    </div>
+</body>
+</html>

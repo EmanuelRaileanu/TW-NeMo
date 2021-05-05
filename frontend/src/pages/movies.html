@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport">
+    <meta charset="UTF-8">
+    <title>Movies</title>
+    <link rel="stylesheet" type="text/css" href="../styles/movies.css">
+    <script src="../scripts/movies.js"></script>
+</head>
+<body id="movies-body">
+    <nav class="topnav">
+        <label for="mvSch"></label>
+        <input id="mvSch" type="text" placeholder="Search.." name="mv">
+        <div class="dropdown">
+            <button class="dropbtn">Sort</button>
+            <ul class="dropdown-content">
+                <li>
+                    <input type="radio" id="name" name="sortType" onclick="applyFilters('name')" checked>By name
+                </li>
+                <li>
+                    <input type="radio" id="rat" name="sortType" onclick="applyFilters('rating')">By rating
+                </li>
+                <li>
+                    <input type="radio" id="asc" name="orderType" onclick="applyFilters()" checked>Ascending
+                </li>
+                <li>
+                    <input type="radio" id="desc" name="orderType" onclick="applyFilters()">Descending
+                </li>
+            </ul>
+        </div>
+        <div class="dropdown">
+            <button class="dropbtn">Filters</button>
+            <ul id="filters" class="dropdown-content">
+
+            </ul>
+        </div>
+    </nav>
+
+    <div class="content-container">
+        <div id="controls">
+
+        </div>
+        <ul id="list"></ul>
+    </div>
+    <div id="movie-container">
+        <nav id="top-menu">
+            <button onclick="exitMovieView()">✕</button>
+        </nav>
+        <div id="movie-content">
+            <div id="poster"></div>
+            <div id="title"></div>
+            <div id="tagline"></div>
+            <div id="genres">
+                <ul id="genre-list"></ul>
+            </div>
+            <div id="lang"></div>
+            <div id="release"></div>
+            <div id="rating"></div>
+            <div id="runtime"></div>
+            <div id="description"></div>
+            <div id="production-companies">
+                <ul id="production-companies-list"></ul>
+            </div>
+        </div>
+        <footer></footer>
+    </div>
+</body>
+</html>

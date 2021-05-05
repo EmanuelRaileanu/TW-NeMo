@@ -1,0 +1,99 @@
+body {
+    margin: 0;
+    font-family: 'Titillium Web', sans-serif;
+}
+
+.auth-form {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.tab-switcher {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    width: 100vw;
+}
+
+
+.tab-switcher li {
+    text-decoration: none;
+    padding: 15px;
+    background: rgba(189, 189, 213, .25);
+    color: #bdbdd5;
+    font-size: 20px;
+    width: 50%;
+    text-align: center;
+    cursor: pointer;
+    transition: .5s ease;
+}
+
+.tab-switcher li:hover {
+    background: #04261E;
+}
+
+.form-variants > * {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form > * {
+    margin-top: 6%;
+    margin-bottom: 6%;
+}
+
+#signup {
+    display: none;
+}
+
+h1 {
+    color: white;
+}
+
+input {
+    font-size: 22px;
+    width: inherit;
+    height: 100%;
+    padding: 10px;
+    border: 1px solid #1ab188;
+    background: none;
+    color: white;
+}
+
+#submit {
+    margin-top: 3%;
+    align-self: center;
+}
+
+#submit > button {
+    font-size: 22px;
+    padding: 14px;
+    cursor: pointer;
+    width: inherit;
+    background: rgba(189, 189, 213, .25);
+    color: white;
+    text-decoration: none;
+    border: none;
+}
+
+#submit > button:hover {
+    background: #04261E;
+    transition: .5s ease;
+}
+
+@media only screen and (max-width: 1000px) {
+    .auth-form {
+        margin: 0;
+        box-shadow: none;
+        height: 100vh;
+    }
+}
+

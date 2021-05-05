@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NeMO documentation</title>
+    <style>
+        h1{
+            font-size:30px;
+        }
+        h3{
+            font-size:24px;
+        }
+        p{
+            text-indent:50px;
+            font-size:20px;
+        }
+        img{
+            width:848px;
+            height: 480px;
+        }
+        li{
+            font-size:20px;
+        }
+    </style>
+</head>
+<body>
+
+<section>
+    <h1>1. Introduction</h1>
+    <section >
+        <h3>1.1 Purpose</h3>
+            <p>NeMO is a full-fledged site that is ready to tell you all that you want to know about the most recent shows and movies that play now on Netflix. The version 1.0 brings to the users a set of features that will help them in their expedition for the next Friday night time killer.</p>
+    </section>
+    <section >
+        <h3>1.2 Document Conventions</h3>
+        <p>There are no conventions in this paper.</p>
+    </section>
+    <section >
+        <h3>1.3 Intended Audience and Reading Suggestions</h3>
+        <p>The audience for this document is composed of two groups: one that is made of the people who just want to know what NeMO is and the other one represents the people who want to learn about how our site is structured and what it really offers. </p>
+        <p>For the second category it’s easier to recommend what to read because primarily this document is made for them and we’ll try to go as in depth as possible. </p>
+        <p>For the first category we recommend to read mostly second chapter which presents the overall description, especially the subsections 2.2, 2.3, 2.4, 2.6 and 2.7. Subsection 1.4 is a general description of our site and 3.1 is for those who want to find out even more about the features we provide.</p>
+    </section>
+    <section >
+        <h3>1.4 Product Scope</h3>
+        <p>NeMO is a website which combines the Netflix library of shows and movies with the IMDb database of information about those exact pieces of art. We try to provide the users the best way to learn more about something they just watched, or pick something for those moments when they want to forget about work or worries and enter an entirely new world suited to their taste. </p>
+        <p>Netflix has an amazing collection of titles, but has little to no way to filter through them and no way to find more similar pieces of media (beside their algorithm which doesn’t work all the time). IMDb has all that you want to know about a show, from who made it, who played in it or when it came out, but sadly, it doesn’t just include things that are available on Netflix, so you have a big enough chance (especially these days) to get your hopes high just to discover that what you were looking for is not available on this streaming platform.</p>
+        <p>That’s where NeMO comes into play because our list has only titles available on Netflix presented together with a plethora of information from IMDb, which we are sure will help our users a lot.</p>
+    </section>
+</section>
+
+<section>
+    <h1>2. Overall Description</h1>
+    <section >
+        <h3>2.1 Product Perspective</h3>
+        <p>NeMO is brand-new, self-contained product, being our first project in this area. It’s the little child of two passionate programmers who hope that it will grow into a flagship of their work and will help as many people as possible.</p>
+    </section>
+    <section >
+        <h3>2.2 Product Functions</h3>
+        <ul>
+            <li>Search a movie/show by name</li>
+            <li>Filter the results</li>
+            <li>Sort them by criterions</li>
+            <li>Get advanced information</li>
+            <li>Save your favorite movies/shows</li>
+            <li>Leave reviews</li>
+            <li>See more movies/shows made by a production company</li>
+            <li>See more movies/shows in which an actor played</li>
+            <li>Save a list as csv</li>
+        </ul>
+    </section>
+    <section >
+        <h3>2.3 User Classes and Characteristics</h3>
+        <p>When it comes to what users we’ll have, we expect two kinds of people which will use our platform in different ways.</p>
+        <p>The first group is composed of people who just want to check if something is on Netflix and see some details or thoughts about what they want to watch. We are in a moment in history where more streaming platforms open by the day and someone may not be sure if they can find it on Netflix. Or there may be some who think if Netflix is for them, in which case we bring both the opinion of the critics on IMDb and the opinion of those who use our platform. We expect this kind of people to just come from time to time or just once, search for what they want and leave. For those we have the necessary functions of searching and filtering the results. </p>
+        <p>The second group we expect to welcome is made out of people who want a community in which to discuss, review and save pieces of media they watched or plan to. For this kind of people, we offer the opportunity to create an account on our platform and join the fun in expressing themselves to help others find out what to try next time.</p>
+        <p>There is a third group, which is made of moderators who pick movies or shows to be featured on the front page, manage the the pieces of media that are on the site and make sure that the reviews are not hateful towards any category of people (to make sure that our platform is a cozy home for as many as possible).</p>
+    </section>
+    <section >
+        <h3>2.4 Operating Environment</h3>
+        <p>Being a website, NeMO doesn’t have any restrictions when it comes to the operating system as long as it supports browsers that can interpret ES6 JavaScript. The last statement points out the only problem, the site has ES6 elements, which means that Internet Explorer and browser versions from before 2017 won’t be able to access our platform.</p>
+    </section>
+    <section >
+        <h3>2.5 Design and Implementation Constraints</h3>
+        <p>When it comes to limitations for us developers, those came from the fact that IMDb and Netflix don’t offer public APIs through which we can access data about what we’re looking for. To pull from Netflix we had to use a csv from which we extracted names and used the TMDb API to get everything about them. </p>
+        <p>Based on their non-official nature (which means that there may be a huge delay between what happens on the official sources and what we get), we can’t guarantee that the information that we pull is always up-to-date.</p>
+        <p>Also, when it comes to compatibility, we can’t be sure that it will behave always as we expect to on the Safari Browser since we didn’t have a machine that runs macOS or iOS to test NeMO on it.</p>
+    </section>
+    <section >
+        <h3>2.6 User Documentation</h3>
+        <p>At the moment there is no other piece of documentation about NeMO to help our users get more comfortable with our platform. </p>
+    </section>
+    <section >
+        <h3>2.7 Assumptions and Dependencies</h3>
+        <p>We assume that all our users will use a somewhat up-to-date browser on a machine that it’s at most 10 years old. When it comes to the hardware it’s hard to approximate how much our users can go back. The dynamic component on the site may not be the most optimized, but they are relatively lightweight, so it should work fine, even on mobile phones.</p>
+    </section>
+</section>
+
+<section>
+    <h1>3. External Interface Requirements</h1>
+    <section >
+        <h3>3.1 User Interfaces</h3>
+        <img src="InterfacePhotos/Usecase.PNG" alt="Usecase diagram">
+        <p>When it comes to the interaction with the users, we separated our platform on multiple pages based on the content. At this moment, we have one to welcome the visitor, our homepage, the movie page, which will allow the user to learn about the ones we have in our database, filter them based on different criterions and sort them in order to find faster what he’s looking for.</p>
+        <img src="./InterfacePhotos/MP-movie.PNG" alt="The Homepage displaying the featured movies">
+        <img src="./InterfacePhotos/MP-shows.PNG" alt="The Homepage displaying the featured shows">
+        <p>The main page is here to steal the visitor's eyes with the hottest new releases! We have both a movie and a shows slideshow depending on what our user is interested in. This slideshow is updated on the users feedback, the list being based on the highest rated pieces of media.</p>
+        <img src="./InterfacePhotos/Login.PNG" alt="The login page">
+        <img src="./InterfacePhotos/Signup.PNG" alt="The sign up page">
+        <p>As we mentioned, we want to give our users a chance to join a completely new community centered on their love for films, and to do this we offered to possibility to create an account or simply sign in if the person already has an account.</p>
+        <img src="./InterfacePhotos/Movies.PNG" alt="The normal movies page">
+        <img src="./InterfacePhotos/Shows.PNG" alt="The normal shows page">
+        <p>These are the main pages from where the users can look for their next binge watch contender or to leave a review to a show they already watched. But this is not all... Click on any show or movie if a short description doesn't tell you enough</p>
+        <img src="./InterfacePhotos/Movie-details.PNG" alt="The details about a movie">
+        <p>We know that we can't saturate the hunger for knowledge with just a few lines of text, a rating and a photo, so we made it that when you click on something you want to see more about, a pop-up with more information will appear on your screen. We value our users' time, so we want to make sure that they make a good decision for themselves.</p>
+        <img src="InterfacePhotos/Movies-search.PNG" alt="The results of a search">
+        <p>Of course, not every movie or show that you want will be at the top of the list waiting for you, so we made sure that if you want to search for a movie, even if you don't know its full name, you can do it anytime. But maybe you don't know what movie to watch and just want to find one that is more to your tastes...</p>
+        <img src="InterfacePhotos/Movies-filters.PNG" alt="The filters dropdown menu">
+        <img src="InterfacePhotos/Movies-sort.PNG" alt="The sort dropdown menu">
+        <p>Maybe you like a certain genre (or more), maybe you like the movies produces by a certain company or maybe you just want to see what's the highest rated show there is. For all of these needs we offered our users two menus from where they can set filters and see only movies that fulfill those criterions or sort them in a way through which it's easier for them to find what they seek.</p>
+    </section>
+    <section >
+        <h3>3.2 Hardware Interfaces</h3>
+        <p>Going to the hardware level, the browser does most of the heavy lifting for us because we communicate with the browser, then it communicates with the operating system and in the end, it gets to the hardware.</p>
+    </section>
+    <section >
+        <h3>3.3 Software Interfaces</h3>
+        <p>NeMO will be connected to a MySQL database in which we’ll store all that we need to bring to our users the details they want, descriptions, actors, ratings, release dates etc. To fill it, we’ll use the TMDb API to pull the information into our database to have a more responsive experience for those who visit our site.</p>
+    </section>
+    <section >
+        <h3>3.4 Communication Interfaces</h3>
+        <p>We communicate with our users through the HTTP protocol.</p>
+    </section>
+</section>
+
+<section>
+    <h1>4. System Features</h1>
+    <section>
+        <h3>4.1 User ranked movies and TV Shows on the homepage</h3>
+        <p>The homepage is the thing that should convince someone to use that platform from the first few moments they lay their eyes on it and since the people tend to like what the majority likes, the homepage will be constantly updated based on what people like the most in that period of time.</p>
+    </section>
+    <section>
+        <h3>4.2 Compile a list of favorite shows and movies</h3>
+        <p>Do you like to plan the weekend before they even start? Did you prepare a list of things to binge during your free time? Do you want to take that list with you? If the answer is yes, then look no further since NeMO has the functionality to let each user compile a list of their favorite shows and movies and then take it with them either in a csv format or in a plain text one.</p>
+    </section>
+    <section>
+        <h3>4.3 Filter and search capabilities</h3>
+        <p>Filter, sort and search for that movie to complete your perfect evening. All three function connect straight to the database through queries to return the results as fast as possible to our users.</p>
+    </section>
+</section>
+
+<section>
+    <h1>5. Other Nonfunctional Requirements</h1>
+    <section>
+        <h3>5.1 Performance Requirements</h3>
+        <p>There are no known performance requirements</p>
+    </section>
+    <section>
+        <h3>5.2 Safety Requirements</h3>
+        <p>There may be cases of cyber attacks, but we don't store any plain password, so the only things that could be leak would be usernames and email adresses. </p>
+    </section>
+    <section>
+        <h3>5.3 Security Requirements</h3>
+        <p>There are no security requirements, we hash our passwords, so the users are at no risks.</p>
+    </section>
+    <section>
+        <h3>5.4 Software Quality Attributes</h3>
+        <p>NeMO can be maintained quite easily since most of the pages are generated using JavaScript code, which doesn't have too many lines. This means, that in case of a bug, the developers know that the first and most important place where to look is the scripts folder.</p>
+    </section>
+    <section>
+        <h3>5.5 Business Rules</h3>
+        <p>There are no other operating principles.</p>
+    </section>
+</section>
+
+<section>
+    <h1>6. What each teammate did</h1>
+    <section>
+        <h3>6.1 index.html + navbar</h3>
+        <p>Raileanu Emanuel: everything</p>
+        <p>Bacauanu Gabriel: nothing</p>
+    </section>
+    <section>
+        <h3>6.2 Homepage</h3>
+        <p>Raileanu Emanuel: css modifications for better visual quality</p>
+        <p>Bacauanu Gabriel: html,javascript and base css</p>
+    </section>
+    <section>
+        <h3>6.3 Login/Signup</h3>
+        <p>Raileanu Emanuel: everything</p>
+        <p>Bacauanu Gabriel: nothing</p>
+    </section>
+    <section>
+        <h3>6.4 Movies and TV Shows page</h3>
+        <p>Raileanu Emanuel: the list itself and the pop-out</p>
+        <p>Bacauanu Gabriel: search, sort and filter</p>
+    </section>
+</section>
+
+</body>
+</html>
