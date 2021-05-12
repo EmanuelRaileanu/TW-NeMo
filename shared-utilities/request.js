@@ -10,7 +10,6 @@ const request = async (url, method = 'GET', requestBody) => {
         port: port || url.startsWith('https://') ? 443 : 80,
         path: path || '/'
     }
-    console.log(params)
     return new Promise((resolve, reject) => {
         const req = lib.request(params, res => {
             if (res.statusCode < 200 || res.statusCode >= 300) {
