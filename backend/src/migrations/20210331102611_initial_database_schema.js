@@ -27,7 +27,7 @@ export const up = async (knex) => {
         await knex.schema.createTable('production_companies', table => {
             table.uuid('id').primary()
             table.string('name')
-            table.string('description')
+            table.string('description', 2000)
             table.string('headquarters')
             table.string('logoPath')
             table.uuid('countryId').references('countries.id')
@@ -60,16 +60,16 @@ export const up = async (knex) => {
             table.uuid('ratingId').references('ratings.id')
             table.string('title').unique()
             table.string('tagline')
-            table.string('description')
-            table.decimal('voteAverage', 2, 2)
-            table.integer('numberOfVotes')
-            table.decimal('tmdbVoteAverage', 2, 2)
-            table.integer('tmdbNumberOfVotes')
+            table.string('description', 2000)
+            table.decimal('voteAverage', 10, 2).defaultTo(0)
+            table.integer('numberOfVotes').defaultTo(0)
+            table.decimal('tmdbVoteAverage', 10, 2).defaultTo(0)
+            table.integer('tmdbNumberOfVotes').defaultTo(0)
             table.string('status')
             table.date('releaseDate')
             table.integer('runtimeInMinutes')
             table.string('budget')
-            table.decimal('revenue', 10, 2)
+            table.decimal('revenue', 16, 2)
             table.string('posterPath')
             table.string('backdropPath')
             table.integer('tmdbId').unique()
@@ -84,11 +84,11 @@ export const up = async (knex) => {
             table.uuid('ratingId').references('ratings.id')
             table.string('title').unique()
             table.string('tagline')
-            table.string('description')
-            table.decimal('voteAverage', 2, 2)
+            table.string('description', 2000)
+            table.decimal('voteAverage', 10, 2).defaultTo(0)
             table.integer('numberOfVotes').defaultTo(0)
-            table.decimal('tmdbVoteAverage', 2, 2)
-            table.integer('tmdbNumberOfVotes').defaultTo(0)
+            table.decimal('tmdbVoteAverage', 10, 2).defaultTo(0)
+            table.integer('tmdbNumberOfVotes').defaultTo(0).defaultTo(0)
             table.string('status')
             table.date('firstAirDate')
             table.date('lastAirDate').nullable()
@@ -107,13 +107,13 @@ export const up = async (knex) => {
             table.uuid('tvShowId').references('tv_shows.id')
             table.date('airDate')
             table.string('title')
-            table.string('description')
+            table.string('description', 2000)
             table.integer('seasonNumber')
             table.string('posterPath')
             table.decimal('voteAverage', 10, 2).defaultTo(0)
-            table.integer('numberOfVotes')
+            table.integer('numberOfVotes').defaultTo(0)
             table.decimal('tmdbVoteAverage', 10, 2).defaultTo(0)
-            table.integer('tmdbNumberOfVotes')
+            table.integer('tmdbNumberOfVotes').defaultTo(0)
             table.integer('tmdbId').unique()
             table.timestamp('createdAt').defaultTo(knex.fn.now())
             table.timestamp('updatedAt')
@@ -126,11 +126,11 @@ export const up = async (knex) => {
             table.date('airDate')
             table.integer('episodeNumber')
             table.string('name')
-            table.string('description')
+            table.string('description', 2000)
             table.string('posterPath')
-            table.decimal('voteAverage', 10, 2)
+            table.decimal('voteAverage', 10, 2).defaultTo(0)
             table.integer('numberOfVotes').defaultTo(0)
-            table.decimal('tmdbVoteAverage', 10, 2)
+            table.decimal('tmdbVoteAverage', 10, 2).defaultTo(0)
             table.integer('tmdbNumberOfVotes').defaultTo(0)
             table.integer('tmbdId')
             table.timestamp('createdAt').defaultTo(knex.fn.now())
@@ -181,16 +181,42 @@ export const up = async (knex) => {
             table.timestamp('updatedAt')
         })
     }
+    if (!await knex.schema.hasTable('directors')) {
+        await knex.schema.createTable('directors', table => {
+            table.uuid('id').primary()
+            table.string('name').unique()
+            table.boolean('gender')
+            table.string('placeOfBirth')
+            table.string('biography')
+            table.string('profilePhotoPath')
+            table.string('tmdbId').unique()
+            table.integer('imdbId').unique()
+            table.timestamp('createdAt').defaultTo(knex.fn.now())
+            table.timestamp('updatedAt')
+        })
+    }
     if (!await knex.schema.hasTable('movies_actors')) {
         await knex.schema.createTable('movies_actors', table => {
             table.uuid('movieId').references('movies.id')
             table.uuid('actorId').references('actors.id')
         })
     }
+    if (!await knex.schema.hasTable('movies_directors')) {
+        await knex.schema.createTable('movies_directors', table => {
+            table.uuid('movieId').references('movies.id')
+            table.uuid('directorId').references('directors.id')
+        })
+    }
     if (!await knex.schema.hasTable('tv_shows_actors')) {
         await knex.schema.createTable('tv_shows_actors', table => {
             table.uuid('tvShowId').references('tv_shows.id')
             table.uuid('actorId').references('actors.id')
+        })
+    }
+    if (!await knex.schema.hasTable('tv_shows_directors')) {
+        await knex.schema.createTable('tv_shows_directors', table => {
+            table.uuid('tvShowId').references('tv_shows.id')
+            table.uuid('directorId').references('directors.id')
         })
     }
     if (!await knex.schema.hasTable('tv_shows_production_companies')) {
@@ -205,8 +231,14 @@ export const down = async (knex) => {
     if (await knex.schema.hasTable('tv_shows_production_companies')) {
         await knex.schema.dropTable('tv_shows_production_companies')
     }
+    if (await knex.schema.hasTable('tv_shows_directors')) {
+        await knex.schema.dropTable('tv_shows_directors')
+    }
     if (await knex.schema.hasTable('tv_shows_actors')) {
         await knex.schema.dropTable('tv_shows_actors')
+    }
+    if (await knex.schema.hasTable('movies_directors')) {
+        await knex.schema.dropTable('movies_directors')
     }
     if (await knex.schema.hasTable('movies_actors')) {
         await knex.schema.dropTable('movies_actors')
