@@ -112,8 +112,6 @@ export const up = async (knex) => {
             table.string('posterPath')
             table.decimal('voteAverage', 10, 2).defaultTo(0)
             table.integer('numberOfVotes').defaultTo(0)
-            table.decimal('tmdbVoteAverage', 10, 2).defaultTo(0)
-            table.integer('tmdbNumberOfVotes').defaultTo(0)
             table.integer('tmdbId').unique()
             table.timestamp('createdAt').defaultTo(knex.fn.now())
             table.timestamp('updatedAt')
@@ -219,6 +217,18 @@ export const up = async (knex) => {
             table.uuid('directorId').references('directors.id')
         })
     }
+    if (!await knex.schema.hasTable('tv_episodes_actors')) {
+        await knex.schema.createTable('tv_episodes_actors', table => {
+            table.uuid('tvEpisodeId').references('tv_episodes.id')
+            table.uuid('actorId').references('actors.id')
+        })
+    }
+    if (!await knex.schema.hasTable('tv_episodes_directors')) {
+        await knex.schema.createTable('tv_episodes_directors', table => {
+            table.uuid('tvEpisodeId').references('tv_episodes.id')
+            table.uuid('directorId').references('directors.id')
+        })
+    }
     if (!await knex.schema.hasTable('tv_shows_production_companies')) {
         await knex.schema.createTable('tv_shows_production_companies', table => {
             table.uuid('tvShowId').references('tv_shows.id')
@@ -231,6 +241,12 @@ export const down = async (knex) => {
     if (await knex.schema.hasTable('tv_shows_production_companies')) {
         await knex.schema.dropTable('tv_shows_production_companies')
     }
+    if (await knex.schema.hasTable('tv_episodes_directors')) {
+        await knex.schema.dropTable('tv_episodes_directors')
+    }
+    if (await knex.schema.hasTable('tv_episodes_actors')) {
+        await knex.schema.dropTable('tv_episodes_actors')
+    }
     if (await knex.schema.hasTable('tv_shows_directors')) {
         await knex.schema.dropTable('tv_shows_directors')
     }
@@ -242,6 +258,9 @@ export const down = async (knex) => {
     }
     if (await knex.schema.hasTable('movies_actors')) {
         await knex.schema.dropTable('movies_actors')
+    }
+    if (await knex.schema.hasTable('directors')) {
+        await knex.schema.dropTable('directors')
     }
     if (await knex.schema.hasTable('actors')) {
         await knex.schema.dropTable('actors')

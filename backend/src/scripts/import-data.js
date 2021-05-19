@@ -9,6 +9,8 @@ import Movie from '../models/movie.js'
 import Rating from '../models/rating.js'
 import Actor from '../models/actor.js'
 import Director from '../models/director.js'
+import TvShow from '../models/tv-show.js'
+import TvSeason from '../models/tv-season.js'
 
 dotenv.config()
 
@@ -129,13 +131,87 @@ const getActorIds = async (actors, transaction) => {
     return actorIds
 }
 
-const addTvShow = async (tvShow, directors, actors, transaction = null) => {
+const addTvSeason = async (tvSeason, tvShowId, transaction) => {
+    // Fetch tv season by id from TMDB
+    let tvSeasonResponse
+    try {
+        tvSeasonResponse = await request(`${process.env.TMBD_API}/tv/${tvShowId}/season/${tvSeason.season_number}?api_key=${process.env.TMDB_API_KEY}`)
+    } catch (err) {
+        console.log(err)
+        return
+    }
+    const savedTvSeason = await new TvSeason({
+        tvShowId,
+        airDate: tvSeasonResponse.air_date,
+        title: tvSeasonResponse.name,
+        description: tvSeasonResponse.overview,
+        seasonNumber: tvSeasonResponse.season_number,
+        posterPath: tvSeasonResponse.poster_path,
+        tmdbId: tvSeasonResponse.id
+    }).save(null, { method: 'insert', transacting: transaction })
+}
+
+const addTvShow = async (tvShow, rating, directors, actors, transaction = null) => {
     // Fetch tv show by id from TMDB
     let tvShowResponse
     try {
-        tvShowResponse = await request(`${process.env.TMBD_API}/movie/${tvShow.id}?api_key=${process.env.TMDB_API_KEY}`)
+        tvShowResponse = await request(`${process.env.TMBD_API}/tv/${tvShow.id}?api_key=${process.env.TMDB_API_KEY}`)
     } catch (err) {
+        console.log(err)
         return
+    }
+    let existingRating
+    if (rating) {
+        try {
+            existingRating = await new Rating({ code: rating }).save(null, {
+                method: 'insert',
+                transacting: transaction
+            })
+        } catch (err) {
+            existingRating = await new Rating({ code: rating }).fetch({ require: false, transacting: transaction })
+        }
+    }
+    let actorIds = null
+    if (actors) {
+        actorIds = await getActorIds(actors, transaction)
+    }
+    let directorIds = null
+    if (directors) {
+        directorIds = await getDirectorIds(directors, transaction)
+    }
+    if (tvShowResponse) {
+        const existingTvShow = await new Movie({ title: tvShowResponse.title }).fetch({
+            require: false,
+            transacting: transaction
+        })
+        if (existingTvShow) {
+            return
+        }
+        const savedTvShow = await new TvShow({
+            ratingId: existingRating ? existingRating.id : null,
+            title: tvShowResponse.name,
+            tagline: tvShowResponse.tagline,
+            description: tvShowResponse.overview,
+            tmdbVoteAverage: tvShowResponse.vote_average,
+            tmdbNumberOfVotes: tvShowResponse.vote_count,
+            status: tvShowResponse.status,
+            firstAirDate: tvShowResponse.first_air_date !== '' ? tvShowResponse.first_air_date : null,
+            lastAirDate: tvShowResponse.lastAirDate !== '' ? tvShowResponse.last_air_date : null,
+            inProduction: tvShowResponse.in_production,
+            runtimeInMinutes: tvShowResponse.episode_run_time.length ? tvShowResponse.episode_run_time[0] : 40,
+            posterPath: tvShowResponse.poster_path,
+            backdropPath: tvShowResponse.backdrop_path,
+            tmdbId: tvShowResponse.id
+        }).save(null, { method: 'insert', transacting: transaction })
+        if (actorIds && actorIds.length) {
+            await savedTvShow.actors().attach(actorIds, { transacting: transaction })
+        }
+        if (directorIds && directorIds.length) {
+            await savedTvShow.directors().attach(directorIds, { transacting: transaction })
+        }
+        if (tvShowResponse.seasons.length) {
+            await Promise.all(tvShowResponse.seasons.map(async season => await addTvSeason(season, savedTvShow.id, transaction)))
+        }
     }
 }
 

@@ -10,7 +10,8 @@ const request = async (url, method = 'GET', requestBody, headers = {}) => {
         method,
         host,
         port: port || url.startsWith('https://') ? 443 : 80,
-        path: path || '/'
+        path: path || '/',
+        headers
     }
     return new Promise((resolve, reject) => {
         const req = lib.request(params, res => {
@@ -29,11 +30,8 @@ const request = async (url, method = 'GET', requestBody, headers = {}) => {
             })
         })
         req.on('error', reject)
-        if (headers !== {}) {
-            req.headers = { ...req.headers, ...headers }
-        }
         if (requestBody) {
-            req.write(requestBody)
+            req.write(JSON.stringify(requestBody))
         }
         req.end()
     })
