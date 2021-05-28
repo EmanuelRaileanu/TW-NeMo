@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link rel="stylesheet" type="text/css" href="../styles/profile.css">
+    <script src="../scripts/profile.js"></script>
+</head>
+<body id="profileBody">
+<div class="wrapper">
+    <h1>Account details:</h1>
+    <div class="information">
+        <div id="name" onclick="changeField(this.id)"></div>
+        <div id="mail" onclick="changeField(this.id)"></div>
+        <div id="password" onclick="changeField(this.id)"></div>
+        <div id="joindate"></div>
+    </div>
+    <button class="export" onclick="exportList()">Export data</button>
+    <h1>Favorite movies:</h1>
+    <ul id="favorite-movies">
+    </ul>
+    <h1>Favorite shows:</h1>
+    <ul id="favorite-shows">
+    </ul>
+</div>
+<div id="changeMenu">
+    <nav id="top-menu">
+        <button onclick="finishedChanges()">✕</button>
+    </nav>
+    <div id="field1">Yes</div>
+    <div id="field2">No</div>
+    <div id="field3">Maybe</div>
+</div>
+</body>
+</html>
