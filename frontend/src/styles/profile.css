@@ -63,7 +63,7 @@ div.information :last-child{
     padding-bottom: 30px;
 }
 
-.export {
+.export, #submitBtn {
     background: inherit;
     color: white;
     padding: 16px;
@@ -74,7 +74,7 @@ div.information :last-child{
     align-self: center;
 }
 
-.export:hover {
+.export:hover, #submitBtn:hover {
     background-color:  #1ab188;
     cursor: pointer;
 }
@@ -106,6 +106,22 @@ ul > li > img{
     height: 10vh;
     padding-right: 2vw;
 }
+body > div > ul > li {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+li > button{
+    justify-self: flex-end;
+    position:relative;
+    cursor: pointer;
+    align-self: center;
+    background: inherit;
+    border: none;
+    color: white;
+    font-size: 30px;
+    border-radius: inherit;
+}
 
 
 #changeMenu {
@@ -113,10 +129,69 @@ ul > li > img{
     border-radius: 25px;
     position:fixed;
     width: 30vw;
-    height: 30vh;
+    height: 35vh;
     margin-top: 5vh;
     background: rgba(13, 27, 36, 0.99);
     animation: .3s ease-out growFromCenter;
+
+
+}
+
+#changeMenu > * {
+    color:white;
+    font-size:1.5vh;
+}
+
+#changeForm{
+    margin-left:10px;
+    display: grid;
+    grid-template-areas:
+            'flabel .'
+            'ffield .'
+            'slabel .'
+            'sfield .'
+            'tlabel .'
+            'tfield .';
+}
+
+#changeForm > input{
+    margin-bottom:22px;
+}
+
+#changeForm >label{
+    margin-bottom: 10px;
+}
+
+#flabel{
+    grid-area:flabel;
+}
+
+#ffield{
+    grid-area:ffield;
+}
+
+#slabel{
+    grid-area:slabel;
+}
+
+#sfield{
+    grid-area:sfield;
+}
+
+#tlabel{
+    grid-area:tlabel;
+}
+
+#tfield{
+    grid-area:tfield;
+}
+
+#submitBtn{
+    margin-left:auto;
+    margin-right: auto;
+    width:20vw;
+    font-size: 2vh;
+    display: block;
 }
 
 #top-menu {

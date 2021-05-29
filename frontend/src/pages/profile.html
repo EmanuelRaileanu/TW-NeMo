@@ -27,9 +27,15 @@
     <nav id="top-menu">
         <button onclick="finishedChanges()">✕</button>
     </nav>
-    <div id="field1">Yes</div>
-    <div id="field2">No</div>
-    <div id="field3">Maybe</div>
+    <form id="changeForm">
+        <label for="ffield" id="flabel">Old password:</label><br>
+        <input type="text" id="ffield" name="old"><br>
+        <label for="sfield" id="slabel">New name:</label><br>
+        <input type="text" id="sfield" name="new">
+        <label for="tfield" id="tlabel">New name:</label><br>
+        <input type="text" id="tfield" name="newConf">
+    </form>
+    <input type="submit" id="submitBtn" value="Submit" form="changeForm">
 </div>
 </body>
 </html>
