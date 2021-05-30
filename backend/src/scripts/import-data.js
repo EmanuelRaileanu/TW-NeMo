@@ -11,8 +11,109 @@ import Actor from '../models/actor.js'
 import Director from '../models/director.js'
 import TvShow from '../models/tv-show.js'
 import TvSeason from '../models/tv-season.js'
+import TvEpisode from '../models/tv-episode.js'
+import MovieGenre from '../models/movie-genre.js'
+import TvShowGenre from '../models/tv-show-genre.js'
+import Language from '../models/language.js'
+import ProductionCompany from '../models/production-company.js'
+import Country from '../models/country.js'
 
 dotenv.config()
+
+const addProductionCompany = async (productionCompany, transaction) => {
+    let savedProductionCompany
+    try {
+        let savedCountry
+        try {
+            savedCountry = await new Country({ code: productionCompany.origin_country }).save(null, {
+                method: 'insert',
+                transacting: transaction
+            })
+        } catch (err) {
+            savedCountry = await new Country({ code: productionCompany.origin_country }).fetch({ require: false })
+        }
+        savedProductionCompany = await new ProductionCompany({
+            name: productionCompany.name,
+            description: productionCompany.description || null,
+            headquarters: productionCompany.headquarters || null,
+            logoPath: productionCompany.logo_path || null,
+            homepage: productionCompany.homepage || null,
+            countryId: savedCountry.id
+        }).save(null, {
+            method: 'insert',
+            transacting: transaction
+        })
+    } catch {
+        savedProductionCompany = await new ProductionCompany({ name: productionCompany.name }).fetch({
+            require: false,
+            transacting: transaction
+        })
+    }
+    return savedProductionCompany.id
+}
+
+const getProductionCompanyIds = async (productionCompanies, transaction) => {
+    const productionCompanyIds = []
+    await Promise.all(productionCompanies.map(async productionCompany => {
+        const savedProductionCompany = await new ProductionCompany({ name: productionCompany.name }).fetch({
+            require: false,
+            transacting: transaction
+        })
+        if (savedProductionCompany) {
+            productionCompanyIds.push(savedProductionCompany.id)
+            return
+        }
+        let productionCompanyResponse
+        try {
+            productionCompanyResponse = await request(`${process.env.TMBD_API}/company/${productionCompany.id}?api_key=${process.env.TMDB_API_KEY}`)
+            if (!productionCompanyResponse) {
+                return
+            }
+            productionCompanyIds.push(await addProductionCompany(productionCompanyResponse, transaction))
+        } catch (err) {
+        }
+    }))
+    return productionCompanyIds
+}
+
+const getLanguageIds = async (languages, transaction) => {
+    return await Promise.all(languages.map(async language => {
+        const existingLanguage = await new Language({ code: language }).fetch({
+            require: false,
+            transacting: transaction
+        })
+        if (existingLanguage) {
+            return existingLanguage.id
+        }
+        let newLanguage
+        try {
+            newLanguage = await new Language({ code: language }).save(null, { transacting: transaction })
+        } catch (err) {
+            newLanguage = await new Language({ code: language }).fetch({ require: false, transacting: transaction })
+        }
+        return newLanguage.id
+    }))
+}
+
+const getMovieGenreIds = async (movieGenres, transaction) => {
+    const savedMovieGenres = await new MovieGenre().query(q => {
+        q.whereIn('name', movieGenres.map(genre => genre.name))
+    }).fetchAll({ require: false, transacting: transaction })
+    if (!movieGenres) {
+        return []
+    }
+    return savedMovieGenres.toJSON().map(genre => genre.id)
+}
+
+const getTvShowGenreId = async (tvShowGenres, transaction) => {
+    const savedTvShowGenres = await new TvShowGenre().query(q => {
+        q.whereIn('name', tvShowGenres.map(genre => genre.name))
+    }).fetchAll({ require: false, transacting: transaction })
+    if (!tvShowGenres) {
+        return []
+    }
+    return savedTvShowGenres.toJSON().map(genre => genre.id)
+}
 
 const addDirector = async (director, transaction) => {
     let directorResponse
@@ -21,9 +122,15 @@ const addDirector = async (director, transaction) => {
     } catch (err) {
         return
     }
-    let savedDirector
+    let savedDirector = await new Director({ name: directorResponse.name }).fetch({
+        require: false,
+        transacting: transaction
+    })
+    if (savedDirector) {
+        return savedDirector.id
+    }
     try {
-        savedDirector = await new Actor({
+        savedDirector = await new Director({
             name: directorResponse.name,
             gender: Boolean((directorResponse.gender || 2) - 1),
             placeOfBirth: directorResponse.place_of_birth || null,
@@ -33,7 +140,7 @@ const addDirector = async (director, transaction) => {
             imdbId: directorResponse.imdb_id || null
         }).save(null, { transacting: transaction })
     } catch (err) {
-        savedDirector = await new Actor({ name: directorResponse.name }).fetch({
+        savedDirector = await new Director({ name: directorResponse.name }).fetch({
             require: false,
             transacting: transaction
         })
@@ -59,7 +166,7 @@ const getDirectorIds = async (directors, transaction) => {
                 return
             }
             if (response.results.length) {
-                const selectedDirector = response.results.find(fetchedActor => fetchedActor.name.toLowerCase() === director.toLowerCase())
+                const selectedDirector = response.results.find(fetchedDirector => fetchedDirector.name.toLowerCase() === director.toLowerCase())
                 if (selectedDirector) {
                     directorIds.push(await addDirector(selectedDirector, transaction))
                 }
@@ -81,7 +188,10 @@ const addActor = async (actor, transaction) => {
     } catch (err) {
         return
     }
-    let savedActor
+    let savedActor = await new Actor({ name: actorResponse.name }).fetch({ require: false, transacting: transaction })
+    if (savedActor) {
+        return savedActor.id
+    }
     try {
         savedActor = await new Actor({
             name: actorResponse.name,
@@ -131,24 +241,64 @@ const getActorIds = async (actors, transaction) => {
     return actorIds
 }
 
+const addTvEpisode = async (tvEpisode, seasonId, transaction) => {
+    const savedTvEpisode = await new TvEpisode({
+        seasonId,
+        airDate: tvEpisode.air_date || null,
+        episodeNumber: tvEpisode.episode_number,
+        name: tvEpisode.name,
+        description: tvEpisode.overview,
+        posterPath: tvEpisode.still_path,
+        tmdbVoteAverage: tvEpisode.vote_average,
+        tmdbNumberOfVotes: tvEpisode.vote_count,
+        tmdbId: tvEpisode.id
+    }).save(null, { method: 'insert', transacting: transaction })
+    let actorIds, directorIds
+    actorIds = await getActorIds(tvEpisode.guest_stars, transaction)
+    directorIds = await getDirectorIds(tvEpisode.crew.filter(crewMember => crewMember.department === 'Directing'), transaction)
+    if (actorIds && actorIds.length) {
+        await savedTvEpisode.actors().attach(actorIds, { transacting: transaction })
+    }
+    if (directorIds && directorIds.length) {
+        await savedTvEpisode.directors().attach(directorIds, { transacting: transaction })
+    }
+    return savedTvEpisode.id
+}
+
 const addTvSeason = async (tvSeason, tvShowId, transaction) => {
     // Fetch tv season by id from TMDB
     let tvSeasonResponse
     try {
         tvSeasonResponse = await request(`${process.env.TMBD_API}/tv/${tvShowId}/season/${tvSeason.season_number}?api_key=${process.env.TMDB_API_KEY}`)
     } catch (err) {
-        console.log(err)
         return
     }
-    const savedTvSeason = await new TvSeason({
-        tvShowId,
-        airDate: tvSeasonResponse.air_date,
-        title: tvSeasonResponse.name,
-        description: tvSeasonResponse.overview,
-        seasonNumber: tvSeasonResponse.season_number,
-        posterPath: tvSeasonResponse.poster_path,
-        tmdbId: tvSeasonResponse.id
-    }).save(null, { method: 'insert', transacting: transaction })
+    let existingTvSeason = await new TvSeason({ tmdbId: tvSeasonResponse.id }).fetch({
+        require: false,
+        transacting: transaction
+    })
+    if (existingTvSeason) {
+        return existingTvSeason.id
+    }
+    let savedTvSeason
+    try {
+        savedTvSeason = await new TvSeason({
+            tvShowId,
+            airDate: tvSeasonResponse.air_date || null,
+            title: tvSeasonResponse.name,
+            description: tvSeasonResponse.overview,
+            seasonNumber: tvSeasonResponse.season_number,
+            posterPath: tvSeasonResponse.poster_path,
+            tmdbId: tvSeasonResponse.id
+        }).save(null, { method: 'insert', transacting: transaction })
+    } catch (err) {
+        savedTvSeason = await new TvSeason({ tmdbId: tvSeasonResponse.id }).fetch({
+            require: false,
+            transacting: transaction
+        })
+    }
+    await Promise.all(tvSeasonResponse.episodes.map(async episode => await addTvEpisode(episode, savedTvSeason.id, transaction)))
+    return savedTvSeason.id
 }
 
 const addTvShow = async (tvShow, rating, directors, actors, transaction = null) => {
@@ -157,7 +307,6 @@ const addTvShow = async (tvShow, rating, directors, actors, transaction = null) 
     try {
         tvShowResponse = await request(`${process.env.TMBD_API}/tv/${tvShow.id}?api_key=${process.env.TMDB_API_KEY}`)
     } catch (err) {
-        console.log(err)
         return
     }
     let existingRating
@@ -180,12 +329,12 @@ const addTvShow = async (tvShow, rating, directors, actors, transaction = null) 
         directorIds = await getDirectorIds(directors, transaction)
     }
     if (tvShowResponse) {
-        const existingTvShow = await new Movie({ title: tvShowResponse.title }).fetch({
+        const existingTvShow = await new TvShow({ title: tvShowResponse.name }).fetch({
             require: false,
             transacting: transaction
         })
         if (existingTvShow) {
-            return
+            return existingTvShow.id
         }
         const savedTvShow = await new TvShow({
             ratingId: existingRating ? existingRating.id : null,
@@ -209,6 +358,27 @@ const addTvShow = async (tvShow, rating, directors, actors, transaction = null) 
         if (directorIds && directorIds.length) {
             await savedTvShow.directors().attach(directorIds, { transacting: transaction })
         }
+        let tvShowGenreIds
+        if (tvShowResponse.genres) {
+            tvShowGenreIds = await getTvShowGenreId(tvShowResponse.genres, transaction)
+        }
+        let languageIds
+        if (tvShowResponse.languages) {
+            languageIds = await getLanguageIds(tvShowResponse.languages, transaction)
+        }
+        let productionCompanyIds
+        if (tvShowResponse.production_companies) {
+            productionCompanyIds = await getProductionCompanyIds(tvShowResponse.production_companies, transaction)
+        }
+        if (tvShowGenreIds && tvShowGenreIds.length) {
+            await savedTvShow.genres().attach(tvShowGenreIds, { transacting: transaction })
+        }
+        if (languageIds && languageIds.length) {
+            await savedTvShow.languages().attach(languageIds, { transacting: transaction })
+        }
+        if (productionCompanyIds && productionCompanyIds.length) {
+            await savedTvShow.productionCompanies().attach(productionCompanyIds, { transacting: transaction })
+        }
         if (tvShowResponse.seasons.length) {
             await Promise.all(tvShowResponse.seasons.map(async season => await addTvSeason(season, savedTvShow.id, transaction)))
         }
@@ -221,7 +391,6 @@ const addMovie = async (movie, rating, directors, actors, transaction = null) =>
     try {
         movieResponse = await request(`${process.env.TMBD_API}/movie/${movie.id}?api_key=${process.env.TMDB_API_KEY}`)
     } catch (err) {
-        console.log(err)
         return
     }
     let existingRating
@@ -235,11 +404,11 @@ const addMovie = async (movie, rating, directors, actors, transaction = null) =>
             existingRating = await new Rating({ code: rating }).fetch({ require: false, transacting: transaction })
         }
     }
-    let actorIds = null
+    let actorIds
     if (actors) {
         actorIds = await getActorIds(actors, transaction)
     }
-    let directorIds = null
+    let directorIds
     if (directors) {
         directorIds = await getDirectorIds(directors, transaction)
     }
@@ -273,6 +442,27 @@ const addMovie = async (movie, rating, directors, actors, transaction = null) =>
         }
         if (directorIds && directorIds.length) {
             await savedMovie.directors().attach(directorIds, { transacting: transaction })
+        }
+        let movieGenreIds
+        if (movieResponse.genres) {
+            movieGenreIds = await getMovieGenreIds(movieResponse.genres, transaction)
+        }
+        let languageIds
+        if (movieResponse.spoken_languages) {
+            languageIds = await getLanguageIds(movieResponse.spoken_languages.map(language => language.iso_639_1), transaction)
+        }
+        let productionCompanyIds
+        if (movieResponse.production_companies) {
+            productionCompanyIds = await getProductionCompanyIds(movieResponse.production_companies, transaction)
+        }
+        if (movieGenreIds && movieGenreIds.length) {
+            await savedMovie.genres().attach(movieGenreIds, { transacting: transaction })
+        }
+        if (languageIds && languageIds.length) {
+            await savedMovie.languages().attach(languageIds, { transacting: transaction })
+        }
+        if (productionCompanyIds && productionCompanyIds.length) {
+            await savedMovie.productionCompanies().attach(productionCompanyIds, { transacting: transaction })
         }
     }
 }
@@ -320,6 +510,37 @@ const insertItem = async (item, progressBar, transaction = null) => {
     progressBar.increment()
 }
 
+const saveGenres = async (model, genres, transaction) => {
+    await Promise.all(genres.map(async genre => await new model({
+        name: genre.name,
+        tmdbId: genre.id
+    }).save(null, { method: 'insert', transacting: transaction })))
+}
+
+const fetchAndSaveAllGenres = async (transaction) => {
+    // Movie genres
+    let movieGenresResponse
+    try {
+        movieGenresResponse = await request(`${process.env.TMBD_API}/genre/movie/list?api_key=${process.env.TMDB_API_KEY}`)
+    } catch (err) {
+        return
+    }
+    if (movieGenresResponse && movieGenresResponse.genres && movieGenresResponse.genres.length) {
+        await saveGenres(MovieGenre, movieGenresResponse.genres, transaction)
+    }
+
+    // TV Show genres
+    let tvShowGenresResponse
+    try {
+        tvShowGenresResponse = await request(`${process.env.TMBD_API}/genre/tv/list?api_key=${process.env.TMDB_API_KEY}`)
+    } catch (err) {
+        return
+    }
+    if (tvShowGenresResponse && tvShowGenresResponse.genres && tvShowGenresResponse.genres.length) {
+        await saveGenres(TvShowGenre, tvShowGenresResponse.genres, transaction)
+    }
+}
+
 const run = () => {
     let results = []
     fs.createReadStream('./src/netflix_titles.csv')
@@ -330,6 +551,7 @@ const run = () => {
             progressBar.start(results.length, 0)
             try {
                 await Bookshelf.transaction(async t => {
+                    await fetchAndSaveAllGenres(t)
                     await Promise.all(results.map(item => insertItem(item, progressBar, t)))
                 })
             } catch (err) {
