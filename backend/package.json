@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src"
+    "dev": "nodemon src",
+    "importData": "node ./src/scripts/import-data.js"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,8 @@
   "dependencies": {
     "bookshelf": "^1.2.0",
     "bookshelf-uuid": "^1.0.1",
+    "cli-progress": "^3.9.0",
+    "csv-parser": "^3.0.0",
     "dotenv": "^8.2.0",
     "knex": "^0.21.19",
     "mysql": "^2.18.1"
