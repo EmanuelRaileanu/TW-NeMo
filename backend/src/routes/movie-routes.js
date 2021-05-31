@@ -5,6 +5,7 @@ import catchErrors from '../middlewares/catchErrors.js'
 const router = new Router()
 
 router.get('/', catchErrors(MovieController.getMovies))
-router.get('/:movieId', (req, res) => res.end('You did it'))
-
+router.get('/:movieId', catchErrors(MovieController.getMovieById))
+router.put('/:movieId',catchErrors(MovieController.updateMovie))
+router.delete('/:movieId',catchErrors(MovieController.deleteMovie))
 export default router
