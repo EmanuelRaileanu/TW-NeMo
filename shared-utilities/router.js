@@ -61,7 +61,7 @@ class Router {
             } else if (splitUrl.length === 1 && this.methods[req.method].find(item => item.hasParams === hasParams)) {
                 return await this.methods[req.method].find(item => item.hasParams === hasParams).controllerMethod(req, res)
             } else if (splitUrl.length === 2 && this.methods[req.method].find(item => item.hasParams === hasParams && item.path.split('/')[1] && item.path.split('/')[1].length !== 36)) {
-                return await this.methods[req.method].find(item => item.hasParams === hasParams && item.path.split('/')[1] && item.path.split('/')[1].length !== 36).controllerMethod(req, res)
+                return await this.methods[req.method].find(item => item.hasParams === hasParams && item.path.split('/')[1] && item.path.split('/')[1].length !== 36 && item.path.split('/')[1] === splitUrl[1]).controllerMethod(req, res)
             } else if (splitUrl.length === 2 && !splitUrl[1] && this.methods[req.method].find(item => item.hasParams === hasParams && splitUrl.length === item.path.split('/').length)) {
                 return await this.methods[req.method].find(item => item.hasParams === hasParams).controllerMethod(req, res)
             }

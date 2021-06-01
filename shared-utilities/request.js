@@ -5,11 +5,11 @@ const [http, https] = [require('http'), require('https')]
 const request = async (url, method = 'GET', requestBody, headers = {}) => {
     const lib = url.startsWith('https://') ? https : http
     const [host, path] = [url.split('://')[1].split('/')[0], url.split('://')[1].substr(url.split('://')[1].indexOf('/'))]
-    const [, port] = host.split(':')
+    const [domain, port] = host.split(':')
     const params = {
         method,
-        host,
-        port: port || url.startsWith('https://') ? 443 : 80,
+        host: domain,
+        port: Number(port || (url.startsWith('https://') ? 443 : 80)),
         path: path || '/',
         headers
     }

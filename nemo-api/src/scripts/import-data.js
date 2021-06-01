@@ -24,13 +24,15 @@ const addProductionCompany = async (productionCompany, transaction) => {
     let savedProductionCompany
     try {
         let savedCountry
-        try {
-            savedCountry = await new Country({ code: productionCompany.origin_country }).save(null, {
-                method: 'insert',
-                transacting: transaction
-            })
-        } catch (err) {
-            savedCountry = await new Country({ code: productionCompany.origin_country }).fetch({ require: false })
+        if (productionCompany.origin_country) {
+            try {
+                savedCountry = await new Country({ code: productionCompany.origin_country }).save(null, {
+                    method: 'insert',
+                    transacting: transaction
+                })
+            } catch (err) {
+                savedCountry = await new Country({ code: productionCompany.origin_country }).fetch({ require: false })
+            }
         }
         savedProductionCompany = await new ProductionCompany({
             name: productionCompany.name,
@@ -38,7 +40,7 @@ const addProductionCompany = async (productionCompany, transaction) => {
             headquarters: productionCompany.headquarters || null,
             logoPath: productionCompany.logo_path || null,
             homepage: productionCompany.homepage || null,
-            countryId: savedCountry.id
+            countryId: savedCountry ? savedCountry.id : null
         }).save(null, {
             method: 'insert',
             transacting: transaction
@@ -133,6 +135,7 @@ const addDirector = async (director, transaction) => {
         savedDirector = await new Director({
             name: directorResponse.name,
             gender: Boolean((directorResponse.gender || 2) - 1),
+            birthDate: directorResponse.birthday,
             placeOfBirth: directorResponse.place_of_birth || null,
             biography: directorResponse.biography || null,
             profilePhotoPath: directorResponse.profile_path || null,
@@ -196,6 +199,7 @@ const addActor = async (actor, transaction) => {
         savedActor = await new Actor({
             name: actorResponse.name,
             gender: Boolean((actorResponse.gender || 2) - 1),
+            birthDate: actorResponse.birthday,
             placeOfBirth: actorResponse.place_of_birth || null,
             biography: actorResponse.biography || null,
             profilePhotoPath: actorResponse.profile_path || null,
