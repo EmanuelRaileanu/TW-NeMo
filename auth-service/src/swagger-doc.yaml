@@ -1,0 +1,219 @@
+info:
+  description: My Mobile Tutor
+  title: MMT
+  version: 1.0.0
+openapi: 3.0.0
+paths:
+  /auth/validate-username:
+    get:
+      tags:
+        - Auth
+      summary: Validate username
+      security: [ ]
+      operationId: validate-username
+      parameters:
+        - in: query
+          name: username
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+  /auth/validate-email:
+    get:
+      tags:
+        - Auth
+      summary: Validate email
+      security: [ ]
+      operationId: validate-email
+      parameters:
+        - in: query
+          name: email
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+  /auth/confirm-email:
+    get:
+      tags:
+        - Auth
+      summary: Confirm email
+      security: [ ]
+      operationId: confirm-email
+      parameters:
+        - in: query
+          name: confirmationToken
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+  /auth/validate-token:
+    post:
+      tags:
+        - Auth
+      summary: Validate token
+      security: [ ]
+      operationId: validate-token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+      responses:
+        200:
+          description: Success
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register
+      security: [ ]
+      operationId: register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                confirmedPassword:
+                  type: string
+      responses:
+        200:
+          description: Success
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login
+      security: [ ]
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  expiresAt:
+                    type: string
+                    format: date-time
+  /auth/logout:
+    post:
+      tags:
+        - Auth
+      summary: Logout
+      security: [ ]
+      operationId: logout
+      responses:
+        200:
+          description: Success
+  /users/change-username:
+    post:
+      tags:
+        - Users
+      summary: Change username
+      operationId: change-username
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+      responses:
+        200:
+          description: Success
+  /users/change-email:
+    post:
+      tags:
+        - Users
+      summary: Change email
+      operationId: change-email
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: Success
+  /users/change-password:
+    post:
+      tags:
+        - Users
+      summary: Change password
+      operationId: change-password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                oldPassword:
+                  type: string
+                password:
+                  type: string
+                confirmedPassword:
+                  type: string
+      responses:
+        200:
+          description: Success
+
+components:
+  securitySchemes:
+    httpBearer:
+      type: "http"
+      scheme: "bearer"
+security:
+  - httpBearer: [ ]
+servers:
+  - url: '{schema}://{domain}'
+    variables:
+      domain:
+        default: mmt-backend.herokuapp.com
+        enum:
+          - mmt-backend.herokuapp.com
+          - localhost:8000
+      schema:
+        default: https
+        enum:
+          - http
+          - https
+tags:
+  - description: Endpoints for authentication
+    name: Auth
+  - description: Endpoints for user details
+    name: Users

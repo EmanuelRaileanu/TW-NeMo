@@ -1,0 +1,45 @@
+info:
+  description: My Mobile Tutor
+  title: MMT
+  version: 1.0.0
+openapi: 3.0.0
+paths:
+  /emails:
+    post:
+      tags:
+        - Emails
+      summary: Send an email
+      operationId: send-email
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                from:
+                  type: string
+                  format: email
+                to:
+                  type: string
+                  format: email
+                subject:
+                  type: string
+                emailBody:
+                  type: string
+                  format: html
+servers:
+  - url: '{schema}://{domain}'
+    variables:
+      domain:
+        default: mmt-backend.herokuapp.com
+        enum:
+          - mmt-backend.herokuapp.com
+          - localhost:8000
+      schema:
+        default: https
+        enum:
+          - http
+          - https
+tags:
+  - description: Endpoints for authentication
+    name: Emails

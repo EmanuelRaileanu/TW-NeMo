@@ -1,0 +1,29 @@
+{
+  "name": "auth-service",
+  "version": "1.0.0",
+  "description": "Authentication microservice",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "bookshelf": "^1.2.0",
+    "bookshelf-uuid": "^1.0.1",
+    "dotenv": "^10.0.0",
+    "email-validator": "^2.0.4",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.21.19",
+    "moment": "^2.29.1",
+    "mysql": "^2.18.1",
+    "redoc-cli": "^0.11.4"
+  }
+}
