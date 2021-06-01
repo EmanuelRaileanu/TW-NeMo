@@ -2,6 +2,7 @@ import Movie from "../models/movie.js";
 import APIError from "../../../shared-utilities/APIError.js";
 import Bookshelf from "../bookshelf.js";
 import {attachToMovie, checkTableArrays, detachAll} from "../utils/movie-utils.js";
+import MovieGenre from "../models/movie-genre.js";
 
 class MovieController {
     static relatedObject = {
@@ -93,6 +94,17 @@ class MovieController {
         return res.end(JSON.stringify(movie.toJSON({omitPivot: true})))
     }
 
+    static async getGenres(req, res) {
+        const genres = await new MovieGenre().query(q => {
+            q.orderBy('movie_genres.name', 'ASC')
+        }).fetchAll({
+            require: false,
+            columns: ['id', 'name']
+        })
+        res.writeHead(200, {'Content-type': 'application/json'})
+        return res.end(JSON.stringify(genres.toJSON({omitPivot: true})))
+    }
+
     static async updateMovie(req, res) {
         const movie = await new Movie({id: req.params.movieId}).fetch({
             require: false,
@@ -104,14 +116,14 @@ class MovieController {
         if (!req.body) {
             throw new APIError('Missing request body', 400)
         }
-        const updateBody=await movie.createBodyAccordingToModel(req.body)
+        const updateBody = await movie.createBodyAccordingToModel(req.body)
         if (updateBody === {}) {
             throw new APIError('No columns were updated', 400)
         }
         checkTableArrays(req.body)
         await Bookshelf.transaction(async t => {
             await movie.save(updateBody, {method: 'update', patch: 'true', transacting: t})
-            await attachToMovie(movie, req.body,t)
+            await attachToMovie(movie, req.body, t)
         })
         const updatedMovie = await new Movie({id: req.params.movieId}).fetch({
             require: false,
@@ -128,21 +140,21 @@ class MovieController {
         if (movie) {
             throw new APIError('There is already a movie with this name', 409)
         }
-        movie=new Movie()
+        movie = new Movie()
         const columns = Object.keys(req.body)
         if (!MovieController.minimalColumns.every(v => columns.includes(v))) {
             throw new APIError(`The primary fields are not filled, please send a request with the following fields: ${MovieController.minimalColumns}`, 400)
         }
-        const addBody=await movie.createBodyAccordingToModel(req.body)
+        const addBody = await movie.createBodyAccordingToModel(req.body)
         if (addBody === {}) {
             throw new APIError('No columns were updated', 400)
         }
         checkTableArrays(req.body)
         await Bookshelf.transaction(async t => {
             movie = await new Movie(addBody).save(null, {method: 'insert', transacting: t})
-            await attachToMovie(movie, req.body,t)
+            await attachToMovie(movie, req.body, t)
         })
-
+        movie = await movie.fetch({require:false,withRelated:[MovieController.relatedObject]})
         res.writeHead(200, {'Content-type': 'application/json'})
         return res.end(JSON.stringify(movie.toJSON({omitPivot: true})))
     }
