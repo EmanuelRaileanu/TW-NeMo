@@ -6,6 +6,7 @@ const router = new Router()
 
 router.get('/', catchErrors(MovieController.getMovies))
 router.get('/:movieId', catchErrors(MovieController.getMovieById))
+router.post('/',catchErrors(MovieController.addMovie))
 router.put('/:movieId',catchErrors(MovieController.updateMovie))
 router.delete('/:movieId',catchErrors(MovieController.deleteMovie))
 export default router
