@@ -1,6 +1,6 @@
 info:
-  description: My Mobile Tutor
-  title: MMT
+  description: Email Microservice
+  title: NeMo Mailer
   version: 1.0.0
 openapi: 3.0.0
 paths:
