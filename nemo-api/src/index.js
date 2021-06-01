@@ -1,5 +1,8 @@
 import http from 'http'
 import movieRoutes from './routes/movie-routes.js'
+import actorRoutes from './routes/actor-routes.js'
+import directorRoutes from './routes/director-routes.js'
+import productionCompanyRoutes from './routes/production-company-routes.js'
 import dashboardRoutes from './routes/dashboard-routes.js'
 import dotenv from 'dotenv'
 
@@ -17,6 +20,15 @@ http.createServer(async (req, res) => {
             break
         case '/movies':
             await movieRoutes.next(req, res)
+            break
+        case '/actors':
+            await actorRoutes.next(req,res)
+            break
+        case '/directors':
+            await directorRoutes.next(req,res)
+            break
+        case '/productionCompanies':
+            await productionCompanyRoutes.next(req,res)
             break
         case '/dashboard':
             await dashboardRoutes.next(req, res)
