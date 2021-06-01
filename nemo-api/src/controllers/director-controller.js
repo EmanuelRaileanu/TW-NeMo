@@ -78,7 +78,7 @@ class DirectorController {
             q.where('directors.name', 'like', `${req.body.title}`)
         }).fetch({require: false})
         if (director) {
-            throw new APIError('There is already an director with this name', 409)
+            throw new APIError('There is already a director with this name', 409)
         }
         director = new Director()
         const columns = Object.keys(req.body)
