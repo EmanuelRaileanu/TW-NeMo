@@ -1,6 +1,6 @@
 info:
-  description: My Mobile Tutor
-  title: MMT
+  description: NeMo Authentication Microservice
+  title: NeMo Auth
   version: 1.0.0
 openapi: 3.0.0
 paths:
