@@ -1,4 +1,4 @@
-import APIError from "../../../shared-utilities/APIError.js";
+import APIError from '../../../shared-utilities/APIError.js'
 
 export const checkTableArrays = (body) => {
     if (body.actorIds && !Array.isArray(body.actorIds)) {
@@ -18,33 +18,33 @@ export const checkTableArrays = (body) => {
     }
 }
 
-export const attachToMovie = async (movie, body,t=null) => {
+export const attachToMovie = async (movie, body, t = null) => {
     if (body.actorIds) {
-        await movie.actors().detach(movie.related('actors').map(actor => actor.id), {transacting: t})
-        await movie.actors().attach(body.actorIds, {transacting: t})
+        await movie.actors().detach(movie.related('actors').map(actor => actor.id), { transacting: t })
+        await movie.actors().attach(body.actorIds, { transacting: t })
     }
     if (body.directorIds) {
-        await movie.directors().detach(movie.related('directors').map(director => director.id), {transacting: t})
-        await movie.directors().attach(body.directorIds, {transacting: t})
+        await movie.directors().detach(movie.related('directors').map(director => director.id), { transacting: t })
+        await movie.directors().attach(body.directorIds, { transacting: t })
     }
     if (body.productionCompanyIds) {
-        await movie.productionCompanies().detach(movie.related('productionCompanies').map(prodComp => prodComp.id), {transacting: t})
-        await movie.productionCompanies().attach(body.productionCompanyIds, {transacting: t})
+        await movie.productionCompanies().detach(movie.related('productionCompanies').map(prodComp => prodComp.id), { transacting: t })
+        await movie.productionCompanies().attach(body.productionCompanyIds, { transacting: t })
     }
     if (body.languageIds) {
-        await movie.languages().detach(movie.related('languages').map(lang => lang.id), {transacting: t})
-        await movie.languages().attach(body.languageIds, {transacting: t})
+        await movie.languages().detach(movie.related('languages').map(lang => lang.id), { transacting: t })
+        await movie.languages().attach(body.languageIds, { transacting: t })
     }
     if (body.genreIds) {
-        await movie.genres().detach(movie.related('genres').map(genre => genre.id), {transacting: t})
-        await movie.genres().attach(body.genreIds, {transacting: t})
+        await movie.genres().detach(movie.related('genres').map(genre => genre.id), { transacting: t })
+        await movie.genres().attach(body.genreIds, { transacting: t })
     }
 }
 
 export const detachAll = async (movie, t = null) => {
-    await movie.genres().detach(movie.related('genres').map(genre => genre.id), {transacting: t})
-    await movie.actors().detach(movie.related('actors').map(actor => actor.id), {transacting: t})
-    await movie.directors().detach(movie.related('directors').map(director => director.id), {transacting: t})
-    await movie.productionCompanies().detach(movie.related('productionCompanies').map(prodComp => prodComp.id), {transacting: t})
-    await movie.languages().detach(movie.related('languages').map(lang => lang.id), {transacting: t})
+    await movie.genres().detach(movie.related('genres').map(genre => genre.id), { transacting: t })
+    await movie.actors().detach(movie.related('actors').map(actor => actor.id), { transacting: t })
+    await movie.directors().detach(movie.related('directors').map(director => director.id), { transacting: t })
+    await movie.productionCompanies().detach(movie.related('productionCompanies').map(prodComp => prodComp.id), { transacting: t })
+    await movie.languages().detach(movie.related('languages').map(lang => lang.id), { transacting: t })
 }

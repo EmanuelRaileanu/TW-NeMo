@@ -1,8 +1,8 @@
-import Movie from "../models/movie.js";
-import APIError from "../../../shared-utilities/APIError.js";
-import Bookshelf from "../bookshelf.js";
-import {attachToMovie, checkTableArrays, detachAll} from "../utils/movie-utils.js";
-import MovieGenre from "../models/movie-genre.js";
+import Movie from '../models/movie.js'
+import APIError from '../../../shared-utilities/APIError.js'
+import Bookshelf from '../bookshelf.js'
+import { attachToMovie, checkTableArrays, detachAll } from '../utils/movie-utils.js'
+import MovieGenre from '../models/movie-genre.js'
 
 class MovieController {
     static relatedObject = {
@@ -28,7 +28,7 @@ class MovieController {
     static columnsToOrderBy = ['title', 'voteAverage', 'numberOfVotes', 'tmdbNumberOfVotes', 'tmdbVoteAverage']
     static minimalColumns = ['title', 'description', 'tagline', 'ratingId', 'status', 'releaseDate', 'actorIds', 'directorIds', 'languageIds', 'productionCompanyIds', 'genreIds']
 
-    static async getMovies(req, res) {
+    static async getMovies (req, res) {
         const movies = await new Movie().query(q => {
             q.leftJoin('movies_genres', 'movies_genres.movieId', 'movies.id')
             q.leftJoin('movie_genres', 'movie_genres.id', 'movies_genres.genreId')
@@ -75,38 +75,38 @@ class MovieController {
             page: req.query.page || 1,
             pageSize: req.query.pageSize || 20
         })
-        res.writeHead(200, {'Content-type': 'application/json'})
+        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify({
-            results: movies.toJSON({omitPivot: true}),
+            results: movies.toJSON({ omitPivot: true }),
             pagination: movies.pagination
         }))
     }
 
-    static async getMovieById(req, res) {
-        const movie = await new Movie({id: req.params.movieId}).fetch({
+    static async getMovieById (req, res) {
+        const movie = await new Movie({ id: req.params.movieId }).fetch({
             require: false,
-            withRelated: [MovieController.relatedObject],
+            withRelated: [MovieController.relatedObject]
         })
         if (!movie) {
             throw new APIError('There is no movie with this id', 404)
         }
-        res.writeHead(200, {'Content-type': 'application/json'})
-        return res.end(JSON.stringify(movie.toJSON({omitPivot: true})))
+        res.writeHead(200, { 'Content-type': 'application/json' })
+        return res.end(JSON.stringify(movie.toJSON({ omitPivot: true })))
     }
 
-    static async getGenres(req, res) {
+    static async getGenres (req, res) {
         const genres = await new MovieGenre().query(q => {
             q.orderBy('movie_genres.name', 'ASC')
         }).fetchAll({
             require: false,
             columns: ['id', 'name']
         })
-        res.writeHead(200, {'Content-type': 'application/json'})
-        return res.end(JSON.stringify(genres.toJSON({omitPivot: true})))
+        res.writeHead(200, { 'Content-type': 'application/json' })
+        return res.end(JSON.stringify(genres.toJSON({ omitPivot: true })))
     }
 
-    static async updateMovie(req, res) {
-        const movie = await new Movie({id: req.params.movieId}).fetch({
+    static async updateMovie (req, res) {
+        const movie = await new Movie({ id: req.params.movieId }).fetch({
             require: false,
             withRelated: [MovieController.relatedObject]
         })
@@ -122,21 +122,21 @@ class MovieController {
         }
         checkTableArrays(req.body)
         await Bookshelf.transaction(async t => {
-            await movie.save(updateBody, {method: 'update', patch: 'true', transacting: t})
+            await movie.save(updateBody, { method: 'update', patch: 'true', transacting: t })
             await attachToMovie(movie, req.body, t)
         })
-        const updatedMovie = await new Movie({id: req.params.movieId}).fetch({
+        const updatedMovie = await new Movie({ id: req.params.movieId }).fetch({
             require: false,
             withRelated: [MovieController.relatedObject]
         })
-        res.writeHead(200, {'Content-type': 'application/json'})
-        return res.end(JSON.stringify(updatedMovie.toJSON({omitPivot: true})))
+        res.writeHead(200, { 'Content-type': 'application/json' })
+        return res.end(JSON.stringify(updatedMovie.toJSON({ omitPivot: true })))
     }
 
-    static async addMovie(req, res) {
+    static async addMovie (req, res) {
         let movie = await new Movie().query(q => {
             q.where('movies.title', 'like', `${req.body.title}`)
-        }).fetch({require: false})
+        }).fetch({ require: false })
         if (movie) {
             throw new APIError('There is already a movie with this name', 409)
         }
@@ -151,16 +151,16 @@ class MovieController {
         }
         checkTableArrays(req.body)
         await Bookshelf.transaction(async t => {
-            movie = await new Movie(addBody).save(null, {method: 'insert', transacting: t})
+            movie = await new Movie(addBody).save(null, { method: 'insert', transacting: t })
             await attachToMovie(movie, req.body, t)
         })
-        movie = await movie.fetch({require:false,withRelated:[MovieController.relatedObject]})
-        res.writeHead(200, {'Content-type': 'application/json'})
-        return res.end(JSON.stringify(movie.toJSON({omitPivot: true})))
+        movie = await movie.fetch({ require: false, withRelated: [MovieController.relatedObject] })
+        res.writeHead(200, { 'Content-type': 'application/json' })
+        return res.end(JSON.stringify(movie.toJSON({ omitPivot: true })))
     }
 
-    static async deleteMovie(req, res) {
-        const movie = await new Movie({id: req.params.movieId}).fetch({
+    static async deleteMovie (req, res) {
+        const movie = await new Movie({ id: req.params.movieId }).fetch({
             require: false,
             withRelated: [MovieController.relatedObject]
         })
@@ -169,10 +169,10 @@ class MovieController {
         }
         await Bookshelf.transaction(async t => {
             await detachAll(movie, t)
-            await movie.destroy({transacting: t})
+            await movie.destroy({ transacting: t })
         })
-        res.writeHead(200, {'Content-type': 'application/json'})
-        return res.end(JSON.stringify({message: "Movie successfully deleted"}))
+        res.writeHead(200, { 'Content-type': 'application/json' })
+        return res.end(JSON.stringify({ message: "Movie successfully deleted" }))
     }
 
 }

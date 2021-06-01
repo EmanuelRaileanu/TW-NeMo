@@ -3,7 +3,6 @@ import movieRoutes from './routes/movie-routes.js'
 import actorRoutes from './routes/actor-routes.js'
 import directorRoutes from './routes/director-routes.js'
 import productionCompanyRoutes from './routes/production-company-routes.js'
-import dashboardRoutes from './routes/dashboard-routes.js'
 import dotenv from 'dotenv'
 
 dotenv.config()
@@ -22,16 +21,13 @@ http.createServer(async (req, res) => {
             await movieRoutes.next(req, res)
             break
         case '/actors':
-            await actorRoutes.next(req,res)
+            await actorRoutes.next(req, res)
             break
         case '/directors':
-            await directorRoutes.next(req,res)
+            await directorRoutes.next(req, res)
             break
         case '/productionCompanies':
-            await productionCompanyRoutes.next(req,res)
-            break
-        case '/dashboard':
-            await dashboardRoutes.next(req, res)
+            await productionCompanyRoutes.next(req, res)
             break
         default:
             res.writeHead(501, { 'Content-type': 'application/json' })
