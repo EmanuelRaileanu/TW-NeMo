@@ -11,16 +11,16 @@ export const checkTableArrays = (body) => {
 
 export const attachToActor = async (actor, body, t = null) => {
     if (body.movieIds) {
-        await actor.movies().detach(actor.related('movies').map(movie => movie.id), {transacting: t})
-        await actor.movies().attach(body.movieIds, {transacting: t})
+        await actor.movies().detach(actor.related('movies').map(movie => movie.id), { transacting: t })
+        await actor.movies().attach(body.movieIds, { transacting: t })
     }
     if (body.tvShowIds) {
-        await actor.tvShows().detach(actor.related('tvShows').map(show => show.id), {transacting: t})
-        await actor.tvShows().attach(body.tvShowIds, {transacting: t})
+        await actor.tvShows().detach(actor.related('tvShows').map(show => show.id), { transacting: t })
+        await actor.tvShows().attach(body.tvShowIds, { transacting: t })
     }
 }
 
 export const detachAll = async (actor, t = null) => {
-    await actor.movies().detach(actor.related('movies').map(movie => movie.id), {transacting: t})
-    await actor.tvShows().detach(actor.related('tvShows').map(show => show.id), {transacting: t})
+    await actor.movies().detach(actor.related('movies').map(movie => movie.id), { transacting: t })
+    await actor.tvShows().detach(actor.related('tvShows').map(show => show.id), { transacting: t })
 }

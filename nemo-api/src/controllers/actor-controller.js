@@ -1,7 +1,7 @@
-import Actor from "../models/actor.js";
-import APIError from "../../../shared-utilities/APIError.js";
-import Bookshelf from "../bookshelf.js";
-import {detachAll, attachToActor, checkTableArrays} from "../utils/actor-utils.js";
+import Actor from '../models/actor.js'
+import APIError from '../../../shared-utilities/APIError.js'
+import Bookshelf from '../bookshelf.js'
+import { attachToActor, checkTableArrays, detachAll } from '../utils/actor-utils.js'
 
 class ActorController {
     static relatedObject = {
@@ -14,7 +14,7 @@ class ActorController {
     }
     static minimalColumns = ['name', 'gender', 'placeOfBirth', 'movieIds', 'tvShowIds', 'birthDate']
 
-    static async getActors(req, res) {
+    static async getActors (req, res) {
         const actors = await new Actor().query(q => {
             if (req.query.searchBy && req.query.searchBy !== {}) {
                 q.where('actors.name', 'like', `%${req.query.searchBy}%`)
@@ -26,28 +26,28 @@ class ActorController {
             page: req.query.page || 1,
             pageSize: req.query.pageSize || 20
         })
-        res.writeHead(200, {'Content-type': 'application/json'})
+        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify({
-            results: actors.toJSON({omitPivot: true}),
+            results: actors.toJSON({ omitPivot: true }),
             pagination: actors.pagination
         }))
     }
 
-    static async getActorById(req, res) {
+    static async getActorById (req, res) {
         console.log("am intrat")
-        const actor = await new Actor({id: req.params.actorId}).fetch({
+        const actor = await new Actor({ id: req.params.actorId }).fetch({
             require: false,
-            withRelated: [ActorController.relatedObject],
+            withRelated: [ActorController.relatedObject]
         })
         if (!actor) {
             throw new APIError('There is no actor with this id', 404)
         }
-        res.writeHead(200, {'Content-type': 'application/json'})
-        return res.end(JSON.stringify(actor.toJSON({omitPivot: true})))
+        res.writeHead(200, { 'Content-type': 'application/json' })
+        return res.end(JSON.stringify(actor.toJSON({ omitPivot: true })))
     }
 
-    static async updateActor(req, res) {
-        const actor = await new Actor({id: req.params.actorId}).fetch({
+    static async updateActor (req, res) {
+        const actor = await new Actor({ id: req.params.actorId }).fetch({
             require: false,
             withRelated: [ActorController.relatedObject]
         })
@@ -63,21 +63,21 @@ class ActorController {
         }
         checkTableArrays(req.body)
         await Bookshelf.transaction(async t => {
-            await actor.save(updateBody, {method: 'update', patch: 'true', transacting: t})
+            await actor.save(updateBody, { method: 'update', patch: 'true', transacting: t })
             await attachToActor(actor, req.body, t)
         })
-        const updatedActor = await new Actor({id: req.params.actorId}).fetch({
+        const updatedActor = await new Actor({ id: req.params.actorId }).fetch({
             require: false,
             withRelated: [ActorController.relatedObject]
         })
-        res.writeHead(200, {'Content-type': 'application/json'})
-        return res.end(JSON.stringify(updatedActor.toJSON({omitPivot: true})))
+        res.writeHead(200, { 'Content-type': 'application/json' })
+        return res.end(JSON.stringify(updatedActor.toJSON({ omitPivot: true })))
     }
 
-    static async addActor(req, res) {
+    static async addActor (req, res) {
         let actor = await new Actor().query(q => {
             q.where('actors.name', 'like', `${req.body.title}`)
-        }).fetch({require: false})
+        }).fetch({ require: false })
         if (actor) {
             throw new APIError('There is already an actor with this name', 409)
         }
@@ -92,16 +92,16 @@ class ActorController {
         }
         checkTableArrays(req.body)
         await Bookshelf.transaction(async t => {
-            actor = await new Actor(addBody).save(null, {method: 'insert', transacting: t})
+            actor = await new Actor(addBody).save(null, { method: 'insert', transacting: t })
             await attachToActor(actor, req.body, t)
         })
-        actor = await actor.fetch({require: false, withRelated: [ActorController.relatedObject]})
-        res.writeHead(200, {'Content-type': 'application/json'})
-        return res.end(JSON.stringify(actor.toJSON({omitPivot: true})))
+        actor = await actor.fetch({ require: false, withRelated: [ActorController.relatedObject] })
+        res.writeHead(200, { 'Content-type': 'application/json' })
+        return res.end(JSON.stringify(actor.toJSON({ omitPivot: true })))
     }
 
-    static async deleteActor(req, res) {
-        const actor = await new Actor({id: req.params.actorId}).fetch({
+    static async deleteActor (req, res) {
+        const actor = await new Actor({ id: req.params.actorId }).fetch({
             require: false,
             withRelated: [ActorController.relatedObject]
         })
@@ -110,10 +110,10 @@ class ActorController {
         }
         await Bookshelf.transaction(async t => {
             await detachAll(actor, t)
-            await actor.destroy({transacting: t})
+            await actor.destroy({ transacting: t })
         })
-        res.writeHead(200, {'Content-type': 'application/json'})
-        return res.end(JSON.stringify({message: "Actor successfully deleted"}))
+        res.writeHead(200, { 'Content-type': 'application/json' })
+        return res.end(JSON.stringify({ message: "Actor successfully deleted" }))
     }
 }
 

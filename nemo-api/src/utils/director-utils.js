@@ -1,4 +1,4 @@
-import APIError from "../../../shared-utilities/APIError.js";
+import APIError from '../../../shared-utilities/APIError.js'
 
 export const checkTableArrays = (body) => {
     if (body.movieIds && !Array.isArray(body.movieIds)) {
@@ -11,16 +11,16 @@ export const checkTableArrays = (body) => {
 
 export const attachToDirector = async (director, body, t = null) => {
     if (body.movieIds) {
-        await director.movies().detach(director.related('movies').map(movie => movie.id), {transacting: t})
-        await director.movies().attach(body.movieIds, {transacting: t})
+        await director.movies().detach(director.related('movies').map(movie => movie.id), { transacting: t })
+        await director.movies().attach(body.movieIds, { transacting: t })
     }
     if (body.tvShowIds) {
-        await director.tvShows().detach(director.related('tvShows').map(show => show.id), {transacting: t})
-        await director.tvShows().attach(body.tvShowIds, {transacting: t})
+        await director.tvShows().detach(director.related('tvShows').map(show => show.id), { transacting: t })
+        await director.tvShows().attach(body.tvShowIds, { transacting: t })
     }
 }
 
 export const detachAll = async (director, t = null) => {
-    await director.movies().detach(director.related('movies').map(movie => movie.id), {transacting: t})
-    await director.tvShows().detach(director.related('tvShows').map(show => show.id), {transacting: t})
+    await director.movies().detach(director.related('movies').map(movie => movie.id), { transacting: t })
+    await director.tvShows().detach(director.related('tvShows').map(show => show.id), { transacting: t })
 }

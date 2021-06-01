@@ -1,12 +1,12 @@
-import ProductionCompany from "../models/production-company.js";
-import APIError from "../../../shared-utilities/APIError.js";
-import Bookshelf from "../bookshelf.js";
-import {detachAll, attachToProductionCompany, checkTableArrays} from "../utils/production-company-utils.js";
+import ProductionCompany from '../models/production-company.js'
+import APIError from '../../../shared-utilities/APIError.js'
+import Bookshelf from '../bookshelf.js'
+import { attachToProductionCompany, checkTableArrays, detachAll } from '../utils/production-company-utils.js'
 
 class ProductionCompanyController {
     static relatedObject = {
         country: q => {
-          q.select('id','code')
+            q.select('id', 'code')
         },
         movies: q => {
             q.select('id', 'title')
@@ -17,7 +17,7 @@ class ProductionCompanyController {
     }
     static minimalColumns = ['name', 'headquarters', 'countryId', 'movieIds', 'tvShowIds']
 
-    static async getProductionCompanies(req, res) {
+    static async getProductionCompanies (req, res) {
         const companies = await new ProductionCompany().query(q => {
             if (req.query.searchBy && req.query.searchBy !== {}) {
                 q.where('production_companies.name', 'like', `%${req.query.searchBy}%`)
@@ -29,27 +29,27 @@ class ProductionCompanyController {
             page: req.query.page || 1,
             pageSize: req.query.pageSize || 20
         })
-        res.writeHead(200, {'Content-type': 'application/json'})
+        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify({
-            results: companies.toJSON({omitPivot: true}),
+            results: companies.toJSON({ omitPivot: true }),
             pagination: companies.pagination
         }))
     }
 
-    static async getProductionCompanyById(req, res) {
-        const company = await new ProductionCompany({id: req.params.productionCompanyId}).fetch({
+    static async getProductionCompanyById (req, res) {
+        const company = await new ProductionCompany({ id: req.params.productionCompanyId }).fetch({
             require: false,
-            withRelated: [ProductionCompanyController.relatedObject],
+            withRelated: [ProductionCompanyController.relatedObject]
         })
         if (!company) {
             throw new APIError('There is no production company with this id', 404)
         }
-        res.writeHead(200, {'Content-type': 'application/json'})
-        return res.end(JSON.stringify(company.toJSON({omitPivot: true})))
+        res.writeHead(200, { 'Content-type': 'application/json' })
+        return res.end(JSON.stringify(company.toJSON({ omitPivot: true })))
     }
 
-    static async updateProductionCompany(req, res) {
-        const company = await new ProductionCompany({id: req.params.productionCompanyId}).fetch({
+    static async updateProductionCompany (req, res) {
+        const company = await new ProductionCompany({ id: req.params.productionCompanyId }).fetch({
             require: false,
             withRelated: [ProductionCompanyController.relatedObject]
         })
@@ -65,21 +65,21 @@ class ProductionCompanyController {
         }
         checkTableArrays(req.body)
         await Bookshelf.transaction(async t => {
-            await company.save(updateBody, {method: 'update', patch: 'true', transacting: t})
+            await company.save(updateBody, { method: 'update', patch: 'true', transacting: t })
             await attachToProductionCompany(company, req.body, t)
         })
-        const updatedCompany = await new ProductionCompany({id: req.params.productionCompanyId}).fetch({
+        const updatedCompany = await new ProductionCompany({ id: req.params.productionCompanyId }).fetch({
             require: false,
             withRelated: [ProductionCompanyController.relatedObject]
         })
-        res.writeHead(200, {'Content-type': 'application/json'})
-        return res.end(JSON.stringify(updatedCompany.toJSON({omitPivot: true})))
+        res.writeHead(200, { 'Content-type': 'application/json' })
+        return res.end(JSON.stringify(updatedCompany.toJSON({ omitPivot: true })))
     }
 
-    static async addProductionCompany(req, res) {
+    static async addProductionCompany (req, res) {
         let company = await new ProductionCompany().query(q => {
             q.where('production_companies.name', 'like', `${req.body.title}`)
-        }).fetch({require: false})
+        }).fetch({ require: false })
         if (company) {
             throw new APIError('There is already a production company with this name', 409)
         }
@@ -94,16 +94,16 @@ class ProductionCompanyController {
         }
         checkTableArrays(req.body)
         await Bookshelf.transaction(async t => {
-            company = await new ProductionCompany(addBody).save(null, {method: 'insert', transacting: t})
+            company = await new ProductionCompany(addBody).save(null, { method: 'insert', transacting: t })
             await attachToProductionCompany(company, req.body, t)
         })
-        company = await company.fetch({require: false, withRelated: [ProductionCompanyController.relatedObject]})
-        res.writeHead(200, {'Content-type': 'application/json'})
-        return res.end(JSON.stringify(company.toJSON({omitPivot: true})))
+        company = await company.fetch({ require: false, withRelated: [ProductionCompanyController.relatedObject] })
+        res.writeHead(200, { 'Content-type': 'application/json' })
+        return res.end(JSON.stringify(company.toJSON({ omitPivot: true })))
     }
 
-    static async deleteProductionCompany(req, res) {
-        const company = await new ProductionCompany({id: req.params.productionCompanyId}).fetch({
+    static async deleteProductionCompany (req, res) {
+        const company = await new ProductionCompany({ id: req.params.productionCompanyId }).fetch({
             require: false,
             withRelated: [ProductionCompanyController.relatedObject]
         })
@@ -112,10 +112,10 @@ class ProductionCompanyController {
         }
         await Bookshelf.transaction(async t => {
             await detachAll(company, t)
-            await company.destroy({transacting: t})
+            await company.destroy({ transacting: t })
         })
-        res.writeHead(200, {'Content-type': 'application/json'})
-        return res.end(JSON.stringify({message: "Production company successfully deleted"}))
+        res.writeHead(200, { 'Content-type': 'application/json' })
+        return res.end(JSON.stringify({ message: "Production company successfully deleted" }))
     }
 }
 
