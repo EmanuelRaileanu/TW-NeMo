@@ -1,6 +1,7 @@
 import Movie from "../models/movie.js";
 import APIError from "../../../shared-utilities/APIError.js";
 import Bookshelf from "../bookshelf.js";
+import {attachToMovie, checkTableArrays, detachAll} from "../utils/movie-utils.js";
 
 class MovieController {
     static relatedObject = {
@@ -23,6 +24,8 @@ class MovieController {
             q.select('id', 'code')
         }
     }
+    static columnsToOrderBy = ['title', 'voteAverage', 'numberOfVotes', 'tmdbNumberOfVotes', 'tmdbVoteAverage']
+    static minimalColumns = ['title', 'description', 'tagline', 'ratingId', 'status', 'releaseDate', 'actorIds', 'directorIds', 'languageIds', 'productionCompanyIds', 'genreIds']
 
     static async getMovies(req, res) {
         const movies = await new Movie().query(q => {
@@ -53,6 +56,19 @@ class MovieController {
                 q.where('movies.title', 'like', `%${req.query.searchBy}%`)
             }
             q.groupBy('movies.id')
+
+            if (req.query.orderBy && req.query.orderBy !== {}) {
+                if (!MovieController.columnsToOrderBy.includes(req.query.orderBy.column[0])) {
+                    throw new APIError('I cannot sort by this column', 400)
+                }
+                if (!req.query.orderBy.direction || !['ASC', 'DESC'].includes(req.query.orderBy.direction[0])) {
+                    req.query.orderBy.direction = ['ASC']
+                }
+                q.orderBy(`movies.${req.query.orderBy.column}`, req.query.orderBy.direction[0])
+            } else {
+                q.orderBy('movies.voteAverage', 'DESC')
+                q.orderBy('movies.tmdbVoteAverage', 'DESC')
+            }
         }).fetchPage({
             require: false,
             page: req.query.page || 1,
@@ -88,53 +104,14 @@ class MovieController {
         if (!req.body) {
             throw new APIError('Missing request body', 400)
         }
-        const movieColumns = await movie.getColumns()
-        let updateBody = {}
-        for (const column in req.body) {
-            if (req.body.hasOwnProperty(column) && movieColumns.includes(column)) {
-                updateBody[column] = req.body[column]
-            }
-        }
+        const updateBody=await movie.createBodyAccordingToModel(req.body)
         if (updateBody === {}) {
             throw new APIError('No columns were updated', 400)
         }
-        if (req.body.actorIds && !Array.isArray(req.body.actorIds)) {
-            throw new APIError(`req.body.actorIds must be an array, got ${typeof req.body.actorIds}`, 400)
-        }
-        if (req.body.directorIds && !Array.isArray(req.body.directorIds)) {
-            throw new APIError(`req.body.directorIds must be an array, got ${typeof req.body.directorIds}`, 400)
-        }
-        if (req.body.productionCompanyIds && !Array.isArray(req.body.productionCompanyIds)) {
-            throw new APIError(`req.body.productionCompanyIds must be an array, got ${typeof req.body.productionCompanyIds}`, 400)
-        }
-        if (req.body.languageIds && !Array.isArray(req.body.languageIds)) {
-            throw new APIError(`req.body.languageIds must be an array, got ${typeof req.body.languageIds}`, 400)
-        }
-        if (req.body.genreIds && !Array.isArray(req.body.genreIds)) {
-            throw new APIError(`req.body.genreIds must be an array, got ${typeof req.body.genreIds}`, 400)
-        }
+        checkTableArrays(req.body)
         await Bookshelf.transaction(async t => {
-            if (req.body.actorIds) {
-                await movie.actors().detach(movie.related('actors').map(actor => actor.id), {transacting: t})
-                await movie.actors().attach(req.body.actorIds, {transacting: t})
-            }
-            if (req.body.directorIds) {
-                await movie.directors().detach(movie.related('directors').map(director => director.id), {transacting: t})
-                await movie.directors().attach(req.body.directorIds, {transacting: t})
-            }
-            if (req.body.productionCompanyIds) {
-                await movie.productionCompanies().detach(movie.related('productionCompanies').map(prodComp => prodComp.id), {transacting: t})
-                await movie.productionCompanies().attach(req.body.productionCompanyIds, {transacting: t})
-            }
-            if (req.body.languageIds) {
-                await movie.languages().detach(movie.related('languages').map(lang => lang.id), {transacting: t})
-                await movie.languages().attach(req.body.languageIds, {transacting: t})
-            }
-            if (req.body.genreIds) {
-                await movie.genres().detach(movie.related('genres').map(genre => genre.id), {transacting: t})
-                await movie.genres().attach(req.body.genreIds, {transacting: t})
-            }
-
+            await movie.save(updateBody, {method: 'update', patch: 'true', transacting: t})
+            await attachToMovie(movie, req.body,t)
         })
         const updatedMovie = await new Movie({id: req.params.movieId}).fetch({
             require: false,
@@ -142,6 +119,32 @@ class MovieController {
         })
         res.writeHead(200, {'Content-type': 'application/json'})
         return res.end(JSON.stringify(updatedMovie.toJSON({omitPivot: true})))
+    }
+
+    static async addMovie(req, res) {
+        let movie = await new Movie().query(q => {
+            q.where('movies.title', 'like', `${req.body.title}`)
+        }).fetch({require: false})
+        if (movie) {
+            throw new APIError('There is already a movie with this name', 409)
+        }
+        movie=new Movie()
+        const columns = Object.keys(req.body)
+        if (!MovieController.minimalColumns.every(v => columns.includes(v))) {
+            throw new APIError(`The primary fields are not filled, please send a request with the following fields: ${MovieController.minimalColumns}`, 400)
+        }
+        const addBody=await movie.createBodyAccordingToModel(req.body)
+        if (addBody === {}) {
+            throw new APIError('No columns were updated', 400)
+        }
+        checkTableArrays(req.body)
+        await Bookshelf.transaction(async t => {
+            movie = await new Movie(addBody).save(null, {method: 'insert', transacting: t})
+            await attachToMovie(movie, req.body,t)
+        })
+
+        res.writeHead(200, {'Content-type': 'application/json'})
+        return res.end(JSON.stringify(movie.toJSON({omitPivot: true})))
     }
 
     static async deleteMovie(req, res) {
@@ -153,20 +156,13 @@ class MovieController {
             throw new APIError('There is no movie with this id', 404)
         }
         await Bookshelf.transaction(async t => {
-            await MovieController.detachAll(movie,t)
+            await detachAll(movie, t)
             await movie.destroy({transacting: t})
         })
         res.writeHead(200, {'Content-type': 'application/json'})
         return res.end(JSON.stringify({message: "Movie successfully deleted"}))
     }
 
-    static async detachAll(movie,t=null){
-        await movie.genres().detach(movie.related('genres').map(genre => genre.id), {transacting: t})
-        await movie.actors().detach(movie.related('actors').map(actor => actor.id), {transacting: t})
-        await movie.directors().detach(movie.related('directors').map(director => director.id), {transacting: t})
-        await movie.productionCompanies().detach(movie.related('productionCompanies').map(prodComp => prodComp.id), {transacting: t})
-        await movie.languages().detach(movie.related('languages').map(lang => lang.id), {transacting: t})
-    }
 }
 
 export default MovieController
