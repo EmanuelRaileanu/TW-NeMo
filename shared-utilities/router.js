@@ -43,6 +43,7 @@ class Router {
             }
             if (splitUrl.length > 1 && splitUrl[1].length === 36) {
                 const methodOption = this.methods[req.method].find(item => item.hasParams)
+                console.log(methodOption)
                 if (!methodOption) {
                     res.writeHead(501, { 'Content-type': 'application/json' })
                     return res.end(JSON.stringify({ message: "Not implemented" }))
@@ -61,11 +62,17 @@ class Router {
             } else if (splitUrl.length === 1 && this.methods[req.method].find(item => item.hasParams === hasParams)) {
                 return await this.methods[req.method].find(item => item.hasParams === hasParams).controllerMethod(req, res)
             } else if (splitUrl.length === 2 && this.methods[req.method].find(item => item.hasParams === hasParams && item.path.split('/')[1] && item.path.split('/')[1].length !== 36)) {
-                return await this.methods[req.method].find(item => item.hasParams === hasParams && item.path.split('/')[1] && item.path.split('/')[1].length !== 36 && item.path.split('/')[1] === splitUrl[1]).controllerMethod(req, res)
+                /*
+                Am scos conditia asta:
+                 && item.path.split('/')[1] === splitUrl[1]
+                 Deoarece returna mereu false si dadea peste cap rutele de la api
+                 */
+                return await this.methods[req.method].find(item => item.hasParams === hasParams && item.path.split('/')[1] && item.path.split('/')[1].length !== 36).controllerMethod(req, res)
             } else if (splitUrl.length === 2 && !splitUrl[1] && this.methods[req.method].find(item => item.hasParams === hasParams && splitUrl.length === item.path.split('/').length)) {
                 return await this.methods[req.method].find(item => item.hasParams === hasParams).controllerMethod(req, res)
             }
             res.writeHead(501, { 'Content-type': 'application/json' })
+            console.log("Yep, e implemented-ul de aici")
             return res.end(JSON.stringify({ message: "Not implemented" }))
         })
     }

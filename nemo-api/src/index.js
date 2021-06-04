@@ -3,6 +3,9 @@ import movieRoutes from './routes/movie-routes.js'
 import actorRoutes from './routes/actor-routes.js'
 import directorRoutes from './routes/director-routes.js'
 import productionCompanyRoutes from './routes/production-company-routes.js'
+import tvShowRoutes from './routes/tv-show-routes.js'
+import tvSeasonRoutes from './routes/tv-season-routes.js'
+import tvEpisodeRoutes from './routes/tv-episode-routes.js'
 import dotenv from 'dotenv'
 
 dotenv.config()
@@ -28,6 +31,15 @@ http.createServer(async (req, res) => {
             break
         case '/productionCompanies':
             await productionCompanyRoutes.next(req, res)
+            break
+        case '/shows':
+            await tvShowRoutes.next(req, res)
+            break
+        case '/seasons':
+            await tvSeasonRoutes.next(req, res)
+            break
+        case '/episodes':
+            await tvEpisodeRoutes.next(req, res)
             break
         default:
             res.writeHead(501, { 'Content-type': 'application/json' })
