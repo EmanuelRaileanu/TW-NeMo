@@ -47,18 +47,18 @@ export default class AuthController {
         // Check if the token is blacklisted aka the user logged out
         const blacklistedToken = await new BlacklistedToken({ token }).fetch({ require: false })
         if (blacklistedToken) {
-            res.statusCode = 401
+            res.writeHead(401, { 'Content-Type': 'text' })
             return res.end('Unauthorized')
         }
         let deserializedUser
         try {
             deserializedUser = await jwt.verify(token, process.env.JWT_SECRET)
         } catch (err) {
-            res.statusCode = 401
+            res.writeHead(401, { 'Content-Type': 'text' })
             return res.end('Unauthorized')
         }
         if (!deserializedUser) {
-            res.statusCode = 401
+            res.writeHead(401, { 'Content-Type': 'text' })
             return res.end('Unauthorized')
         }
         const user = await new User({ id: deserializedUser.id }).query(q => {
@@ -72,7 +72,7 @@ export default class AuthController {
             }]
         })
         if (!user) {
-            res.statusCode = 401
+            res.writeHead(401, { 'Content-Type': 'text' })
             return res.end('Unauthorized')
         }
         return res.end(JSON.stringify(user.toJSON({ omitPivot: true })))

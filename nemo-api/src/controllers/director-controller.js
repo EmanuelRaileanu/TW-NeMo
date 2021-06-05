@@ -46,6 +46,9 @@ class DirectorController {
     }
 
     static async updateDirector (req, res) {
+        if (!['Admin', 'Owner'].includes(req.user.role.name)) {
+            throw new APIError('This operation is forbidden', 403)
+        }
         const director = await new Director({ id: req.params.directorId }).fetch({
             require: false,
             withRelated: [DirectorController.relatedObject]
@@ -74,6 +77,9 @@ class DirectorController {
     }
 
     static async addDirector (req, res) {
+        if (!['Admin', 'Owner'].includes(req.user.role.name)) {
+            throw new APIError('This operation is forbidden', 403)
+        }
         let director = await new Director().query(q => {
             q.where('directors.name', 'like', `${req.body.title}`)
         }).fetch({ require: false })
@@ -100,6 +106,9 @@ class DirectorController {
     }
 
     static async deleteDirector (req, res) {
+        if (!['Admin', 'Owner'].includes(req.user.role.name)) {
+            throw new APIError('This operation is forbidden', 403)
+        }
         const director = await new Director({ id: req.params.directorId }).fetch({
             require: false,
             withRelated: [DirectorController.relatedObject]

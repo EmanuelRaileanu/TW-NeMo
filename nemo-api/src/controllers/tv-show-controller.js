@@ -1,12 +1,16 @@
 import APIError from "../../../shared-utilities/APIError.js";
-import {attachToMovie, checkTableArrays, detachAll} from "../utils/movie-utils.js";
+import { attachToMovie, checkTableArrays, detachAll, validateReviewBody } from "../utils/movie-utils.js";
 import Bookshelf from "../bookshelf.js";
 import TvShow from "../models/tv-show.js";
 import TvShowGenre from "../models/tv-show-genre.js";
+import TvShowReview from '../models/tv-show-review.js'
 
 
 class TvShowController{
     static relatedObject = {
+        seasons: q => {
+            q.select('id', 'tvShowId', 'title')
+        },
         genres: q => {
             q.select('id', 'name')
         },
@@ -21,6 +25,9 @@ class TvShowController{
         },
         languages: q => {
             q.select('id', 'code')
+        },
+        reviews: q => {
+            q.select('id', 'score', 'text', 'createdAt')
         }
     }
     static columnsToOrderBy = ['title', 'voteAverage', 'numberOfVotes', 'tmdbNumberOfVotes', 'tmdbVoteAverage']
@@ -100,6 +107,9 @@ class TvShowController{
     }
 
     static async updateShow (req, res) {
+        if (!['Admin', 'Owner'].includes(req.user.role.name)) {
+            throw new APIError('This operation is forbidden', 403)
+        }
         const show = await new TvShow({ id: req.params.showId }).fetch({
             require: false,
             withRelated: [TvShowController.relatedObject]
@@ -129,6 +139,9 @@ class TvShowController{
     }
 
     static async addShow (req, res) {
+        if (!['Admin', 'Owner'].includes(req.user.role.name)) {
+            throw new APIError('This operation is forbidden', 403)
+        }
         let show = await new TvShow().query(q => {
             q.where('tv_shows.title', 'like', `${req.body.title}`)
         }).fetch({ require: false })
@@ -155,6 +168,9 @@ class TvShowController{
     }
 
     static async deleteShow (req, res) {
+        if (!['Admin', 'Owner'].includes(req.user.role.name)) {
+            throw new APIError('This operation is forbidden', 403)
+        }
         const show = await new TvShow({ id: req.params.showId }).fetch({
             require: false,
             withRelated: [TvShowController.relatedObject]
@@ -170,7 +186,62 @@ class TvShowController{
         return res.end(JSON.stringify({ message: "TV show successfully deleted" }))
     }
 
+    static async getFavorites (req, res) {
+        const tvShows = await new TvShow().query(q => {
+            q.innerJoin('user_tv_show_reviews', 'user_tv_show_reviews.userId', 'tv_shows.id')
+            q.where('user_movie_reviews.userId', req.user.id)
+        }).fetchAll({ require: false, withRelated: [TvShowController.relatedObject] })
+        return res.end(JSON.stringify(tvShows.toJSON({ omitPivot: true })))
+    }
 
+    static async addReview (req, res) {
+        const movie = await new TvShow({ id: req.params.tvShowId }).fetch({ require: false })
+        if (!movie) {
+            throw new APIError(`There is no movie with the id ${req.params.id}`, 404)
+        }
+        if (!req.body.score) {
+            throw new APIError('score is required', 400)
+        }
+        validateReviewBody(req.body)
+        const addedReview = await new TvShowReview({
+            userId: req.user.id,
+            movieId: movie.id,
+            score: req.body.score,
+            text: req.body.text || null
+        })
+        return res.end(JSON.stringify(addedReview.toJSON()))
+    }
+
+    static async updateReview (req, res) {
+        const movie = await new TvShow({ id: req.params.tvShowId }).fetch({ require: false })
+        if (!movie) {
+            throw new APIError(`There is no movie with the id ${req.params.id}`, 404)
+        }
+        const review = await new TvShowReview({ userId: req.user.id, movieId: movie.id }).fetch({ require: false })
+        if (!review) {
+            throw new APIError('There is not review added to this movie by the logged in user', 404)
+        }
+        validateReviewBody(req.body)
+        const updateBody = await review.createBodyAccordingToModel(req.body)
+        if (updateBody === {}) {
+            throw new APIError('No columns were updated', 400)
+        }
+        await review.save(updateBody, { method: 'update', patch: true })
+        return res.end(JSON.stringify(review.toJSON()))
+    }
+
+    static async deleteReview (req, res) {
+        const movie = await new TvShow({ id: req.params.tvShowId }).fetch({ require: false })
+        if (!movie) {
+            throw new APIError(`There is no movie with the id ${req.params.id}`, 404)
+        }
+        const review = await new TvShowReview({ userId: req.user.id, movieId: movie.id }).fetch({ require: false })
+        if (!review) {
+            throw new APIError('There is not review added to this movie by the logged in user', 404)
+        }
+        await review.destroy()
+        return res.end(JSON.stringify({ message: "Review successfully deleted" }))
+    }
 }
 
 export default  TvShowController

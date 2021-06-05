@@ -4,6 +4,8 @@ import Actor from './actor.js'
 import Director from './director.js'
 import ProductionCompany from './production-company.js'
 import Language from './language.js'
+import TvSeason from './tv-season.js'
+import TvShowReview from './tv-show-review.js'
 
 export default class TvShow extends BaseModel {
     get tableName () {
@@ -28,5 +30,13 @@ export default class TvShow extends BaseModel {
 
     productionCompanies () {
         return this.belongsToMany(ProductionCompany, 'tv_shows_production_companies', 'tvShowId', 'productionCompanyId')
+    }
+
+    seasons () {
+        return this.hasMany(TvSeason, 'tvShowId', 'id')
+    }
+
+    reviews () {
+        return this.hasMany(TvShowReview, 'tvShowId', 'id')
     }
 }

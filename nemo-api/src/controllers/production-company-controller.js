@@ -49,6 +49,9 @@ class ProductionCompanyController {
     }
 
     static async updateProductionCompany (req, res) {
+        if (!['Admin', 'Owner'].includes(req.user.role.name)) {
+            throw new APIError('This operation is forbidden', 403)
+        }
         const company = await new ProductionCompany({ id: req.params.productionCompanyId }).fetch({
             require: false,
             withRelated: [ProductionCompanyController.relatedObject]
@@ -77,6 +80,9 @@ class ProductionCompanyController {
     }
 
     static async addProductionCompany (req, res) {
+        if (!['Admin', 'Owner'].includes(req.user.role.name)) {
+            throw new APIError('This operation is forbidden', 403)
+        }
         let company = await new ProductionCompany().query(q => {
             q.where('production_companies.name', 'like', `${req.body.title}`)
         }).fetch({ require: false })
@@ -103,6 +109,9 @@ class ProductionCompanyController {
     }
 
     static async deleteProductionCompany (req, res) {
+        if (!['Admin', 'Owner'].includes(req.user.role.name)) {
+            throw new APIError('This operation is forbidden', 403)
+        }
         const company = await new ProductionCompany({ id: req.params.productionCompanyId }).fetch({
             require: false,
             withRelated: [ProductionCompanyController.relatedObject]

@@ -2,6 +2,7 @@ import APIError from "../../../shared-utilities/APIError.js";
 import {attachToEpisode, checkTableArrays, detachAll} from "../utils/tv-episode-utils.js";
 import Bookshelf from "../bookshelf.js";
 import TvEpisode from "../models/tv-episode.js";
+import TvSeason from '../models/tv-season.js'
 
 
 class TvEpisodeController{
@@ -11,29 +12,11 @@ class TvEpisodeController{
         },
         directors: q => {
             q.select('id', 'name')
-        },
-        season: q => {
-            q.select('id', 'name')
         }
     }
     static minimalColumns = ['title', 'description', 'airDate', 'seasonId','episodeNumber']
 
-    static async getEpisodesOf(req,res){
-        const episodes =await new TvEpisode().query(q => {
-            console.log(req.params.tvShowId)
-            q.where('tv_episodes.seasonId','like',`${req.params.tvSeasonId}`)
-            q.orderBy('tv_seasons.episodeNumber','ASC')
-        }).fetchPage({
-            require: false,
-            page: req.query.page || 1,
-            pageSize: req.query.pageSize || 20
-        })
-        res.writeHead(200, { 'Content-type': 'application/json' })
-        return res.end(JSON.stringify(episodes.toJSON({ omitPivot: true })))
-    }
-
     static async getEpisodeById (req, res) {
-        console.log("I searched for one season")
         const episode = await new TvEpisode({ id: req.params.episodeId }).fetch({
             require: false,
             withRelated: [TvEpisodeController.relatedObject]
@@ -41,11 +24,13 @@ class TvEpisodeController{
         if (!episode) {
             throw new APIError('There is no episode with this id', 404)
         }
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify(episode.toJSON({ omitPivot: true })))
     }
 
     static async updateEpisode (req, res) {
+        if (!['Admin', 'Owner'].includes(req.user.role.name)) {
+            throw new APIError('This operation is forbidden', 403)
+        }
         const episode = await new TvEpisode({ id: req.params.episodeId }).fetch({
             require: false,
             withRelated: [TvEpisodeController.relatedObject]
@@ -69,13 +54,19 @@ class TvEpisodeController{
             require: false,
             withRelated: [TvEpisodeController.relatedObject]
         })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify(updatedEpisode.toJSON({ omitPivot: true })))
     }
 
     static async addEpisode (req, res) {
+        if (!['Admin', 'Owner'].includes(req.user.role.name)) {
+            throw new APIError('This operation is forbidden', 403)
+        }
+        const tvSeason = await new TvSeason({ id: req.body.tvSeasonId }).fetch({ require: false })
+        if (!tvSeason) {
+            throw new APIError(`There is no tv show with the id ${req.body.tvSeasonId}`, 404)
+        }
         let episode = await new TvEpisode().query(q => {
-            q.where('tv_episodes.name', 'like', `${req.body.title}`, 'and','tv_episodes.seasonId',`${req.body.seasonId}`)
+            q.where('tv_episodes.name', 'like', `${req.body.title}`, 'and','tv_episodes.seasonId',`${req.body.tvSeasonId}`)
         }).fetch({ require: false })
         if (episode) {
             throw new APIError('There is already an episode with this name', 409)
@@ -95,11 +86,13 @@ class TvEpisodeController{
             await attachToEpisode(episode, req.body, t)
         })
         episode = await episode.fetch({ require: false, withRelated: [TvEpisodeController.relatedObject] })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify(episode.toJSON({ omitPivot: true })))
     }
 
     static async deleteEpisode (req, res) {
+        if (!['Admin', 'Owner'].includes(req.user.role.name)) {
+            throw new APIError('This operation is forbidden', 403)
+        }
         const episode = await new TvEpisode({ id: req.params.episodeId }).fetch({
             require: false,
             withRelated: [TvEpisodeController.relatedObject]
@@ -111,7 +104,6 @@ class TvEpisodeController{
             await detachAll(episode, t)
             await episode.destroy({ transacting: t })
         })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify({ message: "Episode successfully deleted" }))
     }
 }

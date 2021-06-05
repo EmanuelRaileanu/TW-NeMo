@@ -70,6 +70,38 @@ paths:
       responses:
         200:
           description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  roleId:
+                    type: string
+                    format: uuid
+                  username:
+                    type: string
+                  email:
+                    type: string
+                    format: email
+                  isEmailConfirmed:
+                    type: boolean
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  role:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      name:
+                        type: string
   /auth/register:
     post:
       tags:
@@ -135,7 +167,7 @@ paths:
         200:
           description: Success
   /users/change-username:
-    post:
+    put:
       tags:
         - Users
       summary: Change username
@@ -152,7 +184,7 @@ paths:
         200:
           description: Success
   /users/change-email:
-    post:
+    put:
       tags:
         - Users
       summary: Change email
@@ -171,7 +203,7 @@ paths:
         200:
           description: Success
   /users/change-password:
-    post:
+    put:
       tags:
         - Users
       summary: Change password
@@ -188,6 +220,73 @@ paths:
                   type: string
                 confirmedPassword:
                   type: string
+      responses:
+        200:
+          description: Success
+  /users/{username}:
+    get:
+      tags:
+        - Users
+      security: [ ]
+      summary: Get user details by username
+      operationId: get-user-by-username
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  roleId:
+                    type: string
+                    format: uuid
+                  username:
+                    type: string
+                  email:
+                    type: string
+                    format: email
+                  createdAt:
+                    type: string
+                    format: date-time
+                  role:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      name:
+                        type: string
+  /users/{userId}/change-role:
+    put:
+      tags:
+        - Users
+      summary: Change a user's role
+      operationId: change-role
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                role:
+                  type: string
+                  enum: [ Normal, Admin, Owner ]
       responses:
         200:
           description: Success

@@ -26,8 +26,8 @@ export default class MailController {
         })
         res.writeHead(200, {
             'Content-type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'OPTIONS, POST, GET',
+            'Access-Control-Allow-Origin': process.env.CORS_DOMAINS,
+            'Access-Control-Allow-Methods': 'POST',
             'Access-Control-Max-Age': 2592000
         })
         return res.end(JSON.stringify({ message: `Email sent successfully to ${req.body.to}` }))
