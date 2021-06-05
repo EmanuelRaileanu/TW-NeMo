@@ -21,12 +21,14 @@ const request = async (url, method = 'GET', requestBody, headers = {}) => {
             })
             res.on('end', () => {
                 if (res.headers['content-type'].includes('application/json')) {
-                    data = JSON.parse(data)
+                    try {
+                        data = JSON.parse(data)
+                    } catch (err) {}
                 }
                 if (res.statusCode < 200 || res.statusCode >= 300) {
-                    return reject(new APIError(data['status_message'], res.statusCode))
+                    return reject(new APIError(data['message'] || data['status_message'] || data, res.statusCode))
                 }
-                return resolve(data)
+                return resolve({ status: res.statusCode, ...data } )
             })
         })
         req.on('error', reject)

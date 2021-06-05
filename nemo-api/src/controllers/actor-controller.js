@@ -47,6 +47,9 @@ class ActorController {
     }
 
     static async updateActor (req, res) {
+        if (!['Admin', 'Owner'].includes(req.user.role.name)) {
+            throw new APIError('This operation is forbidden', 403)
+        }
         const actor = await new Actor({ id: req.params.actorId }).fetch({
             require: false,
             withRelated: [ActorController.relatedObject]
@@ -75,6 +78,9 @@ class ActorController {
     }
 
     static async addActor (req, res) {
+        if (!['Admin', 'Owner'].includes(req.user.role.name)) {
+            throw new APIError('This operation is forbidden', 403)
+        }
         let actor = await new Actor().query(q => {
             q.where('actors.name', 'like', `${req.body.title}`)
         }).fetch({ require: false })
@@ -101,6 +107,9 @@ class ActorController {
     }
 
     static async deleteActor (req, res) {
+        if (!['Admin', 'Owner'].includes(req.user.role.name)) {
+            throw new APIError('This operation is forbidden', 403)
+        }
         const actor = await new Actor({ id: req.params.actorId }).fetch({
             require: false,
             withRelated: [ActorController.relatedObject]

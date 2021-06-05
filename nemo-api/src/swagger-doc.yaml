@@ -1,0 +1,309 @@
+info:
+  description: NeMo Api
+  title: NeMo Api
+  version: 1.0.0
+openapi: 3.0.0
+paths:
+  /movies:
+    get:
+      tags:
+        - Movies
+      security: [ ]
+      summary: Get all movies
+      operationId: get-all-movies
+      parameters:
+        - in: query
+          name: page
+          required: false
+          default: 1
+          schema:
+            type: integer
+        - in: query
+          name: pageSize
+          required: false
+          default: 20
+          schema:
+            type: integer
+        - in: query
+          name: filters[genres][]
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: filters[productionCompanies][]
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: filters[rating][]
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: filters[languages][]
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: searchBy
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: orderBy[column]
+          required: false
+          default: [ voteAverage, tmdbVoteAverage ]
+          schema:
+            type: string
+        - in: query
+          name: orderBy[direction]
+          required: false
+          default: DESC
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        ratingId:
+                          type: string
+                          format: uuid
+                        title:
+                          type: string
+                        tagline:
+                          type: string
+                        description:
+                          type: string
+                        voteAverage:
+                          type: number
+                        numberOfvotes:
+                          type: integer
+                        tmdbVoteAverage:
+                          type: number
+                        tmdbNumberOfVotes:
+                          type: integer
+                        status:
+                          type: string
+                        realeaseDate:
+                          type: string
+                          format: date
+                        runtimeInMinutes:
+                          type: integer
+                        budget:
+                          type: number
+                        revenue:
+                          type: number
+                        posterPath:
+                          type: string
+                        backdropPath:
+                          type: string
+                        tmdbId:
+                          type: string
+                        imdbId:
+                          type: string
+                        createdAt:
+                          type: string
+                          format: date-time
+                        updatedAt:
+                          type: string
+                          format: date-time
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: integer
+                      pageSize:
+                        type: integer
+                      rowCount:
+                        type: integer
+                      pageCount:
+                        type: integer
+  /movies/{movieId}:
+    get:
+      tags:
+        - Movies
+      security: [ ]
+      summary: Get details about a movie
+      operationId: get-movie-details
+      parameters:
+        - in: path
+          name: movieId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  ratingId:
+                    type: string
+                    format: uuid
+                  title:
+                    type: string
+                  tagline:
+                    type: string
+                  description:
+                    type: string
+                  voteAverage:
+                    type: number
+                  numberOfvotes:
+                    type: integer
+                  tmdbVoteAverage:
+                    type: number
+                  tmdbNumberOfVotes:
+                    type: integer
+                  status:
+                    type: string
+                  realeaseDate:
+                    type: string
+                    format: date
+                  runtimeInMinutes:
+                    type: integer
+                  budget:
+                    type: number
+                  revenue:
+                    type: number
+                  posterPath:
+                    type: string
+                  backdropPath:
+                    type: string
+                  tmdbId:
+                    type: string
+                  imdbId:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  genres:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                  productionCompanies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                  rating:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      code:
+                        type: string
+                  languages:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      code:
+                        type: string
+                  reviews:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      score:
+                        type: number
+                      text:
+                        type: string
+                      createdAt:
+                        type: string
+                        format: uuid
+                  actors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                  directors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+components:
+  securitySchemes:
+    httpBearer:
+      type: "http"
+      scheme: "bearer"
+security:
+  - httpBearer: [ ]
+servers:
+  - url: '{schema}://{domain}'
+    variables:
+      domain:
+        default: mmt-backend.herokuapp.com
+        enum:
+          - mmt-backend.herokuapp.com
+          - localhost:8000
+      schema:
+        default: https
+        enum:
+          - http
+          - https
+tags:
+  - name: Movies
+    description: Movie endpoints
+  - name: TV Shows
+    description: TV Show endpoints
+  - name: TV Seasons
+    description: TV Season endpoints
+  - name: TV Episodes
+    description: TV Season endpoints
+  - name: Actors
+    description: Actor endpoints
+  - name: Directors
+    description: Director endpoints
+  - name: Production Companies
+    description: Production Company endpoints

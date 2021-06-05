@@ -6,6 +6,7 @@ import { exec } from 'child_process'
 import util from 'util'
 
 const promisifiedExec = util.promisify(exec)
+const promisifiedReadFile = util.promisify(fs.readFile)
 
 dotenv.config()
 
@@ -24,7 +25,7 @@ http.createServer(async (req, res) => {
             break
         case '/docs':
             await promisifiedExec("redoc-cli bundle ./src/swagger-doc.yaml -o ./src/doc.html")
-            res.end(fs.readFileSync('./src/doc.html').toString())
+            res.end((await promisifiedReadFile('./src/doc.html')).toString())
             break
         default:
             res.writeHead(501, { 'Content-type': 'application/json' })

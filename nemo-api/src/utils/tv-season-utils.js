@@ -7,14 +7,6 @@ export const checkTableArrays = (body) => {
 
 }
 
-export const attachToSeason= async (season, body, t = null) => {
-    if (body.episodeIds) {
-        await season.episodes().detach(season.related('episodes').map(episode => episode.id), { transacting: t })
-        await season.episodes().attach(body.episodeIds, { transacting: t })
-    }
-
-}
-
 export const detachAll = async (season, t = null) => {
     await season.episodes().detach(season.related('episodes').map(episode => episode.id), { transacting: t })
 }

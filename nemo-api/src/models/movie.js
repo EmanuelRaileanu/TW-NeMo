@@ -5,6 +5,7 @@ import Actor from './actor.js'
 import Director from './director.js'
 import ProductionCompany from './production-company.js'
 import Language from './language.js'
+import MovieReview from './movie-review.js'
 
 export default class Movie extends BaseModel {
     get tableName () {
@@ -33,5 +34,9 @@ export default class Movie extends BaseModel {
 
     productionCompanies () {
         return this.belongsToMany(ProductionCompany, 'movies_production_companies', 'movieId', 'productionCompanyId')
+    }
+
+    reviews () {
+        return this.hasMany(MovieReview, 'movieId', 'id')
     }
 }

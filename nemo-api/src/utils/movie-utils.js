@@ -48,3 +48,15 @@ export const detachAll = async (movie, t = null) => {
     await movie.productionCompanies().detach(movie.related('productionCompanies').map(prodComp => prodComp.id), { transacting: t })
     await movie.languages().detach(movie.related('languages').map(lang => lang.id), { transacting: t })
 }
+
+export const validateReviewBody = (body) => {
+    if (body.score < 0) {
+        throw new APIError('score cannot be less than 0', 400)
+    }
+    if (body.score > 10) {
+        throw new APIError('score cannot be greater than 10', 400)
+    }
+    if (body.text && body.text.length > 2000) {
+        throw new APIError('Review text cannot exceed 2000 characters', 400)
+    }
+}

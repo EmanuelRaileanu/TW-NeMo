@@ -1,8 +1,9 @@
 import Movie from '../models/movie.js'
 import APIError from '../../../shared-utilities/APIError.js'
 import Bookshelf from '../bookshelf.js'
-import { attachToMovie, checkTableArrays, detachAll } from '../utils/movie-utils.js'
+import { attachToMovie, checkTableArrays, detachAll, validateReviewBody } from '../utils/movie-utils.js'
 import MovieGenre from '../models/movie-genre.js'
+import MovieReview from '../models/movie-review.js'
 
 class MovieController {
     static relatedObject = {
@@ -23,6 +24,11 @@ class MovieController {
         },
         languages: q => {
             q.select('id', 'code')
+        },
+        reviews: q => {
+            q.select('id', 'score', 'text', 'createdAt')
+            q.orderBy('createdAt', 'DESC')
+            q.limit(10)
         }
     }
     static columnsToOrderBy = ['title', 'voteAverage', 'numberOfVotes', 'tmdbNumberOfVotes', 'tmdbVoteAverage']
@@ -75,7 +81,6 @@ class MovieController {
             page: req.query.page || 1,
             pageSize: req.query.pageSize || 20
         })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify({
             results: movies.toJSON({ omitPivot: true }),
             pagination: movies.pagination
@@ -90,7 +95,6 @@ class MovieController {
         if (!movie) {
             throw new APIError('There is no movie with this id', 404)
         }
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify(movie.toJSON({ omitPivot: true })))
     }
 
@@ -101,11 +105,13 @@ class MovieController {
             require: false,
             columns: ['id', 'name']
         })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify(genres.toJSON({ omitPivot: true })))
     }
 
     static async updateMovie (req, res) {
+        if (!['Admin', 'Owner'].includes(req.user.role.name)) {
+            throw new APIError('This operation is forbidden', 403)
+        }
         const movie = await new Movie({ id: req.params.movieId }).fetch({
             require: false,
             withRelated: [MovieController.relatedObject]
@@ -129,11 +135,13 @@ class MovieController {
             require: false,
             withRelated: [MovieController.relatedObject]
         })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify(updatedMovie.toJSON({ omitPivot: true })))
     }
 
     static async addMovie (req, res) {
+        if (!['Admin', 'Owner'].includes(req.user.role.name)) {
+            throw new APIError('This operation is forbidden', 403)
+        }
         let movie = await new Movie().query(q => {
             q.where('movies.title', 'like', `${req.body.title}`)
         }).fetch({ require: false })
@@ -155,11 +163,13 @@ class MovieController {
             await attachToMovie(movie, req.body, t)
         })
         movie = await movie.fetch({ require: false, withRelated: [MovieController.relatedObject] })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify(movie.toJSON({ omitPivot: true })))
     }
 
     static async deleteMovie (req, res) {
+        if (!['Admin', 'Owner'].includes(req.user.role.name)) {
+            throw new APIError('This operation is forbidden', 403)
+        }
         const movie = await new Movie({ id: req.params.movieId }).fetch({
             require: false,
             withRelated: [MovieController.relatedObject]
@@ -171,10 +181,65 @@ class MovieController {
             await detachAll(movie, t)
             await movie.destroy({ transacting: t })
         })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify({ message: "Movie successfully deleted" }))
     }
 
+    static async getFavorites (req, res) {
+        const movies = await new Movie().query(q => {
+            q.innerJoin('user_movie_reviews', 'user_movie_reviews.userId', 'movies.id')
+            q.where('user_movie_reviews.userId', req.user.id)
+        }).fetchAll({ require: false, withRelated: [MovieController.relatedObject] })
+        return res.end(JSON.stringify(movies.toJSON({ omitPivot: true })))
+    }
+
+    static async addReview (req, res) {
+        const movie = await new Movie({ id: req.params.movieId }).fetch({ require: false })
+        if (!movie) {
+            throw new APIError(`There is no movie with the id ${req.params.id}`, 404)
+        }
+        if (!req.body.score) {
+            throw new APIError('score is required', 400)
+        }
+        validateReviewBody(req.body)
+        const addedReview = await new MovieReview({
+            userId: req.user.id,
+            movieId: movie.id,
+            score: req.body.score,
+            text: req.body.text || null
+        })
+        return res.end(JSON.stringify(addedReview.toJSON()))
+    }
+
+    static async updateReview (req, res) {
+        const movie = await new Movie({ id: req.params.movieId }).fetch({ require: false })
+        if (!movie) {
+            throw new APIError(`There is no movie with the id ${req.params.id}`, 404)
+        }
+        const review = await new MovieReview({ userId: req.user.id, movieId: movie.id }).fetch({ require: false })
+        if (!review) {
+            throw new APIError('There is not review added to this movie by the logged in user', 404)
+        }
+        validateReviewBody(req.body)
+        const updateBody = await review.createBodyAccordingToModel(req.body)
+        if (updateBody === {}) {
+            throw new APIError('No columns were updated', 400)
+        }
+        await review.save(updateBody, { method: 'update', patch: true })
+        return res.end(JSON.stringify(review.toJSON()))
+    }
+
+    static async deleteReview (req, res) {
+        const movie = await new Movie({ id: req.params.movieId }).fetch({ require: false })
+        if (!movie) {
+            throw new APIError(`There is no movie with the id ${req.params.id}`, 404)
+        }
+        const review = await new MovieReview({ userId: req.user.id, movieId: movie.id }).fetch({ require: false })
+        if (!review) {
+            throw new APIError('There is not review added to this movie by the logged in user', 404)
+        }
+        await review.destroy()
+        return res.end(JSON.stringify({ message: "Review successfully deleted" }))
+    }
 }
 
 export default MovieController
