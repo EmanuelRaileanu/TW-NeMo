@@ -75,7 +75,7 @@ class MovieController {
                 q.orderBy(`movies.${req.query.orderBy.column}`, req.query.orderBy.direction[0])
             } else {
                 q.orderBy('movies.voteAverage', 'DESC')
-                q.orderBy('movies.tmdbVoteAverage', 'DESC')
+                q.orderBy('movies.tmdbNumberOfVotes', 'DESC')
             }
         }).fetchPage({
             require: false,
