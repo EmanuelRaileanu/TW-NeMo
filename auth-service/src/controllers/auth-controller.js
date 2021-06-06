@@ -115,9 +115,10 @@ export default class AuthController {
         if (!normalUserRole) {
             throw new APIError('User role not found', 404)
         }
+        let user
         await Bookshelf.transaction(async t => {
             const confirmationToken = crypto.randomBytes(20).toString('hex')
-            await new User({
+            user = await new User({
                 roleId: normalUserRole.id,
                 username: req.body.username,
                 email: req.body.email,
@@ -128,7 +129,18 @@ export default class AuthController {
             // Send an email with a confirmation link to the user
             await sendConfirmationEmail(req.body.email, confirmationToken)
         })
-        return res.end(JSON.stringify({ message: 'Successfully registered! Please check your email to confirm your account.' }))
+        if (!user) {
+            throw new APIError('Internal server error', 500)
+        }
+        const expiresAt = moment().add(process.env.TOKEN_LIFETIME.match(/[0-9]+/)[0], 'hours')
+        const userToBeSerialized = user.toJSON({ omitPivot: true })
+        // Don't send the password hash
+        delete userToBeSerialized.password
+        const token = await jwt.sign(userToBeSerialized, process.env.JWT_SECRET, { expiresIn: process.env.TOKEN_LIFETIME })
+        return res.end(JSON.stringify({
+            token,
+            expiresAt
+        }))
     }
 
     static async login (req, res) {
