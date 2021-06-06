@@ -28,7 +28,13 @@ http.createServer(async (req, res) => {
             res.end((await promisifiedReadFile('./src/doc.html')).toString())
             break
         default:
-            res.writeHead(501, { 'Content-type': 'application/json' })
+            res.writeHead(501, {
+                'Content-type': 'application/json',
+                'Access-Control-Allow-Origin': process.env.CORS_DOMAINS,
+                'Access-Control-Allow-Methods': 'OPTIONS, POST',
+                'Access-Control-Allow-Headers': '*',
+                'Access-Control-Max-Age': 2592000
+            })
             return res.end(JSON.stringify({ message: "Not implemented" }))
     }
     res.on('finish', () => console.log(req.method, req.url, res.statusCode, Date.now() - startTime, 'ms'))

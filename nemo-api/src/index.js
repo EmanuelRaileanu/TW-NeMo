@@ -10,6 +10,7 @@ import dotenv from 'dotenv'
 import fs from 'fs'
 import { exec } from 'child_process'
 import util from 'util'
+import { CORS_HEADERS } from './middlewares/cors.js'
 
 const promisifiedExec = util.promisify(exec)
 const promisifiedReadFile = util.promisify(fs.readFile)
@@ -35,7 +36,7 @@ http.createServer(async (req, res) => {
         case '/directors':
             await directorRoutes.next(req, res)
             break
-        case '/productionCompanies':
+        case '/production-companies':
             await productionCompanyRoutes.next(req, res)
             break
         case '/shows':
@@ -52,7 +53,7 @@ http.createServer(async (req, res) => {
             res.end((await promisifiedReadFile('./src/doc.html')).toString())
             break
         default:
-            res.writeHead(501, { 'Content-type': 'application/json' })
+            res.writeHead(501, CORS_HEADERS)
             return res.end(JSON.stringify({ message: "Not implemented" }))
     }
     res.on('finish', () => console.log(req.method, req.url, res.statusCode, Date.now() - startTime, 'ms'))
