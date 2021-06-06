@@ -1,61 +1,68 @@
 const posterBaseUrl = 'https://image.tmdb.org/t/p/original/';
-let movies;
-let shows;
+
+const AUTH_SERVICE_URL = 'http://stachyon.asuscomm.com:8000'
+const API_URL = 'http://stachyon.asuscomm.com:8081'
+
 window.onload = async function () {
-    movies = (await (await fetch('../movies.json')).json()).results;
-    movies.sort((movie1, movie2) => movie1.title.localeCompare(movie2.title))
-    shows = (await (await fetch('../tv-shows.json')).json()).results;
-    shows.sort((show1, show2) => show1.name.localeCompare(show2.name))
-    loadFavorites()
+    await loadUserData()
+    await loadFavorites()
 }
 
 
-function loadFavorites() {
-    let name = localStorage.getItem('username');
-    if (name == null || name.length === 0) {
-        name = 'Dev';
+async function loadUserData () {
+    const username = localStorage.getItem('username')
+    const userResponse = await fetch(`${AUTH_SERVICE_URL}/users/${username}`)
+
+    if (userResponse.status === 200) {
+        const userJSON = await userResponse.json()
+        document.getElementById('username').innerText = `Username: ${userJSON.username}`
+        document.getElementById('email').innerText = `Email: ${userJSON.email}`
+        document.getElementById('password').innerText = `Change password`
+        const timestamp = new Date(userJSON.createdAt)
+        document.getElementById('join-date').innerText = `Join date: ${timestamp.getDate()}/${timestamp.getMonth() + 1}/${timestamp.getFullYear()}`
     }
-    document.getElementById('name').innerText = `Nume: ${name}`
+}
 
-    let email = localStorage.getItem('email');
-    if (email == null || email.length === 0) {
-        email = 'dev@nemo.net';
-    }
-    document.getElementById('mail').innerText = `Email: ${email}`
-
-
-    document.getElementById('password').innerText = `Change password`
-
-    let joindate = sessionStorage.getItem('joindate');
-    if (joindate == null || joindate.length === 0) {
-        joindate = new Date();
-        joindate = joindate.toString();
-        sessionStorage.setItem('joindate', joindate);
-    }
-    document.getElementById('joindate').innerText = `Member since: ${joindate}`
-
+async function loadFavorites() {
     document.getElementById('favorite-movies').innerHTML = '';
     document.getElementById('favorite-shows').innerHTML = '';
 
-    for (let movie of movies) {
-        document.getElementById('favorite-movies').innerHTML += `
+    const moviesResponse = await fetch(`${API_URL}/movies/favorites`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+    })
+
+    console.log(moviesResponse)
+
+    if (moviesResponse.status === 200) {
+        const moviesJSON = await moviesResponse.json()
+        for (let movie of moviesJSON) {
+            document.getElementById('favorite-movies').innerHTML += `
             <li id="${movie.id}">
-                <img src="${posterBaseUrl}/${movie.poster_path}" alt="Image not found">
+                <img src="${posterBaseUrl}/${movie.posterPath}" alt="Image not found">
                 <div class="Title">
                     <h1>${movie.title}</h1>
                 </div>
-                <button onclick="deleteMedia('movie','${movie.id}')">✕</button>
             </li>`
+        }
     }
-    for (let show of shows) {
-        document.getElementById('favorite-shows').innerHTML += `
+
+    const tvShowsResponse = await fetch(`${API_URL}/shows/favorites`)
+
+    if (tvShowsResponse.status === 200) {
+        const tvShowsJSON = await tvShowsResponse.json()
+        for (let show of tvShowsJSON) {
+            document.getElementById('favorite-shows').innerHTML += `
             <li id="${show.id}">
-                <img src="${posterBaseUrl}/${show.poster_path}" alt="Image not found">
+                <img src="${posterBaseUrl}/${show.posterPath}" alt="Image not found">
                 <div class="Title">
-                    <h1>${show.name}</h1>
+                    <h1>${show.title}</h1>
                 </div>
-                <button onclick="deleteMedia('show','${show.id}')">✕</button>
             </li>`
+        }
     }
 }
 
@@ -78,13 +85,13 @@ function changeField(field) {
     }
 }
 
-function deleteMedia(type, id) {
+async function deleteMedia(type, id) {
     if (type === 'show') {
         shows=shows.filter(show => show.id.toString() !== id);
     } else {
         movies=movies.filter(movie => movie.id.toString() !== id);
     }
-    loadFavorites();
+    await loadFavorites();
 }
 
 function finishedChanges() {
