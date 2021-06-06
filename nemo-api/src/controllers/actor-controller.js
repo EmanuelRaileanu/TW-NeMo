@@ -26,7 +26,6 @@ class ActorController {
             page: req.query.page || 1,
             pageSize: req.query.pageSize || 20
         })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify({
             results: actors.toJSON({ omitPivot: true }),
             pagination: actors.pagination
@@ -42,7 +41,6 @@ class ActorController {
         if (!actor) {
             throw new APIError('There is no actor with this id', 404)
         }
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify(actor.toJSON({ omitPivot: true })))
     }
 
@@ -73,7 +71,6 @@ class ActorController {
             require: false,
             withRelated: [ActorController.relatedObject]
         })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify(updatedActor.toJSON({ omitPivot: true })))
     }
 
@@ -102,7 +99,6 @@ class ActorController {
             await attachToActor(actor, req.body, t)
         })
         actor = await actor.fetch({ require: false, withRelated: [ActorController.relatedObject] })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify(actor.toJSON({ omitPivot: true })))
     }
 
@@ -121,7 +117,6 @@ class ActorController {
             await detachAll(actor, t)
             await actor.destroy({ transacting: t })
         })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify({ message: "Actor successfully deleted" }))
     }
 }
