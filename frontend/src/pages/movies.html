@@ -74,12 +74,8 @@
         <input id="mvTitle" type="text" placeholder="A cool name.."><br>
         <label for="mvTagline">Tagline:</label>
         <input id="mvTagline" type="text" placeholder="Coming this summer!"><br>
-        <label for="mvGenreList">Genres:</label>
-        <ul id="mvGenreList"></ul>
-        <br>
-        <label for="mvLangList">Languages:</label>
-        <ul id="mvLangList"></ul>
-        <br>
+        <button id="addGenreBtn" onclick="addGenreField()">Add another genre</button><br>
+        <button id="addLanguageBtn" onclick="addLanguageField()">Add another language</button><br>
         <label for="mvReleaseDate">Release date:</label>
         <input id="mvReleaseDate" type="text" placeholder="Soon(tm).."><br>
         <label for="mvRating">Rating:</label>
@@ -88,11 +84,10 @@
         <input id="mvRuntime" type="text" placeholder="Too long is never enough.."><br>
         <label for="mvDescription">Description:</label>
         <input id="mvDescription" type="text" placeholder="A long time ago, in a city far, far away.." maxlength="2000"><br>
-        <label class="prodCompField">Production company:
-            <input class="mvProductionCompany" type="text" placeholder="Made with love by:">
-            <input class="mvProdCompId" name="prodId" type="hidden">
-        </label><br>
-        <button onclick="addProductionField()">Add another company</button>
+        <button id="addActorBtn" onclick="addActorField()">Add another actor</button><br>
+        <button id="addProdCompBtn" onclick="addProductionField()">Add another company</button><br>
+        <button id="addDirectorBtn" onclick="addDirectorField()">Add another director</button>
+        <button id="addMovieBtn" onclick="addMovie()">Add movie</button>
     </div>
 </div>
 <footer></footer>
