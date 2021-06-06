@@ -126,6 +126,16 @@ paths:
       responses:
         200:
           description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  expiresAt:
+                    type: string
+                    format: date-time
   /auth/login:
     post:
       tags:

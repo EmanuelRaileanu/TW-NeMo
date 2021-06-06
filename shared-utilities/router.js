@@ -16,6 +16,16 @@ class Router {
     }
 
     async next (req, res) {
+        if (req.method === 'OPTIONS') {
+            res.writeHead(200, {
+                'Content-type': 'application/json',
+                'Access-Control-Allow-Origin': process.env.CORS_DOMAINS,
+                'Access-Control-Allow-Methods': 'OPTIONS, GET, POST, PUT, PATCH, DELETE',
+                'Access-Control-Allow-Headers': '*',
+                'Access-Control-Max-Age': 2592000
+            })
+            return res.end()
+        }
         const [url, queryParams] = req.url.split('?')
         let rawQueryParams = qs.parse(queryParams)
         for (const property in rawQueryParams) {
