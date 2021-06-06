@@ -47,19 +47,19 @@ export default class AuthController {
         // Check if the token is blacklisted aka the user logged out
         const blacklistedToken = await new BlacklistedToken({ token }).fetch({ require: false })
         if (blacklistedToken) {
-            res.writeHead(401, { 'Content-Type': 'text' })
-            return res.end('Unauthorized')
+            res.writeHead(401, { 'Content-Type': 'application/json' })
+            return res.end({ message: 'Unauthorized' })
         }
         let deserializedUser
         try {
             deserializedUser = await jwt.verify(token, process.env.JWT_SECRET)
         } catch (err) {
-            res.writeHead(401, { 'Content-Type': 'text' })
-            return res.end('Unauthorized')
+            res.writeHead(401, { 'Content-Type': 'application/json' })
+            return res.end({ message: 'Unauthorized' })
         }
         if (!deserializedUser) {
-            res.writeHead(401, { 'Content-Type': 'text' })
-            return res.end('Unauthorized')
+            res.writeHead(401, { 'Content-Type': 'application/json' })
+            return res.end({ message: 'Unauthorized' })
         }
         const user = await new User({ id: deserializedUser.id }).query(q => {
             q.select('id', 'roleId', 'username', 'email', 'isEmailConfirmed', 'createdAt', 'updatedAt')
@@ -72,8 +72,8 @@ export default class AuthController {
             }]
         })
         if (!user) {
-            res.writeHead(401, { 'Content-Type': 'text' })
-            return res.end('Unauthorized')
+            res.writeHead(401, { 'Content-Type': 'application/json' })
+            return res.end({ message: 'Unauthorized' })
         }
         return res.end(JSON.stringify(user.toJSON({ omitPivot: true })))
     }
