@@ -69,14 +69,13 @@ class TvShowController {
                 q.orderBy(`tv_shows.${req.query.orderBy.column}`, req.query.orderBy.direction[0])
             } else {
                 q.orderBy('tv_shows.voteAverage', 'DESC')
-                q.orderBy('tv_shows.tmdbVoteAverage', 'DESC')
+                q.orderBy('tv_shows.tmdbNumberOfVotes', 'DESC')
             }
         }).fetchPage({
             require: false,
             page: req.query.page || 1,
             pageSize: req.query.pageSize || 20
         })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify({
             results: shows.toJSON({ omitPivot: true }),
             pagination: shows.pagination
@@ -91,7 +90,6 @@ class TvShowController {
         if (!show) {
             throw new APIError('There is no show with this id', 404)
         }
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify(show.toJSON({ omitPivot: true })))
     }
 
@@ -102,7 +100,6 @@ class TvShowController {
             require: false,
             columns: ['id', 'name']
         })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify(genres.toJSON({ omitPivot: true })))
     }
 
@@ -134,7 +131,6 @@ class TvShowController {
             require: false,
             withRelated: [TvShowController.relatedObject]
         })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify(updatedShow.toJSON({ omitPivot: true })))
     }
 
@@ -163,7 +159,6 @@ class TvShowController {
             await attachToMovie(show, req.body, t)
         })
         show = await show.fetch({ require: false, withRelated: [TvShowController.relatedObject] })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify(show.toJSON({ omitPivot: true })))
     }
 
@@ -182,7 +177,6 @@ class TvShowController {
             await detachAll(show, t)
             await show.destroy({ transacting: t })
         })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify({ message: "TV show successfully deleted" }))
     }
 
