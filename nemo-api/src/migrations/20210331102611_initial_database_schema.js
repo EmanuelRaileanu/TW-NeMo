@@ -4,7 +4,7 @@ export const up = async (knex) => {
             table.uuid('id').primary()
             table.string('code').unique()
             table.timestamp('createdAt').defaultTo(knex.fn.now())
-            table.timestamp('updatedAt')
+            table.timestamp('updatedAt').nullable()
         })
     }
     if (!await knex.schema.hasTable('languages')) {
@@ -12,7 +12,7 @@ export const up = async (knex) => {
             table.uuid('id').primary()
             table.string('code').unique()
             table.timestamp('createdAt').defaultTo(knex.fn.now())
-            table.timestamp('updatedAt')
+            table.timestamp('updatedAt').nullable()
         })
     }
     if (!await knex.schema.hasTable('ratings')) {
@@ -20,7 +20,7 @@ export const up = async (knex) => {
             table.uuid('id').primary()
             table.string('code').unique()
             table.timestamp('createdAt').defaultTo(knex.fn.now())
-            table.timestamp('updatedAt')
+            table.timestamp('updatedAt').nullable()
         })
     }
     if (!await knex.schema.hasTable('production_companies')) {
@@ -34,7 +34,7 @@ export const up = async (knex) => {
             table.uuid('countryId').references('countries.id')
             table.string('tmdbId').unique()
             table.timestamp('createdAt').defaultTo(knex.fn.now())
-            table.timestamp('updatedAt')
+            table.timestamp('updatedAt').nullable()
         })
     }
     if (!await knex.schema.hasTable('movie_genres')) {
@@ -43,7 +43,7 @@ export const up = async (knex) => {
             table.string('name').unique()
             table.string('tmdbId').unique()
             table.timestamp('createdAt').defaultTo(knex.fn.now())
-            table.timestamp('updatedAt')
+            table.timestamp('updatedAt').nullable()
         })
     }
     if (!await knex.schema.hasTable('tv_show_genres')) {
@@ -52,7 +52,7 @@ export const up = async (knex) => {
             table.string('name').unique()
             table.string('tmdbId').unique()
             table.timestamp('createdAt').defaultTo(knex.fn.now())
-            table.timestamp('updatedAt')
+            table.timestamp('updatedAt').nullable()
         })
     }
     if (!await knex.schema.hasTable('movies')) {
@@ -76,7 +76,7 @@ export const up = async (knex) => {
             table.string('tmdbId').unique()
             table.string('imdbId').unique()
             table.timestamp('createdAt').defaultTo(knex.fn.now())
-            table.timestamp('updatedAt')
+            table.timestamp('updatedAt').nullable()
         })
     }
     if (!await knex.schema.hasTable('tv_shows')) {
@@ -99,7 +99,7 @@ export const up = async (knex) => {
             table.string('backdropPath')
             table.string('tmdbId').unique()
             table.timestamp('createdAt').defaultTo(knex.fn.now())
-            table.timestamp('updatedAt')
+            table.timestamp('updatedAt').nullable()
         })
     }
     if (!await knex.schema.hasTable('tv_seasons')) {
@@ -115,7 +115,7 @@ export const up = async (knex) => {
             table.integer('numberOfVotes').defaultTo(0)
             table.string('tmdbId').unique()
             table.timestamp('createdAt').defaultTo(knex.fn.now())
-            table.timestamp('updatedAt')
+            table.timestamp('updatedAt').nullable()
         })
     }
     if (!await knex.schema.hasTable('tv_episodes')) {
@@ -133,7 +133,7 @@ export const up = async (knex) => {
             table.integer('tmdbNumberOfVotes').defaultTo(0)
             table.string('tmdbId')
             table.timestamp('createdAt').defaultTo(knex.fn.now())
-            table.timestamp('updatedAt')
+            table.timestamp('updatedAt').nullable()
         })
     }
     if (!await knex.schema.hasTable('movies_production_companies')) {
@@ -178,7 +178,7 @@ export const up = async (knex) => {
             table.string('tmdbId').unique()
             table.string('imdbId').unique()
             table.timestamp('createdAt').defaultTo(knex.fn.now())
-            table.timestamp('updatedAt')
+            table.timestamp('updatedAt').nullable()
         })
     }
     if (!await knex.schema.hasTable('directors')) {
@@ -193,7 +193,7 @@ export const up = async (knex) => {
             table.string('tmdbId').unique()
             table.string('imdbId').unique()
             table.timestamp('createdAt').defaultTo(knex.fn.now())
-            table.timestamp('updatedAt')
+            table.timestamp('updatedAt').nullable()
         })
     }
     if (!await knex.schema.hasTable('movies_actors')) {
