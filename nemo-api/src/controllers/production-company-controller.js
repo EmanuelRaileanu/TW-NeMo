@@ -29,7 +29,6 @@ class ProductionCompanyController {
             page: req.query.page || 1,
             pageSize: req.query.pageSize || 20
         })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify({
             results: companies.toJSON({ omitPivot: true }),
             pagination: companies.pagination
@@ -44,7 +43,6 @@ class ProductionCompanyController {
         if (!company) {
             throw new APIError('There is no production company with this id', 404)
         }
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify(company.toJSON({ omitPivot: true })))
     }
 
@@ -75,7 +73,6 @@ class ProductionCompanyController {
             require: false,
             withRelated: [ProductionCompanyController.relatedObject]
         })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify(updatedCompany.toJSON({ omitPivot: true })))
     }
 
@@ -104,7 +101,6 @@ class ProductionCompanyController {
             await attachToProductionCompany(company, req.body, t)
         })
         company = await company.fetch({ require: false, withRelated: [ProductionCompanyController.relatedObject] })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify(company.toJSON({ omitPivot: true })))
     }
 
@@ -123,7 +119,6 @@ class ProductionCompanyController {
             await detachAll(company, t)
             await company.destroy({ transacting: t })
         })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify({ message: "Production company successfully deleted" }))
     }
 }
