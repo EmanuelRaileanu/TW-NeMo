@@ -1,10 +1,16 @@
 const posterBaseUrl = 'https://image.tmdb.org/t/p/original/';
-let genres
+let genres = [], genreIds = []
+let languages=[],languageIds=[]
 const prodComps = ['Animation Picture Company', 'Davis Entertainment', 'DK Entertainment', 'Ghost Horse', 'Goldcrest', 'Goldfinch Studios', 'Good Neighbors Media', 'I Aint Playin Films', 'Mattel Entertainment', 'MISR International Films', 'Movie City Films', 'Pacific Western', 'Paws', 'Rainmaker Entertainment', 'Red Vessel Entertainment', 'Sailor Bear', 'Scared Sheetless', 'Solar Productions', 'Sullivan Bluth Studios', 'United Artists', 'Universal Pictures', 'Zero Trans Fat Productions'];
 
 const API_URL = 'http://stachyon.asuscomm.com:8081'
 
 window.onload = async function () {
+    const response = await (await fetch('http://stachyon.asuscomm.com:8081/movies/genres')).json()
+    for (const el of response) {
+        genres.push(el.name)
+        genreIds.push(el.id)
+    }
     await renderMovies({sorting: 'name'});
     createFiltersMenu();
     document.getElementById("mvSch").addEventListener('keydown', async event => {
@@ -13,22 +19,19 @@ window.onload = async function () {
         }
     });
 
-    let prodCompElement = document.getElementsByClassName('mvProductionCompany')[0]
-    prodCompElement.addEventListener('keydown', async event => {
+    let prodCompElement = document.getElementsByClassName('prodCompField')[0]
+    prodCompElement.childNodes[1].addEventListener('keydown', async event => {
         if (event.code === 'Enter' || event.keyCode === 13) {
-            const inputField = prodCompElement.value
-            let response = await fetch(`http://stachyon.asuscomm.com:8081/productionCompanies?searchBy=${inputField}`, {
-                method: 'GET'
-            })
-            console.log("Response:" + response.json())
-            prodCompElement.value = response.name
+            const inputField = prodCompElement.childNodes[1].value.replace(' ', '%20')
+            let response = await (await fetch(`${API_URL}/production-companies?searchBy=${inputField}`)).json()
+            if (response["results"].length > 0) {
+                prodCompElement.childNodes[1].value = response["results"][0].name
+                prodCompElement.childNodes[2].value = response["results"][0].id
+            }
         }
     })
 
-    genres = await fetch('http://stachyon.asuscomm.com:8081/movies/genres', {
-        method: 'GET'
-    }).then(response => response.json())
-    console.log(genres)
+
 }
 
 
@@ -64,7 +67,7 @@ async function renderMovies(filters = null) {
     }
 }
 
-async function getMovies (filters = null) {
+async function getMovies(filters = null) {
     let movies = (await (await fetch(`${API_URL}/movies`)).json()).results;
     if (filters && filters !== {}) {
         if (filters.name) {
@@ -189,13 +192,12 @@ function addProductionField() {
         '<input class="mvProdCompId" name="prodId" type="hidden">'
     label.childNodes[1].addEventListener('keydown', async event => {
         if (event.code === 'Enter' || event.keyCode === 13) {
-            const inputField = label.childNodes[1].value
-            let response = await fetch(`http://stachyon.asuscomm.com:8081/productionCompanies?searchBy=${inputField}`, {
-                method: 'GET'
-            })
-            console.log("Response:" + response.json())
-            label.childNodes[1].value = response.name
-            label.childNodes[2].value = response.id
+            const inputField = label.childNodes[1].value.replace(' ', '%20')
+            let response = await (await fetch(`${API_URL}/production-companies?searchBy=${inputField}`)).json()
+            if (response["results"].length > 0) {
+                label.childNodes[1].value = response["results"][0].name
+                label.childNodes[2].value = response["results"][0].id
+            }
         }
     })
     contentPage.insertBefore(label, contentPage.childNodes[contentPage.childNodes.length - 2])
