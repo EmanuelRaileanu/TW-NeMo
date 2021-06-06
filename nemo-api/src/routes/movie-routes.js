@@ -21,5 +21,7 @@ router.put('/:movieId/reviews', cors(catchErrors(validateToken(MovieController.u
 router.delete('/:movieId/reviews', cors(catchErrors(validateToken(MovieController.deleteReview))))
 
 router.get('/favorites', cors(catchErrors(validateToken(MovieController.getFavorites))))
+router.post('/:movieId/add-favorite', cors(catchErrors(validateToken(MovieController.addFavorite))))
+router.delete('/:movieId/delete-favorite', cors(catchErrors(validateToken(MovieController.deleteFavorite))))
 
 export default router

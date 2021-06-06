@@ -15,10 +15,12 @@ router.post('/', cors(catchErrors(validateToken(TvShowController.addShow))))
 router.put('/:showId', cors(catchErrors(validateToken(TvShowController.updateShow))))
 router.delete('/:showId', cors(catchErrors(validateToken(TvShowController.deleteShow))))
 
-router.post('/:tvShowId/reviews', cors(catchErrors(validateToken(TvShowController.addReview))))
-router.put('/:tvShowId/reviews', cors(catchErrors(validateToken(TvShowController.updateReview))))
-router.delete('/:tvShowId/reviews', cors(catchErrors(validateToken(TvShowController.deleteReview))))
+router.post('/:showId/reviews', cors(catchErrors(validateToken(TvShowController.addReview))))
+router.put('/:showId/reviews', cors(catchErrors(validateToken(TvShowController.updateReview))))
+router.delete('/:showId/reviews', cors(catchErrors(validateToken(TvShowController.deleteReview))))
 
 router.get('/favorites', cors(catchErrors(validateToken(TvShowController.getFavorites))))
+router.post('/:showId/add-favorite', cors(catchErrors(validateToken(TvShowController.addFavorite))))
+router.delete('/:showId/delete-favorite', cors(catchErrors(validateToken(TvShowController.deleteFavorite))))
 
 export default router
