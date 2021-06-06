@@ -11,14 +11,14 @@ window.onload = async function () {
 
 
 function loadFavorites() {
-    let name = sessionStorage.getItem('username');
-    if (name == null || name.length == 0) {
+    let name = localStorage.getItem('username');
+    if (name == null || name.length === 0) {
         name = 'Dev';
     }
     document.getElementById('name').innerText = `Nume: ${name}`
 
-    let email = sessionStorage.getItem('email');
-    if (email == null || email.length == 0) {
+    let email = localStorage.getItem('email');
+    if (email == null || email.length === 0) {
         email = 'dev@nemo.net';
     }
     document.getElementById('mail').innerText = `Email: ${email}`
@@ -27,7 +27,7 @@ function loadFavorites() {
     document.getElementById('password').innerText = `Change password`
 
     let joindate = sessionStorage.getItem('joindate');
-    if (joindate == null || joindate.length == 0) {
+    if (joindate == null || joindate.length === 0) {
         joindate = new Date();
         joindate = joindate.toString();
         sessionStorage.setItem('joindate', joindate);

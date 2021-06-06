@@ -2,6 +2,8 @@ const posterBaseUrl = 'https://image.tmdb.org/t/p/original/';
 let genres
 const prodComps = ['Animation Picture Company', 'Davis Entertainment', 'DK Entertainment', 'Ghost Horse', 'Goldcrest', 'Goldfinch Studios', 'Good Neighbors Media', 'I Aint Playin Films', 'Mattel Entertainment', 'MISR International Films', 'Movie City Films', 'Pacific Western', 'Paws', 'Rainmaker Entertainment', 'Red Vessel Entertainment', 'Sailor Bear', 'Scared Sheetless', 'Solar Productions', 'Sullivan Bluth Studios', 'United Artists', 'Universal Pictures', 'Zero Trans Fat Productions'];
 
+const API_URL = 'http://stachyon.asuscomm.com:8081'
+
 window.onload = async function () {
     await renderMovies({sorting: 'name'});
     createFiltersMenu();
@@ -50,20 +52,20 @@ async function renderMovies(filters = null) {
     for (let i = 0; i < movies.length; i++) {
         document.getElementById('list').innerHTML += `
             <li id="${movies[i].id}" onclick="displayMovie(this.id)">
-                <img src="${posterBaseUrl}/${movies[i].poster_path}" alt="Image not found">
+                <img src="${posterBaseUrl}/${movies[i].posterPath}" alt="Image not found">
                 <div class="written-content">
                     <h1>${movies[i].title}</h1>
-                    <span>${movies[i].overview}</span>
+                    <span>${movies[i].description}</span>
                 </div>
                 <div class="vertical-info">
-                    <span>Rating: ${movies[i].vote_average}</span>
+                    <span>Rating: ${movies[i].voteAverage}</span>
                 </div>
             </li>`
     }
 }
 
-async function getMovies(filters = null) {
-    let movies = (await (await fetch('../movies.json')).json()).results;
+async function getMovies (filters = null) {
+    let movies = (await (await fetch(`${API_URL}/movies`)).json()).results;
     if (filters && filters !== {}) {
         if (filters.name) {
             movies = movies.filter(movie => movie.title.toLowerCase().includes(filters.name.toLowerCase()));
@@ -72,11 +74,11 @@ async function getMovies(filters = null) {
             movies = movies.filter(movie => movie.genres.find(genre => filters.genres.includes(genre.name)));
         }
         if (filters.productionCompanies && filters.productionCompanies.length) {
-            movies = movies.filter(movie => movie.production_companies.find(productionCompany => filters.productionCompanies.includes(productionCompany.name)));
+            movies = movies.filter(movie => movie.productionCompanies.find(productionCompany => filters.productionCompanies.includes(productionCompany.name)));
         }
         if (filters.sorting !== null || document.getElementById('rat').checked) {
             if (document.getElementById('rat').checked)
-                movies.sort((movie1, movie2) => Number(movie1.vote_average) - Number(movie2.vote_average));
+                movies.sort((movie1, movie2) => Number(movie1.voteAverage) - Number(movie2.voteAverage));
             else
                 movies.sort((movie1, movie2) => movie1.title.localeCompare(movie2.title))
         }
