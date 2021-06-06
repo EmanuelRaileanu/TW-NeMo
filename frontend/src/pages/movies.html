@@ -8,61 +8,93 @@
     <script src="../scripts/movies.js"></script>
 </head>
 <body id="movies-body">
-    <nav class="topnav">
-        <label for="mvSch"></label>
-        <input id="mvSch" type="text" placeholder="Search.." name="mv">
-        <div class="dropdown">
-            <button class="dropbtn">Sort</button>
-            <ul class="dropdown-content">
-                <li>
-                    <input type="radio" id="name" name="sortType" onclick="applyFilters('name')" checked>By name
-                </li>
-                <li>
-                    <input type="radio" id="rat" name="sortType" onclick="applyFilters('rating')">By rating
-                </li>
-                <li>
-                    <input type="radio" id="asc" name="orderType" onclick="applyFilters()" checked>Ascending
-                </li>
-                <li>
-                    <input type="radio" id="desc" name="orderType" onclick="applyFilters()">Descending
-                </li>
-            </ul>
-        </div>
-        <div class="dropdown">
-            <button class="dropbtn">Filters</button>
-            <ul id="filters" class="dropdown-content">
+<nav class="topnav">
+    <label for="mvSch"></label>
+    <input id="mvSch" type="text" placeholder="Search.." name="mv">
+    <div class="dropdown">
+        <button class="dropbtn">Sort</button>
+        <ul class="dropdown-content">
+            <li>
+                <input type="radio" id="name" name="sortType" onclick="applyFilters('name')" checked>By name
+            </li>
+            <li>
+                <input type="radio" id="rat" name="sortType" onclick="applyFilters('rating')">By rating
+            </li>
+            <li>
+                <input type="radio" id="asc" name="orderType" onclick="applyFilters()" checked>Ascending
+            </li>
+            <li>
+                <input type="radio" id="desc" name="orderType" onclick="applyFilters()">Descending
+            </li>
+        </ul>
+    </div>
+    <div class="dropdown">
+        <button class="dropbtn">Filters</button>
+        <ul id="filters" class="dropdown-content">
 
-            </ul>
-        </div>
+        </ul>
+    </div>
+    <button class="addMovie" onclick="openAddMovieMenu()">Add movie</button>
+</nav>
+
+<div class="content-container">
+    <div id="controls">
+
+    </div>
+    <ul id="list"></ul>
+</div>
+<div id="movie-container">
+    <nav id="top-menu">
+        <button onclick="exitMovieView(`movie-container`)">✕</button>
     </nav>
-
-    <div class="content-container">
-        <div id="controls">
-
+    <div id="movie-content">
+        <div id="poster"></div>
+        <div id="title"></div>
+        <div id="tagline"></div>
+        <div id="genres">
+            <ul id="genre-list"></ul>
         </div>
-        <ul id="list"></ul>
-    </div>
-    <div id="movie-container">
-        <nav id="top-menu">
-            <button onclick="exitMovieView()">✕</button>
-        </nav>
-        <div id="movie-content">
-            <div id="poster"></div>
-            <div id="title"></div>
-            <div id="tagline"></div>
-            <div id="genres">
-                <ul id="genre-list"></ul>
-            </div>
-            <div id="lang"></div>
-            <div id="release"></div>
-            <div id="rating"></div>
-            <div id="runtime"></div>
-            <div id="description"></div>
-            <div id="production-companies">
-                <ul id="production-companies-list"></ul>
-            </div>
+        <div id="lang"></div>
+        <div id="release"></div>
+        <div id="rating"></div>
+        <div id="runtime"></div>
+        <div id="description"></div>
+        <div id="production-companies">
+            <ul id="production-companies-list"></ul>
         </div>
-        <footer></footer>
     </div>
+    <footer></footer>
+</div>
+<div id="add-movie-container">
+    <nav id="add-top-menu">
+        <button onclick="exitMovieView(`add-movie-container`)">✕</button>
+    </nav>
+    <div id="add-movie-content">
+        <label for="mvTitle">Title:</label>
+        <input id="mvTitle" type="text" placeholder="A cool name.."><br>
+        <label for="mvTagline">Tagline:</label>
+        <input id="mvTagline" type="text" placeholder="Coming this summer!"><br>
+        <label for="mvGenreList">Genres:</label>
+        <ul id="mvGenreList"></ul>
+        <br>
+        <label for="mvLangList">Languages:</label>
+        <ul id="mvLangList"></ul>
+        <br>
+        <label for="mvReleaseDate">Release date:</label>
+        <input id="mvReleaseDate" type="text" placeholder="Soon(tm).."><br>
+        <label for="mvRating">Rating:</label>
+        <input id="mvRating" type="text" placeholder="11/10.."><br>
+        <label for="mvRuntime">Runtime (in minutes):</label>
+        <input id="mvRuntime" type="text" placeholder="Too long is never enough.."><br>
+        <label for="mvDescription">Description:</label>
+        <input id="mvDescription" type="text" placeholder="A long time ago, in a city far, far away.." maxlength="2000"><br>
+        <label class="prodCompField">Production company:
+            <input class="mvProductionCompany" type="text" placeholder="Made with love by:">
+            <input class="mvProdCompId" name="prodId" type="hidden">
+        </label><br>
+        <button onclick="addProductionField()">Add another company</button>
+    </div>
+</div>
+<footer></footer>
 </body>
 </html>
