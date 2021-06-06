@@ -1,4 +1,4 @@
-const AUTH_SERVICE_URL = 'http://localhost:8000'
+const AUTH_SERVICE_URL = 'http://stachyon.asuscomm.com:8000'
 
 let isLogin = true;
 function changeToForm (id) {
