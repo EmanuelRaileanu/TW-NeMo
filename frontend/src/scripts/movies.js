@@ -1,20 +1,54 @@
 const posterBaseUrl = 'https://image.tmdb.org/t/p/original/';
-const genres = ['Action', 'Adventure', 'Animation', 'Comedy', 'Documentary', 'Drama', 'Family', 'Fantasy', 'Horror', 'Romance', 'Science Fiction', 'Thriller'];
+let genres = [], genreIds = []
+let languages = [], languageIds = []
 const prodComps = ['Animation Picture Company', 'Davis Entertainment', 'DK Entertainment', 'Ghost Horse', 'Goldcrest', 'Goldfinch Studios', 'Good Neighbors Media', 'I Aint Playin Films', 'Mattel Entertainment', 'MISR International Films', 'Movie City Films', 'Pacific Western', 'Paws', 'Rainmaker Entertainment', 'Red Vessel Entertainment', 'Sailor Bear', 'Scared Sheetless', 'Solar Productions', 'Sullivan Bluth Studios', 'United Artists', 'Universal Pictures', 'Zero Trans Fat Productions'];
 
 const API_URL = 'http://stachyon.asuscomm.com:8081'
 
 window.onload = async function () {
-    await renderMovies({ sorting: 'name' });
+    let genreResponse = await fetch('http://stachyon.asuscomm.com:8081/movies/genres')
+    if (genreResponse.status !== 200)
+        throw new Error("Couldn't load the genres")
+    genreResponse = await genreResponse.json()
+    for (const el of genreResponse) {
+        genres.push(el.name)
+        genreIds.push(el.id)
+    }
+    let langResponse = await fetch('http://stachyon.asuscomm.com:8081/movies/languages')
+    if (langResponse.status !== 200)
+        throw new Error("Couldn't load the genres")
+    langResponse = await langResponse.json()
+    for (const el of langResponse) {
+        languages.push(el.name)
+        languageIds.push(el.id)
+    }
+    console.log(languages)
+    console.log(languageIds)
+    await renderMovies({sorting: 'name'});
     createFiltersMenu();
     document.getElementById("mvSch").addEventListener('keydown', async event => {
         if (event.code === 'Enter' || event.keyCode === 13) {
             await applyFilters();
         }
     });
+
+    let prodCompElement = document.getElementsByClassName('prodCompField')[0]
+    prodCompElement.childNodes[1].addEventListener('keydown', async event => {
+        if (event.code === 'Enter' || event.keyCode === 13) {
+            const inputField = prodCompElement.childNodes[1].value.replace(' ', '%20')
+            let response = await (await fetch(`${API_URL}/production-companies?searchBy=${inputField}`)).json()
+            if (response["results"].length > 0) {
+                prodCompElement.childNodes[1].value = response["results"][0].name
+                prodCompElement.childNodes[2].value = response["results"][0].id
+            }
+        }
+    })
+
+
 }
 
-function createFiltersMenu () {
+
+function createFiltersMenu() {
     let menu = document.getElementById('filters');
     menu.innerHTML += '<li>Genres:</li>';
     for (let item of genres) {
@@ -28,7 +62,7 @@ function createFiltersMenu () {
     menu.innerHTML += '<li><button onclick="applyFilters()">Apply filters</button></li>'
 }
 
-async function renderMovies (filters = null) {
+async function renderMovies(filters = null) {
     document.getElementById('list').innerHTML = '';
     const movies = await getMovies(filters)
     for (let i = 0; i < movies.length; i++) {
@@ -46,8 +80,9 @@ async function renderMovies (filters = null) {
     }
 }
 
-async function getMovies (filters = null) {
+async function getMovies(filters = null) {
     let movies = (await (await fetch(`${API_URL}/movies`)).json()).results;
+    console.log(movies)
     if (filters && filters !== {}) {
         if (filters.name) {
             movies = movies.filter(movie => movie.title.toLowerCase().includes(filters.name.toLowerCase()));
@@ -71,7 +106,7 @@ async function getMovies (filters = null) {
     return movies;
 }
 
-function findFilters (checkType, filterNames) {
+function findFilters(checkType, filterNames) {
     let filters = [];
     let inputElements = document.getElementsByClassName(checkType);
     for (let i = 0; inputElements[i]; ++i) {
@@ -82,7 +117,7 @@ function findFilters (checkType, filterNames) {
     return filters;
 }
 
-async function applyFilters (sorting = null) {
+async function applyFilters(sorting = null) {
     const filters = {
         genres: findFilters('genres', genres),
         productionCompanies: findFilters('prodComp', prodComps),
@@ -92,7 +127,7 @@ async function applyFilters (sorting = null) {
     await renderMovies(filters);
 }
 
-async function resetFilters () {
+async function resetFilters() {
     for (let item of document.getElementsByClassName('genres')) {
         item.checked = false;
     }
@@ -103,11 +138,11 @@ async function resetFilters () {
     await renderMovies();
 }
 
-async function getMovieById (movieId) {
+async function getMovieById(movieId) {
     return (await getMovies()).find(movie => Number(movie.id) === Number(movieId));
 }
 
-async function displayMovie (movieId) {
+async function displayMovie(movieId) {
     const movie = await getMovieById(movieId);
     document.getElementById('movies-body').style.overflow = 'hidden';
     const sheet = window.document.styleSheets[0];
@@ -139,9 +174,70 @@ async function displayMovie (movieId) {
     document.getElementById('description').innerHTML = `<p>${movie.overview}</p>`;
 }
 
-function exitMovieView () {
-    document.getElementById('movies-body').style.overflow = 'auto';
-    document.getElementById('movie-container').style.display = 'none';
+function exitMovieView(body) {
+    document.getElementById(`movies-body`).style.overflow = 'auto'
+    document.getElementById(`${body}`).style.display = 'none'
     const sheet = window.document.styleSheets[0];
-    sheet.insertRule('body > *:not(#movie-container) { filter: none; }', sheet.cssRules.length);
+    sheet.insertRule(`body > *:not(#${body}) { filter: none; }`, sheet.cssRules.length);
+
+    if (body === 'add-movie-container') {
+        let els = document.getElementsByClassName('prodCompField')
+        while (els.length > 1) {
+            els[1].parentNode.removeChild(els[1])
+        }
+    }
+}
+
+
+function openAddMovieMenu() {
+    document.getElementById('movies-body').style.overflow = 'hidden'
+    const sheet = window.document.styleSheets[0]
+    sheet.insertRule('body > *:not(#add-movie-container) { filter: blur(8px); }', sheet.cssRules.length)
+    sheet.insertRule(`#add-movie-container { overflow-y:scroll; background: linear-gradient(rgba(19, 35, 47, 0.90), rgba(19, 35, 47, 0.90)); }`, sheet.cssRules.length)
+    document.getElementById('add-movie-container').style.display = 'block'
+}
+
+function addProductionField() {
+    let contentPage = document.getElementById('add-movie-content')
+    let label = document.createElement('label')
+    label.setAttribute('class', 'prodCompField')
+    label.innerHTML = 'Production company:' +
+        '            <input class="mvProductionCompany" type="text" placeholder="Made with love by:">' +
+        '<input class="mvProdCompId" name="prodId" type="hidden">'
+    label.childNodes[1].addEventListener('keydown', async event => {
+        if (event.code === 'Enter' || event.keyCode === 13) {
+            const inputField = label.childNodes[1].value.replace(' ', '%20')
+            let response = await (await fetch(`${API_URL}/production-companies?searchBy=${inputField}`)).json()
+            if (response["results"].length > 0) {
+                label.childNodes[1].value = response["results"][0].name
+                label.childNodes[2].value = response["results"][0].id
+            }
+        }
+    })
+    contentPage.insertBefore(label, contentPage.childNodes[contentPage.childNodes.length - 2])
+}
+
+async function addMovie() {
+    let prodComps = []
+    for (let el of document.getElementsByClassName("mvProdCompId")) {
+        if (el.value !== '' && !el.value) {
+            prodComps += el.value
+        }
+    }
+    const data = {
+        "title": `${document.getElementById('mvTitle').value}`,
+        "tagline": `${document.getElementById('mvTagline').value}`,
+        "releaseDate": `${document.getElementById('mvReleaseDate').value}`,
+        "rating": `${document.getElementById('mvRating').value}`,
+        "runtime": `${document.getElementById('mvRuntime').value}`,
+        "description": `${document.getElementById('mvDescription').value}`,
+        "productionCompanyIds": prodComps
+    }
+    await fetch('http://stachyon.asuscomm.com:8081/movies', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
 }

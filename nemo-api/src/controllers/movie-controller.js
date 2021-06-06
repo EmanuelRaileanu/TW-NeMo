@@ -4,6 +4,7 @@ import Bookshelf from '../bookshelf.js'
 import { attachToMovie, checkTableArrays, detachAll, validateReviewBody } from '../utils/movie-utils.js'
 import MovieGenre from '../models/movie-genre.js'
 import MovieReview from '../models/movie-review.js'
+import Language from "../models/language";
 
 class MovieController {
     static relatedObject = {
@@ -106,6 +107,16 @@ class MovieController {
             columns: ['id', 'name']
         })
         return res.end(JSON.stringify(genres.toJSON({ omitPivot: true })))
+    }
+
+    static async getLanguages(req,res){
+        const languages = await new Language().query(q => {
+            q.orderBy('languages.code', 'ASC')
+        }).fetchAll({
+            require: false,
+            columns: ['id', 'name']
+        })
+        return res.end(JSON.stringify(languages.toJSON({ omitPivot: true })))
     }
 
     static async updateMovie (req, res) {
