@@ -31,11 +31,9 @@ async function loadFavorites() {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     })
-
-    console.log(moviesResponse)
 
     if (moviesResponse.status === 200) {
         const moviesJSON = await moviesResponse.json()
@@ -50,7 +48,13 @@ async function loadFavorites() {
         }
     }
 
-    const tvShowsResponse = await fetch(`${API_URL}/shows/favorites`)
+    const tvShowsResponse = await fetch(`${API_URL}/shows/favorites`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    })
 
     if (tvShowsResponse.status === 200) {
         const tvShowsJSON = await tvShowsResponse.json()

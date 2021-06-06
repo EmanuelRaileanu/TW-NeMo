@@ -114,7 +114,7 @@ class MovieController {
             q.orderBy('languages.code', 'ASC')
         }).fetchAll({
             require: false,
-            columns: ['id', 'name']
+            columns: ['id', 'code']
         })
         return res.end(JSON.stringify(languages.toJSON({ omitPivot: true })))
     }
@@ -197,10 +197,34 @@ class MovieController {
 
     static async getFavorites (req, res) {
         const movies = await new Movie().query(q => {
-            q.innerJoin('user_movie_reviews', 'user_movie_reviews.userId', 'movies.id')
-            q.where('user_movie_reviews.userId', req.user.id)
+            q.innerJoin('favorite_movies', 'favorite_movies.movieId', 'movies.id')
+            q.where('favorite_movies.userId', req.user.id)
         }).fetchAll({ require: false, withRelated: [MovieController.relatedObject] })
         return res.end(JSON.stringify(movies.toJSON({ omitPivot: true })))
+    }
+
+    static async addFavorite (req, res) {
+        const movie = await new Movie({ id: req.params.movieId }).fetch({ require: false })
+        if (!movie) {
+            throw new APIError(`There is no movie with the id ${req.params.movieId}`, 404)
+        }
+        await Bookshelf.knex.raw('INSERT INTO favorite_movies values (:userId, :movieId)', {
+            userId: req.user.id,
+            movieId: movie.id
+        })
+        return res.end(JSON.stringify({ message: 'Added movie to favorites' }))
+    }
+
+    static async deleteFavorite (req, res) {
+        const movie = await new Movie({ id: req.params.movieId }).fetch({ require: false })
+        if (!movie) {
+            throw new APIError(`There is no movie with the id ${req.params.movieId}`, 404)
+        }
+        await Bookshelf.knex.raw('DELETE FROM favorite_movies WHERE movieId = :movieId AND userId = :userId', {
+            userId: req.user.id,
+            movieId: movie.id
+        })
+        return res.end(JSON.stringify({ message: 'Removed movie from favorites' }))
     }
 
     static async addReview (req, res) {

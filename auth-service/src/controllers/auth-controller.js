@@ -9,6 +9,7 @@ import UserRole, { ROLES } from '../models/user-role.js'
 import { sendConfirmationEmail } from '../utils/email-utils.js'
 import crypto from 'crypto'
 import Bookshelf from '../bookshelf.js'
+import { CORS_HEADERS } from '../middlewares/cors.js'
 
 export default class AuthController {
     static async validateUsername (req, res) {
@@ -47,18 +48,18 @@ export default class AuthController {
         // Check if the token is blacklisted aka the user logged out
         const blacklistedToken = await new BlacklistedToken({ token }).fetch({ require: false })
         if (blacklistedToken) {
-            res.writeHead(401, { 'Content-Type': 'application/json' })
+            res.writeHead(401, CORS_HEADERS)
             return res.end(JSON.stringify({ message: 'Unauthorized' }))
         }
         let deserializedUser
         try {
             deserializedUser = await jwt.verify(token, process.env.JWT_SECRET)
         } catch (err) {
-            res.writeHead(401, { 'Content-Type': 'application/json' })
+            res.writeHead(401, CORS_HEADERS)
             return res.end(JSON.stringify({ message: 'Unauthorized' }))
         }
         if (!deserializedUser) {
-            res.writeHead(401, { 'Content-Type': 'application/json' })
+            res.writeHead(401, CORS_HEADERS)
             return res.end(JSON.stringify({ message: 'Unauthorized' }))
         }
         const user = await new User({ id: deserializedUser.id }).query(q => {
@@ -71,8 +72,9 @@ export default class AuthController {
                 }
             }]
         })
+        console.log(deserializedUser)
         if (!user) {
-            res.writeHead(401, { 'Content-Type': 'application/json' })
+            res.writeHead(401, CORS_HEADERS)
             return res.end(JSON.stringify({ message: 'Unauthorized' }))
         }
         return res.end(JSON.stringify(user.toJSON({ omitPivot: true })))
