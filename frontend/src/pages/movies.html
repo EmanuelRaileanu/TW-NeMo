@@ -34,7 +34,7 @@
 
         </ul>
     </div>
-    <button class="addMovie" onclick="addMovie()">Add movie</button>
+    <button class="addMovie" onclick="openAddMovieMenu()">Add movie</button>
 </nav>
 
 <div class="content-container">
@@ -88,8 +88,9 @@
         <input id="mvRuntime" type="text" placeholder="Too long is never enough.."><br>
         <label for="mvDescription">Description:</label>
         <input id="mvDescription" type="text" placeholder="A long time ago, in a city far, far away.." maxlength="2000"><br>
-        <label id="prodCompany">Production company:
+        <label class="prodCompField">Production company:
             <input class="mvProductionCompany" type="text" placeholder="Made with love by:">
+            <input class="mvProdCompId" name="prodId" type="hidden">
         </label><br>
         <button onclick="addProductionField()">Add another company</button>
     </div>
