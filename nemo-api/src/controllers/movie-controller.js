@@ -4,7 +4,7 @@ import Bookshelf from '../bookshelf.js'
 import { attachToMovie, checkTableArrays, detachAll, validateReviewBody } from '../utils/movie-utils.js'
 import MovieGenre from '../models/movie-genre.js'
 import MovieReview from '../models/movie-review.js'
-import Language from "../models/language";
+import Language from "../models/language.js";
 
 class MovieController {
     static relatedObject = {
