@@ -3,7 +3,7 @@ const genres = ['Action', 'Adventure', 'Animation', 'Comedy', 'Documentary', 'Dr
 const prodComps = ['Animation Picture Company', 'Davis Entertainment', 'DK Entertainment', 'Ghost Horse', 'Goldcrest', 'Goldfinch Studios', 'Good Neighbors Media', 'I Aint Playin Films', 'Mattel Entertainment', 'MISR International Films', 'Movie City Films', 'Pacific Western', 'Paws', 'Rainmaker Entertainment', 'Red Vessel Entertainment', 'Sailor Bear', 'Scared Sheetless', 'Solar Productions', 'Sullivan Bluth Studios', 'United Artists', 'Universal Pictures', 'Zero Trans Fat Productions'];
 
 window.onload = async function () {
-    await renderMovies({ sorting: 'name' });
+    await renderMovies({sorting: 'name'});
     createFiltersMenu();
     document.getElementById("mvSch").addEventListener('keydown', async event => {
         if (event.code === 'Enter' || event.keyCode === 13) {
@@ -12,7 +12,7 @@ window.onload = async function () {
     });
 }
 
-function createFiltersMenu () {
+function createFiltersMenu() {
     let menu = document.getElementById('filters');
     menu.innerHTML += '<li>Genres:</li>';
     for (let item of genres) {
@@ -26,7 +26,7 @@ function createFiltersMenu () {
     menu.innerHTML += '<li><button onclick="applyFilters()">Apply filters</button></li>'
 }
 
-async function renderMovies (filters = null) {
+async function renderMovies(filters = null) {
     document.getElementById('list').innerHTML = '';
     const movies = await getMovies(filters)
     for (let i = 0; i < movies.length; i++) {
@@ -44,7 +44,7 @@ async function renderMovies (filters = null) {
     }
 }
 
-async function getMovies (filters = null) {
+async function getMovies(filters = null) {
     let movies = (await (await fetch('../movies.json')).json()).results;
     if (filters && filters !== {}) {
         if (filters.name) {
@@ -69,7 +69,7 @@ async function getMovies (filters = null) {
     return movies;
 }
 
-function findFilters (checkType, filterNames) {
+function findFilters(checkType, filterNames) {
     let filters = [];
     let inputElements = document.getElementsByClassName(checkType);
     for (let i = 0; inputElements[i]; ++i) {
@@ -80,7 +80,7 @@ function findFilters (checkType, filterNames) {
     return filters;
 }
 
-async function applyFilters (sorting = null) {
+async function applyFilters(sorting = null) {
     const filters = {
         genres: findFilters('genres', genres),
         productionCompanies: findFilters('prodComp', prodComps),
@@ -90,7 +90,7 @@ async function applyFilters (sorting = null) {
     await renderMovies(filters);
 }
 
-async function resetFilters () {
+async function resetFilters() {
     for (let item of document.getElementsByClassName('genres')) {
         item.checked = false;
     }
@@ -101,11 +101,11 @@ async function resetFilters () {
     await renderMovies();
 }
 
-async function getMovieById (movieId) {
+async function getMovieById(movieId) {
     return (await getMovies()).find(movie => Number(movie.id) === Number(movieId));
 }
 
-async function displayMovie (movieId) {
+async function displayMovie(movieId) {
     const movie = await getMovieById(movieId);
     document.getElementById('movies-body').style.overflow = 'hidden';
     const sheet = window.document.styleSheets[0];
@@ -137,9 +137,33 @@ async function displayMovie (movieId) {
     document.getElementById('description').innerHTML = `<p>${movie.overview}</p>`;
 }
 
-function exitMovieView () {
-    document.getElementById('movies-body').style.overflow = 'auto';
-    document.getElementById('movie-container').style.display = 'none';
+function exitMovieView(body) {
+    document.getElementById(`movies-body`).style.overflow = 'auto'
+    document.getElementById(`${body}`).style.display = 'none'
     const sheet = window.document.styleSheets[0];
-    sheet.insertRule('body > *:not(#movie-container) { filter: none; }', sheet.cssRules.length);
+    sheet.insertRule(`body > *:not(#${body}) { filter: none; }`, sheet.cssRules.length);
+
+    let els = document.getElementsByClassName('prodComp')
+
+    while(els.length>0){
+        els[0].parentNode.removeChild(els[0])
+    }
+}
+
+
+function addMovie() {
+    document.getElementById('movies-body').style.overflow = 'hidden'
+    const sheet = window.document.styleSheets[0]
+    sheet.insertRule('body > *:not(#add-movie-container) { filter: blur(8px); }', sheet.cssRules.length)
+    sheet.insertRule(`#add-movie-container { overflow-y:scroll; background: linear-gradient(rgba(19, 35, 47, 0.90), rgba(19, 35, 47, 0.90)); }`, sheet.cssRules.length)
+    document.getElementById('add-movie-container').style.display = 'block'
+}
+
+function addProductionField() {
+    let contentPage=document.getElementById('add-movie-content')
+    let label=document.createElement('label')
+    label.setAttribute('class','prodComp')
+    label.innerHTML='Production company:' +
+        '            <input class="mvProductionCompany" type="text" placeholder="Made with love by:">'
+    contentPage.insertBefore(label,contentPage.childNodes[contentPage.childNodes.length-2])
 }
