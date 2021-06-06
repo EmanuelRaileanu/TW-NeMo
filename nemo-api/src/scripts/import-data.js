@@ -275,9 +275,22 @@ const addTvSeason = async (tvSeason, tvShowId, transaction) => {
     try {
         tvSeasonResponse = await request(`${process.env.TMBD_API}/tv/${tvShowId}/season/${tvSeason.season_number}?api_key=${process.env.TMDB_API_KEY}`)
     } catch (err) {
-        return
+        try {
+            const newTvSeason = await new TvSeason({
+                tvShowId,
+                airDate: tvSeason.air_date || null,
+                title: tvSeason.name,
+                description: tvSeason.overview,
+                seasonNumber: tvSeason.season_number,
+                posterPath: tvSeason.posterPath,
+                tmdbId: tvSeason.id
+            }).save(null, { method: 'insert', transaction: transaction })
+            return newTvSeason.id
+        } catch (err) {
+            return null
+        }
     }
-    let existingTvSeason = await new TvSeason({ tmdbId: tvSeasonResponse.id }).fetch({
+    let existingTvSeason = await new TvSeason({ tvShowId, tmdbId: tvSeasonResponse.id }).fetch({
         require: false,
         transacting: transaction
     })
