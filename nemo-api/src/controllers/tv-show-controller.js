@@ -6,7 +6,7 @@ import TvShowGenre from "../models/tv-show-genre.js";
 import TvShowReview from '../models/tv-show-review.js'
 
 
-class TvShowController{
+class TvShowController {
     static relatedObject = {
         seasons: q => {
             q.select('id', 'tvShowId', 'title')
@@ -69,14 +69,13 @@ class TvShowController{
                 q.orderBy(`tv_shows.${req.query.orderBy.column}`, req.query.orderBy.direction[0])
             } else {
                 q.orderBy('tv_shows.voteAverage', 'DESC')
-                q.orderBy('tv_shows.tmdbVoteAverage', 'DESC')
+                q.orderBy('tv_shows.tmdbNumberOfVotes', 'DESC')
             }
         }).fetchPage({
             require: false,
             page: req.query.page || 1,
             pageSize: req.query.pageSize || 20
         })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify({
             results: shows.toJSON({ omitPivot: true }),
             pagination: shows.pagination
@@ -91,7 +90,6 @@ class TvShowController{
         if (!show) {
             throw new APIError('There is no show with this id', 404)
         }
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify(show.toJSON({ omitPivot: true })))
     }
 
@@ -102,7 +100,6 @@ class TvShowController{
             require: false,
             columns: ['id', 'name']
         })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify(genres.toJSON({ omitPivot: true })))
     }
 
@@ -134,7 +131,6 @@ class TvShowController{
             require: false,
             withRelated: [TvShowController.relatedObject]
         })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify(updatedShow.toJSON({ omitPivot: true })))
     }
 
@@ -163,7 +159,6 @@ class TvShowController{
             await attachToMovie(show, req.body, t)
         })
         show = await show.fetch({ require: false, withRelated: [TvShowController.relatedObject] })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify(show.toJSON({ omitPivot: true })))
     }
 
@@ -182,20 +177,43 @@ class TvShowController{
             await detachAll(show, t)
             await show.destroy({ transacting: t })
         })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify({ message: "TV show successfully deleted" }))
     }
 
     static async getFavorites (req, res) {
         const tvShows = await new TvShow().query(q => {
-            q.innerJoin('user_tv_show_reviews', 'user_tv_show_reviews.userId', 'tv_shows.id')
-            q.where('user_movie_reviews.userId', req.user.id)
+            q.innerJoin('favorite_tv_shows', 'favorite_tv_shows.tvShowId', 'tv_shows.id')
+            q.where('favorite_tv_shows.userId', req.user.id)
         }).fetchAll({ require: false, withRelated: [TvShowController.relatedObject] })
         return res.end(JSON.stringify(tvShows.toJSON({ omitPivot: true })))
     }
 
+    static async addFavorite (req, res) {
+        const tvShow = await new TvShow({ id: req.params.showId }).fetch({ require: false })
+        if (!tvShow) {
+            throw new APIError(`There is no movie with the id ${req.params.showId}`, 404)
+        }
+        await Bookshelf.knex.raw('INSERT INTO favorite_tv_shows values (:userId, :tvShowId)', {
+            userId: req.user.id,
+            tvShowId: tvShow.id
+        })
+        return res.end(JSON.stringify({ message: 'Added tv show to favorites' }))
+    }
+
+    static async deleteFavorite (req, res) {
+        const tvShow = await new TvShow({ id: req.params.showId }).fetch({ require: false })
+        if (!tvShow) {
+            throw new APIError(`There is no tv show with the id ${req.params.showId}`, 404)
+        }
+        await Bookshelf.knex.raw('DELETE FROM favorite_tv_shows WHERE tvShowId = :tvShowId AND userId = :userId', {
+            userId: req.user.id,
+            tvShowId: tvShow.id
+        })
+        return res.end(JSON.stringify({ message: 'Removed tv_show from favorites' }))
+    }
+
     static async addReview (req, res) {
-        const movie = await new TvShow({ id: req.params.tvShowId }).fetch({ require: false })
+        const movie = await new TvShow({ id: req.params.showId }).fetch({ require: false })
         if (!movie) {
             throw new APIError(`There is no movie with the id ${req.params.id}`, 404)
         }
@@ -213,7 +231,7 @@ class TvShowController{
     }
 
     static async updateReview (req, res) {
-        const movie = await new TvShow({ id: req.params.tvShowId }).fetch({ require: false })
+        const movie = await new TvShow({ id: req.params.showId }).fetch({ require: false })
         if (!movie) {
             throw new APIError(`There is no movie with the id ${req.params.id}`, 404)
         }
@@ -231,7 +249,7 @@ class TvShowController{
     }
 
     static async deleteReview (req, res) {
-        const movie = await new TvShow({ id: req.params.tvShowId }).fetch({ require: false })
+        const movie = await new TvShow({ id: req.params.showId }).fetch({ require: false })
         if (!movie) {
             throw new APIError(`There is no movie with the id ${req.params.id}`, 404)
         }
@@ -244,4 +262,4 @@ class TvShowController{
     }
 }
 
-export default  TvShowController
+export default TvShowController

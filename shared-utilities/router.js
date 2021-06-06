@@ -66,7 +66,7 @@ class Router {
                 if (this.routers.hasOwnProperty('/' + splitUrl[2])) {
                     return await this.routers['/' + splitUrl[2]].next(req, res)
                 } else if (this.methods[req.method].find(item => item.hasParams === hasParams && item.path.replace('/', '').split('/')[1] === splitUrl[2])) {
-                    return await this.methods[req.method].find(item => item.hasParams === hasParams).controllerMethod(req, res)
+                    return await this.methods[req.method].find(item => item.hasParams === hasParams && item.path.replace('/', '').split('/')[1] === splitUrl[2]).controllerMethod(req, res)
                 }
             } else if (splitUrl.length === 1 && this.methods[req.method].find(item => item.hasParams === hasParams)) {
                 return await this.methods[req.method].find(item => item.hasParams === hasParams).controllerMethod(req, res)

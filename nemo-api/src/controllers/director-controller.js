@@ -26,7 +26,6 @@ class DirectorController {
             page: req.query.page || 1,
             pageSize: req.query.pageSize || 20
         })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify({
             results: directors.toJSON({ omitPivot: true }),
             pagination: directors.pagination
@@ -41,7 +40,6 @@ class DirectorController {
         if (!director) {
             throw new APIError('There is no director with this id', 404)
         }
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify(director.toJSON({ omitPivot: true })))
     }
 
@@ -72,7 +70,6 @@ class DirectorController {
             require: false,
             withRelated: [DirectorController.relatedObject]
         })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify(updatedDirector.toJSON({ omitPivot: true })))
     }
 
@@ -101,7 +98,6 @@ class DirectorController {
             await attachToDirector(director, req.body, t)
         })
         director = await director.fetch({ require: false, withRelated: [DirectorController.relatedObject] })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify(director.toJSON({ omitPivot: true })))
     }
 
@@ -120,7 +116,6 @@ class DirectorController {
             await detachAll(director, t)
             await director.destroy({ transacting: t })
         })
-        res.writeHead(200, { 'Content-type': 'application/json' })
         return res.end(JSON.stringify({ message: "Director successfully deleted" }))
     }
 }
