@@ -9,6 +9,7 @@ const router = new Router()
 router.get('/', cors(catchErrors(MovieController.getMovies)))
 router.get('/genres', cors(catchErrors(MovieController.getGenres)))
 router.get('/:movieId', cors(catchErrors(MovieController.getMovieById)))
+router.get('/languages',cors(catchErrors(MovieController.getLanguages)))
 
 // Admin routes
 router.post('/', cors(catchErrors(validateToken(MovieController.addMovie))))

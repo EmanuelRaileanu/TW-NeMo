@@ -1,16 +1,29 @@
 const posterBaseUrl = 'https://image.tmdb.org/t/p/original/';
 let genres = [], genreIds = []
-let languages=[],languageIds=[]
+let languages = [], languageIds = []
 const prodComps = ['Animation Picture Company', 'Davis Entertainment', 'DK Entertainment', 'Ghost Horse', 'Goldcrest', 'Goldfinch Studios', 'Good Neighbors Media', 'I Aint Playin Films', 'Mattel Entertainment', 'MISR International Films', 'Movie City Films', 'Pacific Western', 'Paws', 'Rainmaker Entertainment', 'Red Vessel Entertainment', 'Sailor Bear', 'Scared Sheetless', 'Solar Productions', 'Sullivan Bluth Studios', 'United Artists', 'Universal Pictures', 'Zero Trans Fat Productions'];
 
 const API_URL = 'http://stachyon.asuscomm.com:8081'
 
 window.onload = async function () {
-    const response = await (await fetch('http://stachyon.asuscomm.com:8081/movies/genres')).json()
-    for (const el of response) {
+    let genreResponse = await fetch('http://stachyon.asuscomm.com:8081/movies/genres')
+    if (genreResponse.status !== 200)
+        throw new Error("Couldn't load the genres")
+    genreResponse = await genreResponse.json()
+    for (const el of genreResponse) {
         genres.push(el.name)
         genreIds.push(el.id)
     }
+    let langResponse = await fetch('http://stachyon.asuscomm.com:8081/movies/languages')
+    if (langResponse.status !== 200)
+        throw new Error("Couldn't load the genres")
+    langResponse = await langResponse.json()
+    for (const el of langResponse) {
+        languages.push(el.name)
+        languageIds.push(el.id)
+    }
+    console.log(languages)
+    console.log(languageIds)
     await renderMovies({sorting: 'name'});
     createFiltersMenu();
     document.getElementById("mvSch").addEventListener('keydown', async event => {
@@ -69,6 +82,7 @@ async function renderMovies(filters = null) {
 
 async function getMovies(filters = null) {
     let movies = (await (await fetch(`${API_URL}/movies`)).json()).results;
+    console.log(movies)
     if (filters && filters !== {}) {
         if (filters.name) {
             movies = movies.filter(movie => movie.title.toLowerCase().includes(filters.name.toLowerCase()));
