@@ -70,23 +70,30 @@
         <button onclick="exitMovieView(`add-movie-container`)">✕</button>
     </nav>
     <div id="add-movie-content">
-        <label for="mvTitle">Title:</label>
+        <label for="mvTitle">Title:</label><br>
         <input id="mvTitle" type="text" placeholder="A cool name.."><br>
-        <label for="mvTagline">Tagline:</label>
+        <label for="mvTagline">Tagline:</label><br>
         <input id="mvTagline" type="text" placeholder="Coming this summer!"><br>
+        <label>Genres:</label><br>
         <button id="addGenreBtn" onclick="addGenreField()">Add another genre</button><br>
+        <label>Languages:</label><br>
         <button id="addLanguageBtn" onclick="addLanguageField()">Add another language</button><br>
-        <label for="mvReleaseDate">Release date:</label>
+        <label for="mvReleaseDate">Release date:</label><br>
         <input id="mvReleaseDate" type="text" placeholder="Soon(tm).."><br>
-        <label for="mvRating">Rating:</label>
+        <label for="mvStatus">Status:</label><br>
+        <input id="mvStatus" type="text" placeholder="To be released or not to be released? This is the question"><br>
+        <label for="mvRating">Rating:</label><br>
         <input id="mvRating" type="text" placeholder="11/10.."><br>
-        <label for="mvRuntime">Runtime (in minutes):</label>
+        <label for="mvRuntime">Runtime (in minutes):</label><br>
         <input id="mvRuntime" type="text" placeholder="Too long is never enough.."><br>
-        <label for="mvDescription">Description:</label>
+        <label for="mvDescription">Description:</label><br>
         <input id="mvDescription" type="text" placeholder="A long time ago, in a city far, far away.." maxlength="2000"><br>
+        <label>Actors:</label><br>
         <button id="addActorBtn" onclick="addActorField()">Add another actor</button><br>
+        <label>Production Companies:</label><br>
         <button id="addProdCompBtn" onclick="addProductionField()">Add another company</button><br>
-        <button id="addDirectorBtn" onclick="addDirectorField()">Add another director</button>
+        <label>Directors:</label><br>
+        <button id="addDirectorBtn" onclick="addDirectorField()">Add another director</button><br>
         <button id="addMovieBtn" onclick="addMovie()">Add movie</button>
     </div>
 </div>

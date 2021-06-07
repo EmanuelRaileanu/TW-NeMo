@@ -8,64 +8,106 @@
     <title>Tv Shows</title>
 </head>
 <body id="movies-body">
-    <nav class="topnav">
-        <label for="shSch"></label>
-        <input id="shSch" type="text" placeholder="Search.." name="sh">
-        <div class="dropdown">
-            <button class="dropbtn">Sort</button>
-            <ul class="dropdown-content">
-                <li>
-                    <input type="radio" id="name" name="sortType" onclick="applyFilters('name')" checked>By name
-                </li>
-                <li>
-                    <input type="radio" id="rat" name="sortType" onclick="applyFilters('rating')">By rating
-                </li>
-                <li>
-                    <input type="radio" id="asc" name="orderType" onclick="applyFilters()" checked>Ascending
-                </li>
-                <li>
-                    <input type="radio" id="desc" name="orderType" onclick="applyFilters()">Descending
-                </li>
-            </ul>
-        </div>
-        <div class="dropdown">
-            <button class="dropbtn">Filters</button>
-            <ul id="filters" class="dropdown-content">
+<nav class="topnav">
+    <label for="shSch"></label>
+    <input id="shSch" type="text" placeholder="Search.." name="sh">
+    <div class="dropdown">
+        <button class="dropbtn">Sort</button>
+        <ul class="dropdown-content">
+            <li>
+                <input type="radio" id="name" name="sortType" onclick="applyFilters('name')" checked>By name
+            </li>
+            <li>
+                <input type="radio" id="rat" name="sortType" onclick="applyFilters('rating')">By rating
+            </li>
+            <li>
+                <input type="radio" id="asc" name="orderType" onclick="applyFilters()" checked>Ascending
+            </li>
+            <li>
+                <input type="radio" id="desc" name="orderType" onclick="applyFilters()">Descending
+            </li>
+        </ul>
+    </div>
+    <div class="dropdown">
+        <button class="dropbtn">Filters</button>
+        <ul id="filters" class="dropdown-content">
 
-            </ul>
-        </div>
+        </ul>
+    </div>
+    <button class="addMovie" onclick="openAddShowMenu()">Add Show</button>
+</nav>
+
+<div class="content-container">
+    <div id="controls">
+
+    </div>
+    <ul id="list"></ul>
+</div>
+<div id="movie-container">
+    <nav id="top-menu">
+        <button onclick="exitShowView('movie-container')">✕</button>
     </nav>
-
-    <div class="content-container">
-        <div id="controls">
-
+    <div id="movie-content">
+        <div id="poster"></div>
+        <div id="title"></div>
+        <div id="tagline"></div>
+        <div id="genres">
+            <ul id="genre-list"></ul>
         </div>
-        <ul id="list"></ul>
-    </div>
-    <div id="movie-container">
-        <nav id="top-menu">
-            <button onclick="exitShowView()">✕</button>
-        </nav>
-        <div id="movie-content">
-            <div id="poster"></div>
-            <div id="title"></div>
-            <div id="tagline"></div>
-            <div id="genres">
-                <ul id="genre-list"></ul>
-            </div>
-            <div id="lang"></div>
-            <div id="release"></div>
-            <div id="rating"></div>
-            <div id="runtime"></div>
-            <div id="description"></div>
-            <div id="seasons">
-                <ul id="seasons-list"></ul>
-            </div>
-            <div id="production-companies">
-                <ul id="production-companies-list"></ul>
-            </div>
+        <div id="lang"></div>
+        <div id="release"></div>
+        <div id="rating"></div>
+        <div id="runtime"></div>
+        <div id="description"></div>
+        <div id="seasons">
+            <ul id="seasons-list"></ul>
         </div>
-        <footer></footer>
+        <div id="production-companies">
+            <ul id="production-companies-list"></ul>
+        </div>
     </div>
+    <footer></footer>
+</div>
+
+<div id="add-movie-container">
+    <nav id="add-top-menu">
+        <button onclick="exitShowView(`add-movie-container`)">✕</button>
+    </nav>
+    <div id="add-movie-content">
+        <label for="mvTitle">Title:</label><br>
+        <input id="mvTitle" type="text" placeholder="A cool name.."><br>
+        <label for="mvTagline">Tagline:</label><br>
+        <input id="mvTagline" type="text" placeholder="Coming this summer!"><br>
+        <label>Genres:</label><br>
+        <button id="addGenreBtn" onclick="addGenreField()">Add another genre</button>
+        <br>
+        <label>Languages:</label><br>
+        <button id="addLanguageBtn" onclick="addLanguageField()">Add another language</button>
+        <br>
+        <label for="mvReleaseDate">Release date:</label><br>
+        <input id="mvReleaseDate" type="text" placeholder="Soon(tm).."><br>
+        <label for="mvStatus">Status:</label><br>
+        <input id="mvStatus" type="text" placeholder="To be released or not to be released? This is the question"><br>
+        <label for="mvRating">Rating:</label><br>
+        <input id="mvRating" type="text" placeholder="PG-13"><br>
+        <label for="mvRuntime">Runtime (in minutes):</label><br>
+        <input id="mvRuntime" type="text" placeholder="Too long is never enough.."><br>
+        <label for="mvDescription">Description:</label><br>
+        <input id="mvDescription" type="text" placeholder="A long time ago, in a city far, far away.." maxlength="2000"><br>
+        <label>Actors:</label><br>
+        <button id="addActorBtn" onclick="addActorField()">Add another actor</button>
+        <br>
+        <label>Production Companies:</label><br>
+        <button id="addProdCompBtn" onclick="addProdCompField()">Add another company</button>
+        <br>
+        <label>Directors:</label><br>
+        <button id="addDirectorBtn" onclick="addDirectorField()">Add another director</button>
+        <br>
+        <label>Seasons: </label><br>
+        <button id="addSeasonBtn" onclick="addSeasonFields()">Add another season</button>
+        <br>
+        <button id="addShowBtn" onclick="addShow()">Add Show</button>
+    </div>
+</div>
 </body>
 </html>
