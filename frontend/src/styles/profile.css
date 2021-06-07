@@ -75,7 +75,7 @@ div.information :last-child{
     align-self: center;
 }
 
-#export:hover, #submitBtn:hover {
+#wrapper button:hover, #submitBtn:hover {
     background-color:  #1ab188;
     cursor: pointer;
 }
@@ -125,7 +125,7 @@ li > button{
 }
 
 
-#changeMenu {
+#changeMenu, #addMenu {
     display: none;
     border-radius: 25px;
     position:fixed;
@@ -146,7 +146,7 @@ li > button{
     }
 }
 
-#changeMenu > * {
+#changeMenu > *, #addMenu > * {
     color:white;
     font-size:1.5vh;
 }

@@ -15,7 +15,7 @@ class ProductionCompanyController {
             q.select('id', 'title')
         }
     }
-    static minimalColumns = ['name', 'headquarters', 'countryId', 'movieIds', 'tvShowIds']
+    static minimalColumns = ['name', 'headquarters', 'countryId']
 
     static async getProductionCompanies (req, res) {
         const companies = await new ProductionCompany().query(q => {

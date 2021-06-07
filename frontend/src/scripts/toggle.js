@@ -4,7 +4,6 @@ const posterBaseUrl = 'https://image.tmdb.org/t/p/original/'
 
 function writeToHTML(items, btnMode) {
     for (let i = 0; i < items.length; i++) {
-        console.log(items[i].backdropPath)
         document.getElementById("name" + i).innerHTML = items[i].title;
         document.getElementById("img" + i).setAttribute("src", posterBaseUrl + items[i].backdropPath);
         document.getElementById("desc" + i).innerHTML = items[i].description;

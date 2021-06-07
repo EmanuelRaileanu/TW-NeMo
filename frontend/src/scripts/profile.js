@@ -6,13 +6,14 @@ const API_URL = 'http://stachyon.asuscomm.com:8081'
 window.onload = async function () {
     await loadUserData()
     await loadFavorites()
-    console.log(document.getElementById(`export`).parentNode)
+    const userDetails= await (await fetch(`${AUTH_SERVICE_URL}/users/${localStorage.getItem("username")}`)).json()
+    if(['Owner','Admin'].includes(userDetails.role.name)){
         loadAdminOptions()
+    }
 }
 
 
 function loadAdminOptions() {
-    console.log("Opening the admin option")
     let contentPage = document.getElementById('wrapper')
     let actorButton = document.createElement('button')
 
@@ -48,24 +49,75 @@ function loadAdminOptions() {
 
 function openActorMenu() {
     console.log("I'll open the actor menu")
+    //make window visible
+    /*add the fields: name
+                      gender
+                      birthdate
+                      placeOfBirth
+                      biography
+
+    */
 }
 
 function openDirectorMenu() {
     console.log("I'll open the director menu")
+    //make window visible
+    /*add the fields: name
+                      gender
+                      birthdate
+                      placeOfBirth
+                      biography
+
+    */
 }
 
 function openProductionCompanyMenu() {
     console.log("I'll open the production companies menu")
+    //make window visible
+    /*add the fields: name
+                      description
+                      headquarters
+                      countryId
+
+    */
 }
 
 function openSeasonMenu() {
     console.log("I'll open the seasons menu")
+    //make window visible
+    /*add the fields: showId
+                      title
+                      description
+                      airDate
+                      seasonNumber
+    */
 }
 
 function openEpisodeMenu() {
     console.log("I'll open the episodes menu")
+    //make window visible
+    /*add the fields: seasonId
+                      title
+                      description
+                      airDate
+                      episodeNumber
+    */
 }
 
+async function logout(){
+    const answer= await fetch(`${AUTH_SERVICE_URL}/auth/logout`,{
+        method: 'POST',
+        headers:{
+            'Authorization': `Bearer ${localStorage.getItem("token")}`
+        }
+    })
+    localStorage.removeItem('token')
+    localStorage.removeItem('tokenExpiry')
+    localStorage.removeItem('username')
+    window.location.replace('./homepage.html')
+    sessionStorage.setItem('contentPage','homepage')
+    parent.window.location.reload()
+}
 
 async function loadUserData() {
     const username = localStorage.getItem('username')
