@@ -14,16 +14,15 @@ window.onload = async function () {
         genres.push(el.name)
         genreIds.push(el.id)
     }
+    console.log(genres)
     let langResponse = await fetch('http://stachyon.asuscomm.com:8081/movies/languages')
     if (langResponse.status !== 200)
         throw new Error("Couldn't load the genres")
     langResponse = await langResponse.json()
     for (const el of langResponse) {
-        languages.push(el.name)
+        languages.push(el.code)
         languageIds.push(el.id)
     }
-    console.log(languages)
-    console.log(languageIds)
     await renderMovies({sorting: 'name'});
     createFiltersMenu();
     document.getElementById("mvSch").addEventListener('keydown', async event => {
@@ -32,17 +31,15 @@ window.onload = async function () {
         }
     });
 
-    let prodCompElement = document.getElementsByClassName('prodCompField')[0]
-    prodCompElement.childNodes[1].addEventListener('keydown', async event => {
-        if (event.code === 'Enter' || event.keyCode === 13) {
-            const inputField = prodCompElement.childNodes[1].value.replace(' ', '%20')
-            let response = await (await fetch(`${API_URL}/production-companies?searchBy=${inputField}`)).json()
-            if (response["results"].length > 0) {
-                prodCompElement.childNodes[1].value = response["results"][0].name
-                prodCompElement.childNodes[2].value = response["results"][0].id
-            }
-        }
-    })
+    addProductionField()
+
+    addGenreField()
+
+    addLanguageField()
+
+    addDirectorField()
+
+    addActorField()
 
 
 }
@@ -82,7 +79,6 @@ async function renderMovies(filters = null) {
 
 async function getMovies(filters = null) {
     let movies = (await (await fetch(`${API_URL}/movies`)).json()).results;
-    console.log(movies)
     if (filters && filters !== {}) {
         if (filters.name) {
             movies = movies.filter(movie => movie.title.toLowerCase().includes(filters.name.toLowerCase()));
@@ -197,13 +193,59 @@ function openAddMovieMenu() {
     document.getElementById('add-movie-container').style.display = 'block'
 }
 
+function addGenreField() {
+    let contentPage = document.getElementById('add-movie-content')
+    let label = document.createElement('label')
+    label.setAttribute('class', 'genreField')
+    label.innerHTML = 'Genre:' +
+        '            <input class="mvGenre" type="text" placeholder="Fits in this box:">' +
+        '<input class="mvGenreId" type="hidden">'
+    label.childNodes[1].addEventListener('keydown', async event => {
+        if (event.code === 'Enter' || event.keyCode === 13) {
+            const inputField = label.childNodes[1].value
+            const index = genres.indexOf(inputField)
+            if (index >= 0) {
+                label.childNodes[1].value = genres[index]
+                label.childNodes[1].style.color = "green"
+                label.childNodes[2].value = genreIds[index]
+            } else {
+                label.childNodes[1].style.color = "red"
+            }
+        }
+    })
+    contentPage.insertBefore(label, document.getElementById('addGenreBtn'))
+}
+
+function addLanguageField() {
+    let contentPage = document.getElementById('add-movie-content')
+    let label = document.createElement('label')
+    label.setAttribute('class', 'languageField')
+    label.innerHTML = 'Language:' +
+        '            <input class="mvLanguage" type="text" placeholder="Speaks to the those who know:">' +
+        '<input class="mvLanguageId" type="hidden">'
+    label.childNodes[1].addEventListener('keydown', async event => {
+        if (event.code === 'Enter' || event.keyCode === 13) {
+            const inputField = label.childNodes[1].value
+            const index = languages.indexOf(inputField)
+            if (index >= 0) {
+                label.childNodes[1].value = languages[index]
+                label.childNodes[1].style.color = "green"
+                label.childNodes[2].value = languageIds[index]
+            } else {
+                label.childNodes[1].style.color = "red"
+            }
+        }
+    })
+    contentPage.insertBefore(label, document.getElementById('addLanguageBtn'))
+}
+
 function addProductionField() {
     let contentPage = document.getElementById('add-movie-content')
     let label = document.createElement('label')
     label.setAttribute('class', 'prodCompField')
     label.innerHTML = 'Production company:' +
         '            <input class="mvProductionCompany" type="text" placeholder="Made with love by:">' +
-        '<input class="mvProdCompId" name="prodId" type="hidden">'
+        '<input class="mvProdCompId" type="hidden">'
     label.childNodes[1].addEventListener('keydown', async event => {
         if (event.code === 'Enter' || event.keyCode === 13) {
             const inputField = label.childNodes[1].value.replace(' ', '%20')
@@ -211,17 +253,92 @@ function addProductionField() {
             if (response["results"].length > 0) {
                 label.childNodes[1].value = response["results"][0].name
                 label.childNodes[2].value = response["results"][0].id
+            } else {
+                label.childNodes[1].style.color = "red"
             }
         }
     })
-    contentPage.insertBefore(label, contentPage.childNodes[contentPage.childNodes.length - 2])
+    contentPage.insertBefore(label, document.getElementById('addProdCompBtn'))
+}
+
+function addActorField() {
+    let contentPage = document.getElementById('add-movie-content')
+    let label = document.createElement('label')
+    label.setAttribute('class', 'actorField')
+    label.innerHTML = 'Actor:' +
+        '            <input class="mvActor" type="text" placeholder="The audience will adore:">' +
+        '<input class="mvActorId" type="hidden">'
+    label.childNodes[1].addEventListener('keydown', async event => {
+        if (event.code === 'Enter' || event.keyCode === 13) {
+            const inputField = label.childNodes[1].value.replace(' ', '%20')
+            let response = await (await fetch(`${API_URL}/actors?searchBy=${inputField}`)).json()
+            if (response["results"].length > 0) {
+                label.childNodes[1].value = response["results"][0].name
+                label.childNodes[2].value = response["results"][0].id
+            } else {
+                label.childNodes[1].style.color = "red"
+            }
+        }
+    })
+    contentPage.insertBefore(label, document.getElementById('addActorBtn'))
+}
+
+function addDirectorField() {
+    let contentPage = document.getElementById('add-movie-content')
+    let label = document.createElement('label')
+    label.setAttribute('class', 'directorField')
+    label.innerHTML = 'Director:' +
+        '            <input class="mvDirector" type="text" placeholder="The mind that brought us the light:">' +
+        '<input class="mvDirectorId" type="hidden">'
+    label.childNodes[1].addEventListener('keydown', async event => {
+        if (event.code === 'Enter' || event.keyCode === 13) {
+            const inputField = label.childNodes[1].value.replace(' ', '%20')
+            let response = await (await fetch(`${API_URL}/directors?searchBy=${inputField}`)).json()
+            if (response["results"].length > 0) {
+                label.childNodes[1].value = response["results"][0].name
+                label.childNodes[2].value = response["results"][0].id
+            } else {
+                label.childNodes[1].style.color = "red"
+            }
+        }
+    })
+    contentPage.insertBefore(label, document.getElementById('addDirectorBtn'))
 }
 
 async function addMovie() {
     let prodComps = []
-    for (let el of document.getElementsByClassName("mvProdCompId")) {
-        if (el.value !== '' && !el.value) {
-            prodComps += el.value
+    const prodCompIds = document.getElementsByClassName("mvProdCompId")
+    for (let el of prodCompIds) {
+        if (el.value !== '') {
+            prodComps.push(el.value)
+        }
+    }
+    let actors = []
+    const actorIds = document.getElementsByClassName("mvActorId")
+    for (let el of actorIds) {
+        if (el.value !== '') {
+            actors.push(el.value)
+        }
+    }
+    let directors = []
+    const directorIds = document.getElementsByClassName("mvDirectorId")
+    for (let el of directorIds) {
+        if (el.value !== '') {
+            directors.push(el.value)
+        }
+    }
+    let genres = []
+    const genreIds = document.getElementsByClassName("mvGenreId")
+    for (let el of genreIds) {
+        if (el.value !== '') {
+            genres.push(el.value)
+        }
+    }
+    let languages = []
+    const languageIds = document.getElementsByClassName("mvLanguageId")
+    for (let el of languageIds) {
+        if (el.value !== '') {
+            languages.push(el.value)
         }
     }
     const data = {
@@ -231,13 +348,19 @@ async function addMovie() {
         "rating": `${document.getElementById('mvRating').value}`,
         "runtime": `${document.getElementById('mvRuntime').value}`,
         "description": `${document.getElementById('mvDescription').value}`,
-        "productionCompanyIds": prodComps
+        "productionCompanyIds": prodComps,
+        "actorIds": actors,
+        "directorIds": directors,
+        "genreIds": genres,
+        "languageIds": languages
     }
-    await fetch('http://stachyon.asuscomm.com:8081/movies', {
+    console.log(data)
+    const response= await fetch('http://stachyon.asuscomm.com:8081/movies', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(data)
     })
+    console.log(response.json())
 }
