@@ -23,7 +23,7 @@ body::-webkit-scrollbar-thumb {
     outline: 1px solid slategrey;
 }
 
-div.wrapper{
+div#wrapper{
     margin-top: 5vh;
     background: rgba(63, 95, 118, 0.43);
     width: 60vw;
@@ -34,7 +34,7 @@ div.wrapper{
     position:relative;
 }
 
-div.wrapper > h1{
+div#wrapper > h1{
     padding-left:11px;
     color:white;
 }
@@ -63,10 +63,11 @@ div.information :last-child{
     padding-bottom: 30px;
 }
 
-.export, #submitBtn {
+#wrapper button, #submitBtn {
     background: inherit;
     color: white;
     padding: 16px;
+    margin-bottom: 1vh;
     font-size: 16px;
     border: 1px solid #1ab188;
     border-radius: 10px;
@@ -74,7 +75,7 @@ div.information :last-child{
     align-self: center;
 }
 
-.export:hover, #submitBtn:hover {
+#export:hover, #submitBtn:hover {
     background-color:  #1ab188;
     cursor: pointer;
 }
@@ -134,7 +135,15 @@ li > button{
     background: rgba(13, 27, 36, 0.99);
     animation: .3s ease-out growFromCenter;
 
+}
 
+@keyframes growFromCenter {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
 
 #changeMenu > * {

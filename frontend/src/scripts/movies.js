@@ -14,10 +14,9 @@ window.onload = async function () {
         genres.push(el.name)
         genreIds.push(el.id)
     }
-    console.log(genres)
     let langResponse = await fetch('http://stachyon.asuscomm.com:8081/movies/languages')
     if (langResponse.status !== 200)
-        throw new Error("Couldn't load the genres")
+        throw new Error("Couldn't load the shows")
     langResponse = await langResponse.json()
     for (const el of langResponse) {
         languages.push(el.code)
@@ -181,6 +180,22 @@ function exitMovieView(body) {
         while (els.length > 1) {
             els[1].parentNode.removeChild(els[1])
         }
+        els = document.getElementsByClassName('genreField')
+        while (els.length > 1) {
+            els[1].parentNode.removeChild(els[1])
+        }
+        els = document.getElementsByClassName('languageField')
+        while (els.length > 1) {
+            els[1].parentNode.removeChild(els[1])
+        }
+        els = document.getElementsByClassName('actorField')
+        while (els.length > 1) {
+            els[1].parentNode.removeChild(els[1])
+        }
+        els = document.getElementsByClassName('directorField')
+        while (els.length > 1) {
+            els[1].parentNode.removeChild(els[1])
+        }
     }
 }
 
@@ -193,116 +208,78 @@ function openAddMovieMenu() {
     document.getElementById('add-movie-container').style.display = 'block'
 }
 
-function addGenreField() {
+function addField(fieldName, inputClass, placeholderText, whereToQuery, insertBeforeLocation) {
+
     let contentPage = document.getElementById('add-movie-content')
     let label = document.createElement('label')
-    label.setAttribute('class', 'genreField')
-    label.innerHTML = 'Genre:' +
-        '            <input class="mvGenre" type="text" placeholder="Fits in this box:">' +
-        '<input class="mvGenreId" type="hidden">'
-    label.childNodes[1].addEventListener('keydown', async event => {
+    label.setAttribute('class', fieldName)
+    label.innerHTML = `<input class="${inputClass}" type="text" placeholder="${placeholderText}"><br>` +
+        `<input class="${inputClass}Id" type="hidden"><br>`
+    label.childNodes[0].addEventListener('keydown', async event => {
         if (event.code === 'Enter' || event.keyCode === 13) {
-            const inputField = label.childNodes[1].value
-            const index = genres.indexOf(inputField)
-            if (index >= 0) {
-                label.childNodes[1].value = genres[index]
-                label.childNodes[1].style.color = "green"
-                label.childNodes[2].value = genreIds[index]
+            const inputField = label.childNodes[0].value
+            const index = await whereToQuery(inputField)
+            console.log(index)
+            if (index.length > 0) {
+                label.childNodes[0].value = index[0].name
+                label.childNodes[0].style.color = "green"
+                label.childNodes[1].value = index[0].id
             } else {
-                label.childNodes[1].style.color = "red"
+                label.childNodes[0].style.color = "red"
             }
         }
     })
-    contentPage.insertBefore(label, document.getElementById('addGenreBtn'))
+    contentPage.insertBefore(label, document.getElementById(insertBeforeLocation))
+}
+
+function addGenreField() {
+    addField('genreField', 'mvGenre', 'Gives the tone of:', async (name) => {
+        const index = genres.indexOf(name)
+        if (index >= 0) {
+            return Array.of({
+                'name': genres[index],
+                'id': genreIds[index]
+            })
+        } else {
+            return Array.of()
+        }
+
+    }, 'addGenreBtn')
 }
 
 function addLanguageField() {
-    let contentPage = document.getElementById('add-movie-content')
-    let label = document.createElement('label')
-    label.setAttribute('class', 'languageField')
-    label.innerHTML = 'Language:' +
-        '            <input class="mvLanguage" type="text" placeholder="Speaks to the those who know:">' +
-        '<input class="mvLanguageId" type="hidden">'
-    label.childNodes[1].addEventListener('keydown', async event => {
-        if (event.code === 'Enter' || event.keyCode === 13) {
-            const inputField = label.childNodes[1].value
-            const index = languages.indexOf(inputField)
-            if (index >= 0) {
-                label.childNodes[1].value = languages[index]
-                label.childNodes[1].style.color = "green"
-                label.childNodes[2].value = languageIds[index]
-            } else {
-                label.childNodes[1].style.color = "red"
-            }
+    addField('languageField', 'mvLanguage', 'Understood better in:', async (name) => {
+        const index = languages.indexOf(name)
+        if (index >= 0) {
+            return Array.of({
+                'name': languages[index],
+                'id': languageIds[index]
+            })
+        } else {
+            return Array.of()
         }
-    })
-    contentPage.insertBefore(label, document.getElementById('addLanguageBtn'))
+    }, 'addLanguageBtn')
 }
 
 function addProductionField() {
-    let contentPage = document.getElementById('add-movie-content')
-    let label = document.createElement('label')
-    label.setAttribute('class', 'prodCompField')
-    label.innerHTML = 'Production company:' +
-        '            <input class="mvProductionCompany" type="text" placeholder="Made with love by:">' +
-        '<input class="mvProdCompId" type="hidden">'
-    label.childNodes[1].addEventListener('keydown', async event => {
-        if (event.code === 'Enter' || event.keyCode === 13) {
-            const inputField = label.childNodes[1].value.replace(' ', '%20')
-            let response = await (await fetch(`${API_URL}/production-companies?searchBy=${inputField}`)).json()
-            if (response["results"].length > 0) {
-                label.childNodes[1].value = response["results"][0].name
-                label.childNodes[2].value = response["results"][0].id
-            } else {
-                label.childNodes[1].style.color = "red"
-            }
-        }
-    })
-    contentPage.insertBefore(label, document.getElementById('addProdCompBtn'))
+    addField('prodCompField', 'mvProdComp', 'Dedicated their hearts:', async (name) => {
+        const result = await (await fetch(`${API_URL}/production-companies?searchBy=${name}`)).json()
+        return result.results
+    }, 'addProdCompBtn')
 }
 
 function addActorField() {
-    let contentPage = document.getElementById('add-movie-content')
-    let label = document.createElement('label')
-    label.setAttribute('class', 'actorField')
-    label.innerHTML = 'Actor:' +
-        '            <input class="mvActor" type="text" placeholder="The audience will adore:">' +
-        '<input class="mvActorId" type="hidden">'
-    label.childNodes[1].addEventListener('keydown', async event => {
-        if (event.code === 'Enter' || event.keyCode === 13) {
-            const inputField = label.childNodes[1].value.replace(' ', '%20')
-            let response = await (await fetch(`${API_URL}/actors?searchBy=${inputField}`)).json()
-            if (response["results"].length > 0) {
-                label.childNodes[1].value = response["results"][0].name
-                label.childNodes[2].value = response["results"][0].id
-            } else {
-                label.childNodes[1].style.color = "red"
-            }
-        }
-    })
-    contentPage.insertBefore(label, document.getElementById('addActorBtn'))
+    addField('actorField', 'mvActor', 'Deserves rows of applause:', async (name) => {
+        const result = await (await fetch(`${API_URL}/actors?searchBy=${name}`)).json()
+        return result.results
+    }, 'addActorBtn')
 }
 
 function addDirectorField() {
-    let contentPage = document.getElementById('add-movie-content')
-    let label = document.createElement('label')
-    label.setAttribute('class', 'directorField')
-    label.innerHTML = 'Director:' +
-        '            <input class="mvDirector" type="text" placeholder="The mind that brought us the light:">' +
-        '<input class="mvDirectorId" type="hidden">'
-    label.childNodes[1].addEventListener('keydown', async event => {
-        if (event.code === 'Enter' || event.keyCode === 13) {
-            const inputField = label.childNodes[1].value.replace(' ', '%20')
-            let response = await (await fetch(`${API_URL}/directors?searchBy=${inputField}`)).json()
-            if (response["results"].length > 0) {
-                label.childNodes[1].value = response["results"][0].name
-                label.childNodes[2].value = response["results"][0].id
-            } else {
-                label.childNodes[1].style.color = "red"
-            }
-        }
-    })
-    contentPage.insertBefore(label, document.getElementById('addDirectorBtn'))
+    addField('directorField', 'mvDirector', 'The mind which born it all:', async (name) => {
+        const result = await (await fetch(`${API_URL}/directors?searchBy=${name}`)).json()
+        return result.results
+    }, 'addDirectorBtn')
 }
 
 async function addMovie() {
@@ -355,7 +332,7 @@ async function addMovie() {
         "languageIds": languages
     }
     console.log(data)
-    const response= await fetch('http://stachyon.asuscomm.com:8081/movies', {
+    const response = await fetch('http://stachyon.asuscomm.com:8081/movies', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

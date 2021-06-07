@@ -454,7 +454,11 @@ h6 {
     outline: none;
 }
 
-.topnav input[type=text]:focus {
+#add-movie-content input[type=text]{
+    width:50%;
+}
+
+.topnav input[type=text]:focus , #add-movie-content input[type=text]{
     background: rgba(63, 95, 118, 0.43);
 }
 
