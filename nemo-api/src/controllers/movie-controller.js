@@ -5,6 +5,7 @@ import { attachToMovie, checkTableArrays, detachAll, validateReviewBody } from '
 import MovieGenre from '../models/movie-genre.js'
 import MovieReview from '../models/movie-review.js'
 import Language from "../models/language.js";
+import Rating from '../models/rating.js'
 
 class MovieController {
     static relatedObject = {
@@ -109,14 +110,24 @@ class MovieController {
         return res.end(JSON.stringify(genres.toJSON({ omitPivot: true })))
     }
 
-    static async getLanguages(req,res){
+    static async getLanguages (req, res) {
         const languages = await new Language().query(q => {
             q.orderBy('languages.code', 'ASC')
         }).fetchAll({
             require: false,
             columns: ['id', 'code']
         })
-        return res.end(JSON.stringify(languages.toJSON({ omitPivot: true })))
+        return res.end(JSON.stringify(languages.toJSON()))
+    }
+
+    static async getRatings (req, res) {
+        const ratings = await new Rating().query(q => {
+            q.orderBy('code', 'ASC')
+        }).fetchAll({
+            require: false,
+            columns: ['id', 'code']
+        })
+        return res.end(JSON.stringify(ratings.toJSON()))
     }
 
     static async updateMovie (req, res) {

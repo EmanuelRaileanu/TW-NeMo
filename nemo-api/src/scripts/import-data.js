@@ -17,6 +17,7 @@ import TvShowGenre from '../models/tv-show-genre.js'
 import Language from '../models/language.js'
 import ProductionCompany from '../models/production-company.js'
 import Country from '../models/country.js'
+import emojiStrip from 'emoji-strip'
 
 dotenv.config()
 
@@ -250,7 +251,7 @@ const addTvEpisode = async (tvEpisode, seasonId, transaction) => {
         seasonId,
         airDate: tvEpisode.air_date || null,
         episodeNumber: tvEpisode.episode_number,
-        name: tvEpisode.name,
+        name: emojiStrip(tvEpisode.name).split('+')[0],
         description: tvEpisode.overview,
         posterPath: tvEpisode.still_path,
         tmdbVoteAverage: tvEpisode.vote_average,
@@ -269,11 +270,11 @@ const addTvEpisode = async (tvEpisode, seasonId, transaction) => {
     return savedTvEpisode.id
 }
 
-const addTvSeason = async (tvSeason, tvShowId, transaction) => {
+const addTvSeason = async (tvSeason, tvShowId, tvShowTmdbId, transaction) => {
     // Fetch tv season by id from TMDB
     let tvSeasonResponse
     try {
-        tvSeasonResponse = await request(`${process.env.TMBD_API}/tv/${tvShowId}/season/${tvSeason.season_number}?api_key=${process.env.TMDB_API_KEY}`)
+        tvSeasonResponse = await request(`${process.env.TMBD_API}/tv/${tvShowTmdbId}/season/${tvSeason.season_number}?api_key=${process.env.TMDB_API_KEY}`)
     } catch (err) {
         try {
             const newTvSeason = await new TvSeason({
@@ -290,30 +291,15 @@ const addTvSeason = async (tvSeason, tvShowId, transaction) => {
             return null
         }
     }
-    let existingTvSeason = await new TvSeason({ tvShowId, tmdbId: tvSeasonResponse.id }).fetch({
-        require: false,
-        transacting: transaction
-    })
-    if (existingTvSeason) {
-        return existingTvSeason.id
-    }
-    let savedTvSeason
-    try {
-        savedTvSeason = await new TvSeason({
-            tvShowId,
-            airDate: tvSeasonResponse.air_date || null,
-            title: tvSeasonResponse.name,
-            description: tvSeasonResponse.overview,
-            seasonNumber: tvSeasonResponse.season_number,
-            posterPath: tvSeasonResponse.poster_path,
-            tmdbId: tvSeasonResponse.id
-        }).save(null, { method: 'insert', transacting: transaction })
-    } catch (err) {
-        savedTvSeason = await new TvSeason({ tmdbId: tvSeasonResponse.id }).fetch({
-            require: false,
-            transacting: transaction
-        })
-    }
+    const savedTvSeason = await new TvSeason({
+        tvShowId,
+        airDate: tvSeasonResponse.air_date || null,
+        title: tvSeasonResponse.name,
+        description: tvSeasonResponse.overview,
+        seasonNumber: tvSeasonResponse.season_number,
+        posterPath: tvSeasonResponse.poster_path,
+        tmdbId: tvSeasonResponse.id
+    }).save(null, { method: 'insert', transacting: transaction })
     await Promise.all(tvSeasonResponse.episodes.map(async episode => await addTvEpisode(episode, savedTvSeason.id, transaction)))
     return savedTvSeason.id
 }
@@ -397,7 +383,7 @@ const addTvShow = async (tvShow, rating, directors, actors, transaction = null) 
             await savedTvShow.productionCompanies().attach(productionCompanyIds, { transacting: transaction })
         }
         if (tvShowResponse.seasons.length) {
-            await Promise.all(tvShowResponse.seasons.map(async season => await addTvSeason(season, savedTvShow.id, transaction)))
+            await Promise.all(tvShowResponse.seasons.map(async season => await addTvSeason(season, savedTvShow.id, tvShowResponse.id, transaction)))
         }
     }
 }
@@ -437,23 +423,28 @@ const addMovie = async (movie, rating, directors, actors, transaction = null) =>
         if (existingMovie) {
             return
         }
-        const savedMovie = await new Movie({
-            ratingId: existingRating ? existingRating.id : null,
-            title: movieResponse.title,
-            tagline: movieResponse.tagline,
-            description: movieResponse.overview,
-            tmdbVoteAverage: movieResponse.vote_average,
-            tmdbNumberOfVotes: movieResponse.vote_count,
-            status: movieResponse.status,
-            releaseDate: movieResponse.release_date !== '' ? movieResponse.release_date : null,
-            runtimeInMinutes: movieResponse.runtime,
-            budget: movieResponse.budget,
-            revenue: movieResponse.revenue,
-            posterPath: movieResponse.poster_path,
-            backdropPath: movieResponse.backdrop_path,
-            tmdbId: movieResponse.id,
-            imdbId: movieResponse.imdb_id !== '' ? movieResponse.imdb_id : null
-        }).save(null, { method: 'insert', transacting: transaction })
+        let savedMovie
+        try {
+            savedMovie = await new Movie({
+                ratingId: existingRating ? existingRating.id : null,
+                title: movieResponse.title,
+                tagline: movieResponse.tagline,
+                description: movieResponse.overview,
+                tmdbVoteAverage: movieResponse.vote_average,
+                tmdbNumberOfVotes: movieResponse.vote_count,
+                status: movieResponse.status,
+                releaseDate: movieResponse.release_date !== '' ? movieResponse.release_date : null,
+                runtimeInMinutes: movieResponse.runtime,
+                budget: movieResponse.budget,
+                revenue: movieResponse.revenue,
+                posterPath: movieResponse.poster_path,
+                backdropPath: movieResponse.backdrop_path,
+                tmdbId: movieResponse.id,
+                imdbId: movieResponse.imdb_id !== '' ? movieResponse.imdb_id : null
+            }).save(null, { method: 'insert', transacting: transaction })
+        } catch (err) {
+            return
+        }
         if (actorIds && actorIds.length) {
             await savedMovie.actors().attach(actorIds, { transacting: transaction })
         }

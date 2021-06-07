@@ -6,7 +6,7 @@ const prodComps = ['20th Century Fox Television', '20th Television', 'Anonymous 
 const API_URL = 'http://stachyon.asuscomm.com:8081'
 
 window.onload = async function () {
-    let genreResponse = await fetch('http://stachyon.asuscomm.com:8081/shows/genres')
+    let genreResponse = await fetch(`${API_URL}/shows/genres`)
     if (genreResponse.status !== 200)
         throw new Error("Couldn't load the genres")
     genreResponse = await genreResponse.json()
@@ -14,7 +14,7 @@ window.onload = async function () {
         genres.push(el.name)
         genreIds.push(el.id)
     }
-    let langResponse = await fetch('http://stachyon.asuscomm.com:8081/movies/languages')
+    let langResponse = await fetch(`${API_URL}/movies/languages`)
     if (langResponse.status !== 200)
         throw new Error("Couldn't load the languages")
     langResponse = await langResponse.json()
@@ -22,7 +22,7 @@ window.onload = async function () {
         languages.push(el.code)
         languageIds.push(el.id)
     }
-    let ratingResponse = await fetch('http://stachyon.asuscomm.com:8081/movies/ratings')
+    let ratingResponse = await fetch(`${API_URL}/movies/ratings`)
     if (ratingResponse.status !== 200)
         throw new Error("Couldn't load the ratings")
     ratingResponse = await ratingResponse.json()
@@ -178,18 +178,16 @@ async function displayShow(showId) {
     seasonsList.innerHTML = ''
     for (const season of show.seasons) {
         seasonsList.innerHTML += `
-            <li id="season-${season.id}" onclick="getSeasonDetails(this.id)">
+            <li id="${season.id}" onclick="getSeasonDetails(this.id)">
                 <nav>
-                    <h6>Season ${season.seasonNumber}</h6>
+                    <h6>${season.title}</h6>
                     <div>
                         <span>${season.episode_count} episodes</span>
                         <span>▼</span>
                     </div>
                 </nav>
                 <div class="season-content">
-                    <img src="${season.posterPath ? `${posterBaseUrl}/${season.posterPath}` : ''}" alt="">
-                    <h3>Air date: ${season.airdate}</h3>
-                    <p>${season.description}</p>
+                    
                 </div>
             </li>
         `;
@@ -252,11 +250,20 @@ function changeArrowDirection(id) {
     }
 }
 
-function getSeasonDetails(id) {
+async function getSeasonDetails (id) {
     changeArrowDirection(id);
-    const seasonContent = document.querySelector(`[id=${id}] .season-content`);
+    const seasonContent = document.getElementById(id).querySelector('.season-content');
     if (!seasonContent.style.display || seasonContent.style.display === 'none') {
         seasonContent.style.display = 'grid';
+        const seasonResponse = await fetch(`${API_URL}/seasons/${id}`)
+        if (seasonResponse.status === 200) {
+            const seasonJSON = await seasonResponse.json()
+            seasonContent.innerHTML = `
+                <img src="${seasonJSON.posterPath ? `${posterBaseUrl}/${seasonJSON.posterPath}` : ''}" alt="">
+                <h3>Air date: ${seasonJSON.airDate}</h3>
+                <p>${seasonJSON.description}</p>
+            `
+        }
     } else {
         seasonContent.style.display = 'none';
     }
