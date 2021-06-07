@@ -69,7 +69,7 @@ class TvSeasonController {
         if (!TvSeasonController.minimalColumns.every(v => columns.includes(v))) {
             throw new APIError(`The primary fields are not filled, please send a request with the following fields: ${TvSeasonController.minimalColumns}`, 400)
         }
-        const addBody = await season.createBodyAccordingToModel(req.body)
+        const addBody = await new TvSeason().createBodyAccordingToModel(req.body)
         if (addBody === {}) {
             throw new APIError('No columns were updated', 400)
         }
