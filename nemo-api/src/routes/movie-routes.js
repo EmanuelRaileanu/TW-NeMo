@@ -10,6 +10,7 @@ router.get('/', cors(catchErrors(MovieController.getMovies)))
 router.get('/genres', cors(catchErrors(MovieController.getGenres)))
 router.get('/:movieId', cors(catchErrors(MovieController.getMovieById)))
 router.get('/languages',cors(catchErrors(MovieController.getLanguages)))
+router.get('/ratings', cors(catchErrors(MovieController.getRatings)))
 
 // Admin routes
 router.post('/', cors(catchErrors(validateToken(MovieController.addMovie))))

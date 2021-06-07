@@ -1,7 +1,7 @@
 const posterBaseUrl = 'https://image.tmdb.org/t/p/original/'
 const genres = ['Action & Adventure', 'Animation', 'Comedy', 'Crime', 'Drama', 'Family', 'Kids', 'Mystery', 'Sci-Fi & Fantasy', 'Talk'];
 const prodComps = ['20th Century Fox Television', '20th Television', 'Anonymous Content', 'BBC Studios', 'Berlanti Productions', 'Bonanza Productions', 'Bunim-Murray Productions (BMP)', 'Carter Bays', 'Caryn Mandabach Productions', 'DC Entertainment', 'Mad Ghost Productions', 'Michael Landon Productions', 'National Broadcasting Company', 'NBCUniversal', 'Nickelodeon Animation Studio', 'Paramount Television Studios', 'Primrose Hill Productions', 'Screen Yorkshire', 'Tiger Aspect Productions', 'Warner Bros. Television'];
-const API_URL = 'http://stachyon.asuscomm.com:8081'
+const API_URL = 'http://localhost:8080'
 
 window.onload = async function () {
     await renderShows({ sorting: 'name' });
@@ -123,20 +123,18 @@ async function displayShow (showId) {
     }
     const seasonsList = document.getElementById('seasons-list')
     seasonsList.innerHTML = ''
-    for  (const season of show.seasons) {
+    for (const season of show.seasons) {
         seasonsList.innerHTML += `
-            <li id="season-${season.id}" onclick="getSeasonDetails(this.id)">
+            <li id="${season.id}" onclick="getSeasonDetails(this.id)">
                 <nav>
-                    <h6>Season ${season.seasonNumber}</h6>
+                    <h6>${season.title}</h6>
                     <div>
                         <span>${season.episode_count} episodes</span>
                         <span>▼</span>
                     </div>
                 </nav>
                 <div class="season-content">
-                    <img src="${season.posterPath ? `${posterBaseUrl}/${season.posterPath}` : ''}" alt="">
-                    <h3>Air date: ${season.airdate}</h3>
-                    <p>${season.description}</p>
+                    
                 </div>
             </li>
         `;
@@ -176,11 +174,20 @@ function changeArrowDirection (id) {
     }
 }
 
-function getSeasonDetails (id) {
+async function getSeasonDetails (id) {
     changeArrowDirection(id);
-    const seasonContent = document.querySelector(`[id=${id}] .season-content`);
+    const seasonContent = document.getElementById(id).querySelector('.season-content');
     if (!seasonContent.style.display || seasonContent.style.display === 'none') {
         seasonContent.style.display = 'grid';
+        const seasonResponse = await fetch(`${API_URL}/seasons/${id}`)
+        if (seasonResponse.status === 200) {
+            const seasonJSON = await seasonResponse.json()
+            seasonContent.innerHTML = `
+                <img src="${seasonJSON.posterPath ? `${posterBaseUrl}/${seasonJSON.posterPath}` : ''}" alt="">
+                <h3>Air date: ${seasonJSON.airDate}</h3>
+                <p>${seasonJSON.description}</p>
+            `
+        }
     } else {
         seasonContent.style.display = 'none';
     }
