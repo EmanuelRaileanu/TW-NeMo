@@ -319,23 +319,25 @@ async function addMovie() {
         }
     }
     const data = {
-        "title": `${document.getElementById('mvTitle').value}`,
-        "tagline": `${document.getElementById('mvTagline').value}`,
-        "releaseDate": `${document.getElementById('mvReleaseDate').value}`,
-        "rating": `${document.getElementById('mvRating').value}`,
-        "runtime": `${document.getElementById('mvRuntime').value}`,
-        "description": `${document.getElementById('mvDescription').value}`,
-        "productionCompanyIds": prodComps,
-        "actorIds": actors,
-        "directorIds": directors,
-        "genreIds": genres,
-        "languageIds": languages
+        title: document.getElementById('mvTitle').value,
+        tagline: document.getElementById('mvTagline').value,
+        releaseDate: document.getElementById('mvReleaseDate').value,
+        rating: document.getElementById('mvRating').value,
+        status: document.getElementById('mvStatus').value,
+        runtime: document.getElementById('mvRuntime').value,
+        description: document.getElementById('mvDescription').value,
+        productionCompanyIds: prodComps,
+        actorIds: actors,
+        directorIds: directors,
+        genreIds: genres,
+        languageIds: languages
     }
     console.log(data)
-    const response = await fetch('http://stachyon.asuscomm.com:8081/movies', {
+    const response = await fetch(`${API_URL}/movies`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem("token")}`
         },
         body: JSON.stringify(data)
     })

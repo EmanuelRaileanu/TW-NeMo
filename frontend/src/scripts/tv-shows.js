@@ -435,8 +435,7 @@ async function addShow() {
         genreIds: genres,
         languageIds: languages
     }
-    console.log(data)
-    const showResponse = await (await fetch('http://stachyon.asuscomm.com:8081/shows', {
+    const showResponse = await (await fetch(`${API_URL}/shows`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -448,13 +447,13 @@ async function addShow() {
     const nrOfSeasons = sessionStorage.getItem("nrOfSeasons")
     for (let i = 1; i < nrOfSeasons; i++) {
         const seasonData = {
-            "title": document.getElementById(`seasonName${i}`).value,
-            "description": document.getElementById(`description${i}`).value,
-            "airDate": document.getElementById(`airDate${i}`).value,
-            "seasonNumber": i,
-            "tvShowId": showResponse.id
+            title: document.getElementById(`seasonName${i}`).value,
+            description: document.getElementById(`description${i}`).value,
+            airDate: document.getElementById(`airDate${i}`).value,
+            seasonNumber: i,
+            tvShowId: showResponse.id
         }
-        const seasonResponse = await (await fetch('http://stachyon.asuscomm.com:8081/seasons', {
+        const seasonResponse = await (await fetch(`${API_URL}/seasons`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -467,13 +466,13 @@ async function addShow() {
         const episodesOfSeason = document.getElementsByClassName(`episodeOfSeason${i}`)
         for (let j = 0; j < nrOfEpisodes - 1; j++) {
             const episodeData = {
-                "title": episodesOfSeason[j].childNodes[4].value,
-                "description": episodesOfSeason[j].childNodes[12].value,
-                "airDate": episodesOfSeason[j].childNodes[8].value,
-                "episodeNumber": j,
-                "seasonId": seasonResponse.id
+                title: episodesOfSeason[j].childNodes[4].value,
+                description: episodesOfSeason[j].childNodes[12].value,
+                airDate: episodesOfSeason[j].childNodes[8].value,
+                episodeNumber: j,
+                seasonId: seasonResponse.id
             }
-            const episodeResponse = await (await fetch('http://stachyon.asuscomm.com:8081/seasons', {
+            const episodeResponse = await (await fetch(`${API_URL}/seasons`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
