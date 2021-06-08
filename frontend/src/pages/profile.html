@@ -26,7 +26,7 @@
 </div>
 <div id="changeMenu">
     <nav id="top-menu">
-        <button onclick="finishedChanges()">✕</button>
+        <button onclick="finishedChanges('changeMenu')">✕</button>
     </nav>
     <form id="changeUsernameForm">
         <label for="newUsername" id="newUsernameLabel">New Username</label><br>
@@ -53,12 +53,10 @@
 
 <div id="addMenu">
     <nav id="add-top-menu">
-        <button onclick="finishedChanges()">✕</button>
+        <button onclick="finishedChanges('addMenu')">✕</button>
     </nav>
-    <form id="addForm">
-
-    </form>
-    <input type="submit" id="addBtn" value="Submit" form="addForm">
+    <div id="addMenuBody">
+    </div>
 </div>
 </body>
 </html>
