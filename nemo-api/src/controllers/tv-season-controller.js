@@ -9,6 +9,7 @@ class TvSeasonController {
     static relatedObject = {
         episodes: q => {
             q.select('id', 'seasonId', 'name')
+            q.orderBy('episodeNumber')
         }
     }
     static minimalColumns = ['title', 'description', 'airDate', 'tvShowId', 'seasonNumber']

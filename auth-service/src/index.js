@@ -14,27 +14,32 @@ dotenv.config()
 
 http.createServer(async (req, res) => {
     const startTime = Date.now()
-    switch (req.url.split('?')[0].match(/\/[^\/]*/)[0]) {
-        case '/':
-            res.writeHead(200, { 'Content-type': 'application/json' })
-            res.end(JSON.stringify({
-                name: process.env.npm_package_name,
-                version: process.env.npm_package_version
-            }))
-            break
-        case '/auth':
-            await authRoutes.next(req, res)
-            break
-        case '/users':
-            await userRoutes.next(req, res)
-            break
-        case '/docs':
-            await promisifiedExec("redoc-cli bundle ./src/swagger-doc.yaml -o ./src/doc.html")
-            res.end((await promisifiedReadFile('./src/doc.html')).toString())
-            break
-        default:
-            res.writeHead(501, CORS_HEADERS)
-            return res.end(JSON.stringify({ message: "Not implemented" }))
+    if (req.method === 'OPTIONS') {
+        res.writeHead(200, CORS_HEADERS)
+        res.end(JSON.stringify({ message: 'OK' }))
+    } else {
+        switch (req.url.split('?')[0].match(/\/[^\/]*/)[0]) {
+            case '/':
+                res.writeHead(200, CORS_HEADERS)
+                res.end(JSON.stringify({
+                    name: process.env.npm_package_name,
+                    version: process.env.npm_package_version
+                }))
+                break
+            case '/auth':
+                await authRoutes.next(req, res)
+                break
+            case '/users':
+                await userRoutes.next(req, res)
+                break
+            case '/docs':
+                await promisifiedExec("redoc-cli bundle ./src/swagger-doc.yaml -o ./src/doc.html")
+                res.end((await promisifiedReadFile('./src/doc.html')).toString())
+                break
+            default:
+                res.writeHead(501, CORS_HEADERS)
+                return res.end(JSON.stringify({ message: "Not implemented" }))
+        }
     }
     res.on('finish', () => console.log(req.method, req.url, res.statusCode, Date.now() - startTime, 'ms'))
 }).listen(process.env.SERVER_PORT, () => {

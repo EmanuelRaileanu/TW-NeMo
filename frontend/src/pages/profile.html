@@ -28,15 +28,27 @@
     <nav id="top-menu">
         <button onclick="finishedChanges()">✕</button>
     </nav>
-    <form id="changeForm">
-        <label for="ffield" id="flabel">Old password:</label><br>
-        <input type="text" id="ffield" name="old"><br>
-        <label for="sfield" id="slabel">New name:</label><br>
-        <input type="text" id="sfield" name="new">
-        <label for="tfield" id="tlabel">New name:</label><br>
-        <input type="text" id="tfield" name="newConf">
+    <form id="changeUsernameForm">
+        <label for="newUsername" id="newUsernameLabel">New Username</label><br>
+        <input type="text" id="newUsername" name="newUsername"><br>
     </form>
-    <input type="submit" id="submitBtn" value="Submit" form="changeForm">
+    <input type="submit" id="changeUsernameSubmitButton" class="submitBtn" value="Submit" form="changeUsernameForm" onclick="submitForm(this.id)">
+    <form id="changeEmailForm">
+        <label for="newEmail" id="newEmailLabel">New Email</label><br>
+        <input type="email" id="newEmail" name="newEmail"><br>
+        <label for="changeEmailPassword" id="changeEmailPasswordLabel">Password</label><br>
+        <input type="email" id="changeEmailPassword" name="changeEmailPassword"><br>
+    </form>
+    <input type="submit" id="changeEmailSubmitButton" class="submitBtn" value="Submit" form="changeEmailForm" onclick="submitForm(this.id)">
+    <form id="changePasswordForm">
+        <label for="oldPassword" id="oldPasswordLabel">Old Password</label><br>
+        <input type="password" id="oldPassword" name="oldPassword"><br>
+        <label for="newPassword" id="newPasswordLabel">New Password</label><br>
+        <input type="password" id="newPassword" name="newPassword"><br>
+        <label for="confirmedNewPassword" id="confirmedNewPasswordLabel">Confirm New Password</label><br>
+        <input type="password" id="confirmedNewPassword" name="confirmedNewPassword"><br>
+    </form>
+    <input type="submit" id="changePasswordSubmitButton" class="submitBtn" value="Submit" form="changePasswordForm" onclick="submitForm(this.id)">
 </div>
 
 <div id="addMenu">

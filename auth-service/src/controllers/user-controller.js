@@ -82,7 +82,7 @@ export default class UserController {
             }]
         })
         if (!user) {
-            throw new APIError(`There is not user registered with the username ${req.params.username}`, 404)
+            throw new APIError(`There is no user registered with the username ${req.params.username}`, 404)
         }
         return res.end(JSON.stringify(user.toJSON({ omitPivot: true })))
     }
