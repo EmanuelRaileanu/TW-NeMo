@@ -1,4 +1,5 @@
 const posterBaseUrl = 'https://image.tmdb.org/t/p/original/';
+const alternativeImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Question_mark_%28black%29.svg/768px-Question_mark_%28black%29.svg.png'
 let genres = [], genreIds = []
 let languages = [], languageIds = []
 const prodComps = ['Animation Picture Company', 'Davis Entertainment', 'DK Entertainment', 'Ghost Horse', 'Goldcrest', 'Goldfinch Studios', 'Good Neighbors Media', 'I Aint Playin Films', 'Mattel Entertainment', 'MISR International Films', 'Movie City Films', 'Pacific Western', 'Paws', 'Rainmaker Entertainment', 'Red Vessel Entertainment', 'Sailor Bear', 'Scared Sheetless', 'Solar Productions', 'Sullivan Bluth Studios', 'United Artists', 'Universal Pictures', 'Zero Trans Fat Productions'];
@@ -157,15 +158,41 @@ async function displayMovie (movieId) {
     for (const genre of movie.genres) {
         genreList.innerHTML += `<li><span>${genre.name}</span></li>`;
     }
-    const productionCompaniesList = document.getElementById('production-companies-list');
-    productionCompaniesList.innerHTML = '';
-    for (const productionCompany of movie.productionCompanies) {
-        productionCompaniesList.innerHTML += `
+    if (movie.actors.length) {
+        const actorsList = document.getElementById('actors-list')
+        actorsList.innerHTML = '';
+        for (const actor of movie.actors) {
+            actorsList.innerHTML += `
+                <li>
+                    <img src="${actor.profilePhotoPath ? `${posterBaseUrl}${actor.profilePhotoPath}` : alternativeImageUrl}" alt="">
+                    <p>${actor.name}</p>
+                </li>
+            `
+        }
+    }
+    if (movie.directors.length) {
+        const directorsList = document.getElementById('directors-list')
+        directorsList.innerHTML = '';
+        for (const director of movie.directors) {
+            directorsList.innerHTML += `
+                <li>
+                    <img src="${director.profilePhotoPath ? `${posterBaseUrl}${director.profilePhotoPath}` : alternativeImageUrl}" alt="">
+                    <p>${director.name}</p>
+                </li>
+            `
+        }
+    }
+    if (movie.productionCompanies.length) {
+        const productionCompaniesList = document.getElementById('production-companies-list');
+        productionCompaniesList.innerHTML = '';
+        for (const productionCompany of movie.productionCompanies) {
+            productionCompaniesList.innerHTML += `
             <li>
                 <h6>${productionCompany.name} ${productionCompany.country ? productionCompany.country.code : ''}</h6>
                 <img src="${productionCompany.logoPath ? `${posterBaseUrl}/${productionCompany.logoPath}` : ''}" alt="">
             </li>
         `;
+        }
     }
     document.getElementById('lang').innerHTML = `<strong>${movie.languages.length ? movie.languages.map(l => l.code).join(', ') : ''}</strong>`;
     document.getElementById('release').innerText = movie.releaseDate ? movie.releaseDate.split('T')[0] : '';

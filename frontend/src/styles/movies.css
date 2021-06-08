@@ -136,13 +136,27 @@ body::-webkit-scrollbar-thumb {
     grid-area: genres;
 }
 
+#actors {
+    grid-area: actors;
+    display: flex;
+    flex-direction: column;
+    margin-top: 3%;
+}
+
+#directors {
+    grid-area: directors;
+    display: flex;
+    flex-direction: column;
+    margin-top: 3%;
+}
+
 #production-companies {
     grid-area: prodcomp;
     font-size: 30px;
     display: flex;
     flex-direction: column;
     margin-right: auto;
-    margin-top: 10%;
+    margin-top: 3%;
 }
 
 #description {
@@ -189,6 +203,8 @@ body::-webkit-scrollbar-thumb {
             'poster genres runtime'
             'poster genres rating   '
             'poster description description'
+            'actors actors actors'
+            'directors directors directors'
             'seasons seasons seasons'
             'prodcomp prodcomp prodcomp';
     font-family: 'Titillium Web', sans-serif;
@@ -245,6 +261,62 @@ body::-webkit-scrollbar-thumb {
     border-radius: 25px;
     display: flex;
     align-items: center;
+}
+
+#actors-list {
+    list-style-type: none;
+    display: inline-block;
+    align-items: center;
+    margin: 5%;
+    width: 100%;
+}
+
+#actors-list > * {
+    margin: 0.5vh;
+    width: 18vh;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    background: rgba(63, 95, 118, 0.43);
+    border-radius: 15%;
+}
+
+#actors-list > * img {
+    width: 100%;
+    height: 25vh;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 15% 15% 0 0;
+}
+
+#directors-list {
+    list-style-type: none;
+    display: inline-block;
+    align-items: center;
+    margin: 5%;
+    width: 100%;
+}
+
+#directors-list > * {
+    margin: 0.5vh;
+    width: 18vh;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    background: rgba(63, 95, 118, 0.43);
+    border-radius: 15%;
+}
+
+#directors-list > * img {
+    width: 100%;
+    height: 25vh;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 15% 15% 0 0;
 }
 
 #production-companies-list {
@@ -508,6 +580,8 @@ h6 {
             'rating'
             'description'
             'seasons'
+            'actors'
+            'directors'
             'prodcomp';
         font-family: 'Titillium Web', sans-serif;
     }

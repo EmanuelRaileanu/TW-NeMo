@@ -20,10 +20,10 @@ class MovieController {
             q.select('id', 'name')
         },
         actors: q => {
-            q.select('id', 'name')
+            q.select('id', 'name', 'profilePhotoPath')
         },
         directors: q => {
-            q.select('id', 'name')
+            q.select('id', 'name', 'profilePhotoPath')
         },
         rating: q => {
             q.select('id', 'code')

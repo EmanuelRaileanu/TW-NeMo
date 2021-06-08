@@ -1,4 +1,5 @@
 const posterBaseUrl = 'https://image.tmdb.org/t/p/original/'
+const alternativeImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Question_mark_%28black%29.svg/768px-Question_mark_%28black%29.svg.png'
 let genres = [], genreIds = []
 let languages = [], languageIds = []
 let ratings = [], ratingIds = []
@@ -198,15 +199,41 @@ async function displayShow (showId) {
             </li>
         `;
     }
-    const productionCompaniesList = document.getElementById('production-companies-list');
-    productionCompaniesList.innerHTML = '';
-    for (const productionCompany of show.productionCompanies) {
-        productionCompaniesList.innerHTML += `
+    if (show.actors.length) {
+        const actorsList = document.getElementById('actors-list')
+        actorsList.innerHTML = '';
+        for (const actor of show.actors) {
+            actorsList.innerHTML += `
+                <li>
+                    <img src="${actor.profilePhotoPath ? `${posterBaseUrl}${actor.profilePhotoPath}` : alternativeImageUrl}" alt="">
+                    <p>${actor.name}</p>
+                </li>
+            `
+        }
+    }
+    if (show.directors.length) {
+        const directorsList = document.getElementById('directors-list')
+        directorsList.innerHTML = '';
+        for (const director of show.directors) {
+            directorsList.innerHTML += `
+                <li>
+                    <img src="${director.profilePhotoPath ? `${posterBaseUrl}${director.profilePhotoPath}` : alternativeImageUrl}" alt="">
+                    <p>${director.name}</p>
+                </li>
+            `
+        }
+    }
+    if (show.productionCompanies.length) {
+        const productionCompaniesList = document.getElementById('production-companies-list');
+        productionCompaniesList.innerHTML = '';
+        for (const productionCompany of show.productionCompanies) {
+            productionCompaniesList.innerHTML += `
             <li>
                 <h6>${productionCompany.name} ${productionCompany.countryId ? productionCompany.country.code : ''}</h6>
                 <img src="${productionCompany.logoPath ? `${posterBaseUrl}/${productionCompany.logoPath}` : ''}" alt="">
             </li>
         `;
+        }
     }
     document.getElementById('lang').innerHTML = `<strong>${show.languages.length ? show.languages[0].code : ''}</strong>`;
     document.getElementById('release').innerText = show.firstAirDate.split('T')[0];
