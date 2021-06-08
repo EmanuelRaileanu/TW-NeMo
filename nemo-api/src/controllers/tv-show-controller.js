@@ -4,6 +4,10 @@ import Bookshelf from "../bookshelf.js";
 import TvShow from "../models/tv-show.js";
 import TvShowGenre from "../models/tv-show-genre.js";
 import TvShowReview from '../models/tv-show-review.js'
+import { CORS_HEADERS } from '../middlewares/cors.js'
+import ObjectsToCsv from 'objects-to-csv'
+import { ChartJSNodeCanvas } from 'chartjs-node-canvas'
+import sharp from 'sharp'
 
 
 class TvShowController {
@@ -24,6 +28,9 @@ class TvShowController {
         },
         directors: q => {
             q.select('id', 'name')
+        },
+        rating: q => {
+            q.select('id', 'code')
         },
         languages: q => {
             q.select('id', 'code')
@@ -103,6 +110,101 @@ class TvShowController {
             columns: ['id', 'name']
         })
         return res.end(JSON.stringify(genres.toJSON({ omitPivot: true })))
+    }
+
+    static async exportTvShows (req, res) {
+        if (['svg', 'webp'].includes(req.query.format)) {
+            if (req.query.criterion === 'rating') {
+                const tvShows = await new TvShow().query(q => {
+                    q.select(Bookshelf.knex.raw('ratings.code AS rating, COUNT(*) AS count'))
+                    q.innerJoin('ratings', 'ratings.id', 'tv_shows.ratingId')
+                    q.groupBy('ratings.code')
+                }).fetchAll({ require: false })
+                const chart = new ChartJSNodeCanvas({ type: req.query.format, width: 800, height: 600 })
+                const ratings = tvShows.map(tvShow => tvShow.get('rating'))
+                const data = tvShows.map(tvShow => tvShow.get('count'))
+                const image = chart.renderToBufferSync({
+                    type: 'bar',
+                    data: {
+                        labels: ratings,
+                        datasets: [{
+                            label: 'Number of TV Shows',
+                            data,
+                            backgroundColor: tvShows.map(tvShow => `rgba(${Math.round(Math.random() * 255)}, ${Math.round(Math.random() * 255)}, ${Math.round(Math.random() * 255)}, 1)`),
+                            borderWidth: 1
+                        }]
+                    }
+                })
+                res.writeHead(200, {
+                    ...CORS_HEADERS,
+                    'Content-Type': 'application/octet-stream',
+                    'Content-Disposition': `attachment; filename=nemo_movies.${req.query.format}`
+                })
+                if (req.query.format === 'webp') {
+                    return res.end(await sharp(image).webp().toBuffer())
+                } else {
+                    return res.end(image.toString())
+                }
+            } else {
+                const tvShows = await new TvShow().query(q => {
+                    q.select(Bookshelf.knex.raw('tv_show_genres.name AS genre, COUNT(*) AS count'))
+                    q.join('tv_shows_genres', 'tv_shows_genres.tvShowId', 'tv_shows.id')
+                    q.join('tv_show_genres', 'tv_show_genres.id', 'tv_shows_genres.genreId')
+                    q.groupBy('tv_show_genres.name')
+                }).fetchAll({ require: false })
+                const chart = new ChartJSNodeCanvas({ type: 'svg', width: 800, height: 600 })
+                const ratings = tvShows.map(tvShow => tvShow.get('genre'))
+                const data = tvShows.map(tvShow => tvShow.get('count'))
+                const image = chart.renderToBufferSync({
+                    type: 'bar',
+                    data: {
+                        labels: ratings,
+                        datasets: [{
+                            label: 'Number of movies',
+                            data,
+                            backgroundColor: tvShows.map(tvShow => `rgba(${Math.round(Math.random() * 255)}, ${Math.round(Math.random() * 255)}, ${Math.round(Math.random() * 255)}, 1)`),
+                            borderWidth: 1
+                        }]
+                    }
+                })
+                res.writeHead(200, {
+                    ...CORS_HEADERS,
+                    'Content-Type': 'application/octet-stream',
+                    'Content-Disposition': `attachment; filename=nemo_movies.${req.query.format}`
+                })
+                if (req.query.format === 'webp') {
+                    return res.end(await sharp(image).webp().toBuffer())
+                } else {
+                    return res.end(image.toString())
+                }
+            }
+        } else {
+            const tvShows = await new TvShow().fetchAll({
+                require: false,
+                withRelated: [TvShowController.relatedObject]
+            })
+            const parsedTvShows = await Promise.all(tvShows.toJSON().map(async tvShow => {
+                tvShow.episodes = tvShow.seasons.map(season => season.numberOfEpisodes).reduce((a, b) => a + b, 0)
+                tvShow.seasons = tvShow.seasons.length
+                tvShow.genres = tvShow.genres.map(genre => genre.name).join(',')
+                tvShow.productionCompanies = tvShow.productionCompanies.map(productionCompany => productionCompany.name).join(',')
+                tvShow.actors = tvShow.actors.map(actor => actor.name).join(',')
+                tvShow.directors = tvShow.directors.map(director => director.name).join(',')
+                tvShow.rating = tvShow.rating && tvShow.rating.code
+                tvShow.languages = tvShow.languages.map(language => language.code).join(',')
+                delete tvShow.ratingId
+                delete tvShow.createdAt
+                delete tvShow.updatedAt
+                delete tvShow.reviews
+                return tvShow
+            }))
+            res.writeHead(200, {
+                ...CORS_HEADERS,
+                'Content-Type': 'application/octet-stream',
+                'Content-Disposition': 'attachment; filename=nemo_tv_shows.csv'
+            })
+            return res.end(await new ObjectsToCsv(parsedTvShows).toString())
+        }
     }
 
     static async updateShow (req, res) {

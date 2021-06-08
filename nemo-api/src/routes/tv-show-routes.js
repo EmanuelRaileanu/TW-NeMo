@@ -10,6 +10,8 @@ router.get('/', cors(catchErrors(TvShowController.getTvShows)))
 router.get('/genres', cors(catchErrors(TvShowController.getGenres)))
 router.get('/:showId', cors(catchErrors(TvShowController.getTvShowById)))
 
+router.get('/export', cors(catchErrors(TvShowController.exportTvShows)))
+
 // Admin routes
 router.post('/', cors(catchErrors(validateToken(TvShowController.addShow))))
 router.put('/:showId', cors(catchErrors(validateToken(TvShowController.updateShow))))
