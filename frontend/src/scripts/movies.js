@@ -1,4 +1,5 @@
 const posterBaseUrl = 'https://image.tmdb.org/t/p/original/';
+const alternativeImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Question_mark_%28black%29.svg/768px-Question_mark_%28black%29.svg.png'
 let genres = [], genreIds = []
 let languages = [], languageIds = []
 const prodComps = ['Animation Picture Company', 'Davis Entertainment', 'DK Entertainment', 'Ghost Horse', 'Goldcrest', 'Goldfinch Studios', 'Good Neighbors Media', 'I Aint Playin Films', 'Mattel Entertainment', 'MISR International Films', 'Movie City Films', 'Pacific Western', 'Paws', 'Rainmaker Entertainment', 'Red Vessel Entertainment', 'Sailor Bear', 'Scared Sheetless', 'Solar Productions', 'Sullivan Bluth Studios', 'United Artists', 'Universal Pictures', 'Zero Trans Fat Productions'];
@@ -22,7 +23,7 @@ window.onload = async function () {
         languages.push(el.code)
         languageIds.push(el.id)
     }
-    await renderMovies({ sorting: 'name' });
+    await renderMovies();
     createFiltersMenu();
     document.getElementById("mvSch").addEventListener('keydown', async event => {
         if (event.code === 'Enter' || event.keyCode === 13) {
@@ -77,28 +78,33 @@ async function renderMovies (filters = null) {
 }
 
 async function getMovies (filters = null) {
-    let movies = (await (await fetch(`${API_URL}/movies`)).json()).results;
+    let url = `${API_URL}/movies?pageSize=20`
     if (filters && filters !== {}) {
-        if (filters.name) {
-            movies = movies.filter(movie => movie.title.toLowerCase().includes(filters.name.toLowerCase()));
+        if (filters.title) {
+            url += `&searchBy=${filters.title}`
         }
         if (filters.genres && filters.genres.length) {
-            movies = movies.filter(movie => movie.genres.find(genre => filters.genres.includes(genre.name)));
+            for (const genre of filters.genres) {
+                url += `&filters[genres]=${genre}`
+            }
         }
         if (filters.productionCompanies && filters.productionCompanies.length) {
-            movies = movies.filter(movie => movie.productionCompanies.find(productionCompany => filters.productionCompanies.includes(productionCompany.name)));
+            for (const productionCompany of filters.productionCompanies) {
+                url += `&filters[productionCompanies]=${productionCompany}`
+            }
         }
-        if (filters.sorting !== null || document.getElementById('rat').checked) {
-            if (document.getElementById('rat').checked)
-                movies.sort((movie1, movie2) => Number(movie1.voteAverage) - Number(movie2.voteAverage));
-            else
-                movies.sort((movie1, movie2) => movie1.title.localeCompare(movie2.title))
+        if (filters.sorting) {
+            url += `&orderBy[column]=${filters.sorting}`
         }
     }
     if (document.getElementById('desc').checked) {
-        movies.reverse();
+        url += '&orderBy[direction]=desc'
     }
-    return movies;
+    const response = await fetch(url)
+    if (response.status !== 200) {
+        return []
+    }
+    return (await response.json()).results
 }
 
 function findFilters (checkType, filterNames) {
@@ -116,7 +122,7 @@ async function applyFilters (sorting = null) {
     const filters = {
         genres: findFilters('genres', genres),
         productionCompanies: findFilters('prodComp', prodComps),
-        name: document.getElementById("mvSch").value,
+        title: document.getElementById("mvSch").value,
         sorting: sorting
     }
     await renderMovies(filters);
@@ -152,15 +158,41 @@ async function displayMovie (movieId) {
     for (const genre of movie.genres) {
         genreList.innerHTML += `<li><span>${genre.name}</span></li>`;
     }
-    const productionCompaniesList = document.getElementById('production-companies-list');
-    productionCompaniesList.innerHTML = '';
-    for (const productionCompany of movie.productionCompanies) {
-        productionCompaniesList.innerHTML += `
+    if (movie.actors.length) {
+        const actorsList = document.getElementById('actors-list')
+        actorsList.innerHTML = '';
+        for (const actor of movie.actors) {
+            actorsList.innerHTML += `
+                <li>
+                    <img src="${actor.profilePhotoPath ? `${posterBaseUrl}${actor.profilePhotoPath}` : alternativeImageUrl}" alt="">
+                    <p>${actor.name}</p>
+                </li>
+            `
+        }
+    }
+    if (movie.directors.length) {
+        const directorsList = document.getElementById('directors-list')
+        directorsList.innerHTML = '';
+        for (const director of movie.directors) {
+            directorsList.innerHTML += `
+                <li>
+                    <img src="${director.profilePhotoPath ? `${posterBaseUrl}${director.profilePhotoPath}` : alternativeImageUrl}" alt="">
+                    <p>${director.name}</p>
+                </li>
+            `
+        }
+    }
+    if (movie.productionCompanies.length) {
+        const productionCompaniesList = document.getElementById('production-companies-list');
+        productionCompaniesList.innerHTML = '';
+        for (const productionCompany of movie.productionCompanies) {
+            productionCompaniesList.innerHTML += `
             <li>
                 <h6>${productionCompany.name} ${productionCompany.country ? productionCompany.country.code : ''}</h6>
                 <img src="${productionCompany.logoPath ? `${posterBaseUrl}/${productionCompany.logoPath}` : ''}" alt="">
             </li>
         `;
+        }
     }
     document.getElementById('lang').innerHTML = `<strong>${movie.languages.length ? movie.languages.map(l => l.code).join(', ') : ''}</strong>`;
     document.getElementById('release').innerText = movie.releaseDate ? movie.releaseDate.split('T')[0] : '';
