@@ -87,7 +87,7 @@ async function renderShows(filters = null) {
     for (let i = 0; i < tvShows.length; i++) {
         document.getElementById('list').innerHTML += `
             <li id="${tvShows[i].id}" onclick="displayShow(this.id)">
-                <img src="${posterBaseUrl}/${tvShows[i].posterPath}" alt="Image not found">
+                <img src="${posterBaseUrl}/${tvShows[i].posterPath}" alt="">
                 <div class="written-content">
                     <h1>${tvShows[i].title}</h1>
                     <span>${tvShows[i].description}</span>
@@ -168,7 +168,7 @@ async function displayShow(showId) {
     sheet.insertRule('body > *:not(#movie-container) { filter: blur(8px); }', sheet.cssRules.length);
     sheet.insertRule(`#movie-container { background: linear-gradient(rgba(19, 35, 47, 0.90), rgba(19, 35, 47, 0.90)), url('${posterBaseUrl}/${show.backdropPath}') no-repeat center fixed; }`, sheet.cssRules.length);
     document.getElementById('movie-container').style.display = 'block';
-    document.getElementById('poster').innerHTML = `<img src="${posterBaseUrl}/${show.posterPath}" alt="Image not found">`;
+    document.getElementById('poster').innerHTML = `<img src="${posterBaseUrl}/${show.posterPath}" alt="">`;
     document.getElementById('title').innerHTML = `<h1>${show.title}</h1>`;
     document.getElementById('tagline').innerHTML = `<h4>${show.tagline}</h4>`;
     const genreList = document.getElementById('genre-list');
