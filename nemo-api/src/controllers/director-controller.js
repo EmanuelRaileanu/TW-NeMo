@@ -94,7 +94,7 @@ class DirectorController {
         }
         checkTableArrays(req.body)
         await Bookshelf.transaction(async t => {
-            director = await new director(addBody).save(null, { method: 'insert', transacting: t })
+            director = await new Director(addBody).save(null, { method: 'insert', transacting: t })
             await attachToDirector(director, req.body, t)
         })
         director = await director.fetch({ require: false, withRelated: [DirectorController.relatedObject] })
