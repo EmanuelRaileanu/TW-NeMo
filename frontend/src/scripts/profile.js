@@ -109,7 +109,7 @@ async function loadFavorites() {
         for (let movie of moviesJSON) {
             document.getElementById('favorite-movies').innerHTML += `
             <li id="${movie.id}">
-                <img src="${posterBaseUrl}/${movie.posterPath}" alt="Image not found">
+                <img src="${posterBaseUrl}/${movie.posterPath}" alt="">
                 <div class="Title">
                     <h1>${movie.title}</h1>
                 </div>
@@ -130,7 +130,7 @@ async function loadFavorites() {
         for (let show of tvShowsJSON) {
             document.getElementById('favorite-shows').innerHTML += `
             <li id="${show.id}">
-                <img src="${posterBaseUrl}/${show.posterPath}" alt="Image not found">
+                <img src="${posterBaseUrl}/${show.posterPath}" alt="">
                 <div class="Title">
                     <h1>${show.title}</h1>
                 </div>
