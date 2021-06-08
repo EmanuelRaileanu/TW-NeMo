@@ -182,9 +182,9 @@ async function displayShow(showId) {
         seasonsList.innerHTML += `
             <li id="${season.id}" onclick="getSeasonDetails(this.id)">
                 <nav>
-                    <h6>${season.title}</h6>
+                    <h6>Season ${season.seasonNumber}</h6>
                     <div>
-                        <span>${season.episode_count} episodes</span>
+                        <span>${season.numberOfEpisodes} episodes</span>
                         <span>▼</span>
                     </div>
                 </nav>
@@ -262,7 +262,7 @@ async function getSeasonDetails (id) {
             const seasonJSON = await seasonResponse.json()
             seasonContent.innerHTML = `
                 <img src="${seasonJSON.posterPath ? `${posterBaseUrl}/${seasonJSON.posterPath}` : ''}" alt="">
-                <h3>Air date: ${seasonJSON.airDate}</h3>
+                <h3>Air date: ${seasonJSON.airDate.split('T')[0]}</h3>
                 <p>${seasonJSON.description}</p>
             `
         }

@@ -1,5 +1,13 @@
 const qs = require('querystring')
 
+const CORS_HEADERS = {
+    'Content-type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'OPTIONS, GET, POST, PUT, PATCH, DELETE',
+    'Access-Control-Allow-Headers': '*',
+    'Access-Control-Max-Age': 2592000
+}
+
 class Router {
     constructor () {
         this.routers = {}
@@ -16,16 +24,6 @@ class Router {
     }
 
     async next (req, res) {
-        if (req.method === 'OPTIONS') {
-            res.writeHead(200, {
-                'Content-type': 'application/json',
-                'Access-Control-Allow-Origin': process.env.CORS_DOMAINS,
-                'Access-Control-Allow-Methods': 'OPTIONS, GET, POST, PUT, PATCH, DELETE',
-                'Access-Control-Allow-Headers': '*',
-                'Access-Control-Max-Age': 2592000
-            })
-            return res.end()
-        }
         const [url, queryParams] = req.url.split('?')
         let rawQueryParams = qs.parse(queryParams)
         for (const property in rawQueryParams) {
@@ -51,10 +49,10 @@ class Router {
             if (body) {
                 req.body = JSON.parse(body)
             }
-            if (splitUrl.length > 1 && (splitUrl[1].length === 36 || (splitUrl.length === 2 && splitUrl[0] === 'users'))) {
+            if (splitUrl.length > 1 && (splitUrl[1].length === 36 || (splitUrl.length === 2 && splitUrl[0] === 'users' && !['change-username', 'change-email', 'change-password'].includes(splitUrl[1])))) {
                 const methodOption = this.methods[req.method].find(item => item.hasParams)
                 if (!methodOption) {
-                    res.writeHead(501, { 'Content-type': 'application/json' })
+                    res.writeHead(501, CORS_HEADERS)
                     return res.end(JSON.stringify({ message: "Not implemented" }))
                 }
                 req.params[methodOption.path.match(/(?<=:).*/)[0].split('/')[0]] = splitUrl[1]
@@ -71,11 +69,14 @@ class Router {
             } else if (splitUrl.length === 1 && this.methods[req.method].find(item => item.hasParams === hasParams)) {
                 return await this.methods[req.method].find(item => item.hasParams === hasParams).controllerMethod(req, res)
             } else if (splitUrl.length === 2 && this.methods[req.method].find(item => item.hasParams === hasParams && item.path.split('/')[1])) {
+                if (['change-username', 'change-email', 'change-password'].includes(splitUrl[1])) {
+                    return await this.methods[req.method].find(item => item.hasParams === hasParams && item.path.split('/')[1] && item.path.split('/')[1] === splitUrl[1]).controllerMethod(req, res)
+                }
                 return await this.methods[req.method].find(item => item.hasParams === hasParams && item.path.split('/')[1] && (item.path.split('/')[1] === splitUrl[1] || splitUrl[1].length === 36 || (splitUrl.length === 2 && splitUrl[0] === 'users'))).controllerMethod(req, res)
             } else if (splitUrl.length === 2 && !splitUrl[1] && this.methods[req.method].find(item => item.hasParams === hasParams && splitUrl.length === item.path.split('/').length)) {
                 return await this.methods[req.method].find(item => item.hasParams === hasParams).controllerMethod(req, res)
             }
-            res.writeHead(501, { 'Content-type': 'application/json' })
+            res.writeHead(501, CORS_HEADERS)
             return res.end(JSON.stringify({ message: "Not implemented" }))
         })
     }

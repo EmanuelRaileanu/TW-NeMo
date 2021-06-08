@@ -23,7 +23,7 @@ body::-webkit-scrollbar-thumb {
     outline: 1px solid slategrey;
 }
 
-div#wrapper{
+div#wrapper {
     margin-top: 5vh;
     background: rgba(63, 95, 118, 0.43);
     width: 60vw;
@@ -31,12 +31,12 @@ div#wrapper{
     flex-direction: column;
     margin-left: auto;
     margin-right: auto;
-    position:relative;
+    position: relative;
 }
 
-div#wrapper > h1{
-    padding-left:11px;
-    color:white;
+div#wrapper > h1 {
+    padding-left: 11px;
+    color: white;
 }
 
 
@@ -50,16 +50,16 @@ div.information > * {
     outline: none;
 }
 
-div.information > *:not(:last-child):hover{
+div.information > *:not(:last-child):hover {
     cursor: pointer;
     text-decoration: underline;
 }
 
-div.information :first-child{
+div.information :first-child {
     padding-top: 22px;
 }
 
-div.information :last-child{
+div.information :last-child {
     padding-bottom: 30px;
 }
 
@@ -76,16 +76,16 @@ div.information :last-child{
 }
 
 #wrapper button:hover, #submitBtn:hover {
-    background-color:  #1ab188;
+    background-color: #1ab188;
     cursor: pointer;
 }
 
-ul{
+ul {
     margin: 0;
     padding-inline-start: 0;
     list-style-type: none;
     align-self: center;
-    width:90%;
+    width: 90%;
 }
 
 ul > * {
@@ -103,18 +103,20 @@ ul > * {
     border-radius: 10px;
 }
 
-ul > li > img{
+ul > li > img {
     height: 10vh;
     padding-right: 2vw;
 }
+
 body > div > ul > li {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 }
-li > button{
+
+li > button {
     justify-self: flex-end;
-    position:relative;
+    position: relative;
     cursor: pointer;
     align-self: center;
     background: inherit;
@@ -128,7 +130,7 @@ li > button{
 #changeMenu, #addMenu {
     display: none;
     border-radius: 25px;
-    position:fixed;
+    position: fixed;
     width: 30vw;
     height: 35vh;
     margin-top: 5vh;
@@ -147,12 +149,12 @@ li > button{
 }
 
 #changeMenu > *, #addMenu > * {
-    color:white;
-    font-size:1.5vh;
+    color: white;
+    font-size: 1.5vh;
 }
 
-#changeForm{
-    margin-left:10px;
+#changeForm {
+    margin-left: 10px;
     display: grid;
     grid-template-areas:
             'flabel .'
@@ -163,44 +165,72 @@ li > button{
             'tfield .';
 }
 
-#changeForm > input{
-    margin-bottom:22px;
+#changeForm > input {
+    margin-bottom: 22px;
 }
 
-#changeForm > label{
+#changeForm > label {
     margin-bottom: 10px;
 }
 
-#flabel{
-    grid-area:flabel;
+#changeUsernameForm, #changeEmailForm, #changePasswordForm {
+    display: none;
 }
 
-#ffield{
-    grid-area:ffield;
+#newUsernameLabel {
+    grid-area: newUsernameLabel;
 }
 
-#slabel{
-    grid-area:slabel;
+#newUsername {
+    grid-area: newUsername;
 }
 
-#sfield{
-    grid-area:sfield;
+#newEmailLabel {
+    grid-area: newEmailLabel;
 }
 
-#tlabel{
-    grid-area:tlabel;
+#newEmail {
+    grid-area: newEmail;
 }
 
-#tfield{
-    grid-area:tfield;
+#changeEmailPasswordLabel {
+    grid-area: changeEmailPasswordLabel;
 }
 
-#submitBtn{
-    margin-left:auto;
+#changeEmailPassword {
+    grid-area: changeEmailPassword;
+}
+
+#oldPasswordLabel {
+    grid-area: oldPasswordLabel;
+}
+
+#oldPassword {
+    grid-area: oldPassword;
+}
+
+#newPasswordLabel {
+    grid-area: newPasswordLabel;
+}
+
+#newPassword {
+    grid-area: newPassword;
+}
+
+#confirmedNewPasswordLabel {
+    grid-area: confirmedNewPasswordLabel;
+}
+
+#confirmedNewPassword {
+    grid-area: confirmedNewPassword;
+}
+
+.submitBtn {
+    margin-left: auto;
     margin-right: auto;
-    width:20vw;
+    width: 20vw;
     font-size: 2vh;
-    display: block;
+    display: none;
 }
 
 #top-menu, #add-top-menu {
