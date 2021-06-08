@@ -2,6 +2,7 @@ import ProductionCompany from '../models/production-company.js'
 import APIError from '../../../shared-utilities/APIError.js'
 import Bookshelf from '../bookshelf.js'
 import { attachToProductionCompany, checkTableArrays, detachAll } from '../utils/production-company-utils.js'
+import Country from "../models/country";
 
 class ProductionCompanyController {
     static relatedObject = {
@@ -32,6 +33,17 @@ class ProductionCompanyController {
         return res.end(JSON.stringify({
             results: companies.toJSON({ omitPivot: true }),
             pagination: companies.pagination
+        }))
+    }
+
+    static async getCountry(req,res){
+        const country= new Country().query(q => {
+            if (req.query.searchBy && req.query.searchBy !== {}) {
+                q.where('countries.code', 'like', `%${req.query.searchBy}%`)
+            }
+        }).fetch()
+        return res.end(JSON.stringify({
+            results: country.toJSON({ omitPivot: true })
         }))
     }
 

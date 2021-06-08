@@ -63,7 +63,7 @@ div.information :last-child {
     padding-bottom: 30px;
 }
 
-#wrapper button, #submitBtn {
+#wrapper button, #submitBtn, #addMenuButtonList > *, #addMenuFieldList  button {
     background: inherit;
     color: white;
     padding: 16px;
@@ -75,7 +75,23 @@ div.information :last-child {
     align-self: center;
 }
 
-#wrapper button:hover, #submitBtn:hover {
+#addMenuButtonList {
+    width: 25%;
+    display: flex;
+    justify-content: space-between;
+}
+
+#addMenuButtonList > * {
+    justify-self: auto;
+}
+
+#addMenuFieldList > #addMenuSubmitBtn{
+    display:block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#wrapper button:hover, #submitBtn:hover, #addMenuButtonList > *:hover, #addMenuFieldList button:hover {
     background-color: #1ab188;
     cursor: pointer;
 }
@@ -137,6 +153,10 @@ li > button {
     background: rgba(13, 27, 36, 0.99);
     animation: .3s ease-out growFromCenter;
 
+}
+
+#addMenu {
+    height:85vh;
 }
 
 @keyframes growFromCenter {
@@ -251,6 +271,29 @@ li > button {
     color: white;
     font-size: 30px;
     border-radius: inherit;
+}
+
+
+
+#addMenuFieldList > * {
+    background: inherit;
+}
+
+#addMenuFieldList input {
+    padding: 10px;
+    margin: 1vw auto;
+    display:block;
+    width: 90%;
+    background: inherit;
+    color: white;
+    border: 1px solid #1ab188;
+    border-radius: 10px;
+    font-size: 25px;
+    outline: none;
+}
+
+#addMenuFieldList input:focus {
+    background: rgba(63, 95, 118, 0.43);
 }
 
 @media only screen and (max-width: 1024px) {
