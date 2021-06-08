@@ -47,8 +47,30 @@ function loadAdminOptions() {
     contentPage.insertBefore(episodeButton, document.getElementById(`export`))
 }
 
+function openGeneralMenu(bodyToAdd){
+    document.getElementById('profileBody').style.overflow = 'hidden';
+    const sheet = window.document.styleSheets[0];
+    sheet.insertRule('body > *:not(#addMenu) { filter: blur(8px); }', sheet.cssRules.length);
+    sheet.insertRule(`#addMenu {background: linear-gradient(rgba(19, 35, 47, 0.90), rgba(19, 35, 47, 0.90)) no-repeat center fixed; }`, sheet.cssRules.length);
+    document.getElementById('addMenu').style.display = 'block';
+    let fieldsPlace=document.getElementById('addMenuBody')
+    fieldsPlace.innerHTML=bodyToAdd.innerHTML
+}
+
 function openActorMenu() {
-    console.log("I'll open the actor menu")
+    let fields=document.createElement('div')
+    fields.setAttribute('id','addMenuFullBody')
+    let buttonList=document.createElement('ul')
+    buttonList.setAttribute('id','addMenuButtonList')
+    buttonList.innerHTML+='<button id="addActorBtn" onclick="addActor()">Add actor</button>' +
+                        '<button id="editActorBtn" onclick="editActor()">Edit actor</button>' +
+                        '<button id="deleteActorBtn" onclick="deleteActor()">Delete actor</button><br>'
+    fields.innerHTML+=buttonList.innerHTML
+    let fieldList=document.createElement('ul')
+    fieldList.setAttribute('id','addMenuFieldList')
+    fieldList.innerHTML+='<h1>Hi</h1>'
+    fields.append(fieldList)
+    openGeneralMenu(fields)
     //make window visible
     /*add the fields: name
                       gender
@@ -57,6 +79,18 @@ function openActorMenu() {
                       biography
 
     */
+}
+
+function addActor(){
+    document.getElementById('addMenuFieldList').innerHTML='<h1>I`ll add actors</h1>'
+}
+
+function editActor(){
+    document.getElementById('addMenuFieldList').innerHTML='<h1>I`ll edit actors</h1>'
+}
+
+function deleteActor(){
+    document.getElementById('addMenuFieldList').innerHTML='<h1>I`ll delete actors</h1>'
 }
 
 function openDirectorMenu() {
@@ -208,17 +242,10 @@ async function deleteMedia(type, id) {
     await loadFavorites();
 }
 
-function finishedChanges() {
+function finishedChanges(body) {
     document.getElementById('profileBody').style.overflow = 'auto';
-    document.getElementById('changeMenu').style.display = 'none';
+    document.getElementById(body).style.display = 'none';
     const sheet = window.document.styleSheets[0];
-    sheet.insertRule('body > *:not(#changeMenu) { filter: none; }', sheet.cssRules.length);
-    for (let i = 0; i < sheet.rules.length; i++) {
-        if (sheet.rules[i].selectorText === '#ffield' || sheet.rules[i].selectorText === '#flabel') {
-            if (sheet.rules[i].cssText === '#ffield { display: none; }' || sheet.rules[i].cssText === '#flabel { display: none; }') {
-                sheet.deleteRule(i);
-                i--;
-            }
-        }
-    }
+    sheet.insertRule(`body > *:not(#${body}) { filter: none; }`, sheet.cssRules.length);
+
 }

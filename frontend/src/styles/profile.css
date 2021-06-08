@@ -167,7 +167,7 @@ li > button{
     margin-bottom:22px;
 }
 
-#changeForm >label{
+#changeForm > label{
     margin-bottom: 10px;
 }
 
@@ -203,7 +203,7 @@ li > button{
     display: block;
 }
 
-#top-menu {
+#top-menu, #add-top-menu {
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -213,7 +213,7 @@ li > button{
     padding-right: 10px;
 }
 
-#top-menu button {
+#top-menu button, #add-top-menu button {
     cursor: pointer;
     position: absolute;
     background: inherit;

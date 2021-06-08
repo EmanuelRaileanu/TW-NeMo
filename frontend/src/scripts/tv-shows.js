@@ -27,8 +27,8 @@ window.onload = async function () {
         throw new Error("Couldn't load the ratings")
     ratingResponse = await ratingResponse.json()
     for (const el of ratingResponse) {
-        languages.push(el.code)
-        languageIds.push(el.id)
+        ratings.push(el.code)
+        ratingIds.push(el.id)
     }
     await renderShows({sorting: 'name'});
     createFiltersMenu();
@@ -36,15 +36,17 @@ window.onload = async function () {
         if (event.code === 'Enter' || event.keyCode === 13)
             await applyFilters();
     })
-    document.getElementById("mvRating").addEventListener('keydown', async event => {
+    const ratingButton=document.getElementById("mvRating")
+        ratingButton.addEventListener('keydown', async event => {
         if (event.code === 'Enter' || event.keyCode === 13){
             const index = ratings.indexOf(document.getElementById("mvRating").value)
-            if (index.length > 0) {
-                label.childNodes[0].value = index[0].name
-                label.childNodes[0].style.color = "green"
-                label.childNodes[1].value = index[0].id
+            if (index >= 0) {
+                console.log(ratings)
+                ratingButton.value = ratings[index]
+                ratingButton.style.color = "green"
+                document.getElementById('mvRatingId').value = ratingIds[index]
             } else {
-                label.childNodes[0].style.color = "red"
+                ratingButton.style.color = "red"
             }
         }
     })
@@ -425,7 +427,7 @@ async function addShow() {
         title: document.getElementById('mvTitle').value,
         tagline: document.getElementById('mvTagline').value,
         releaseDate: document.getElementById('mvReleaseDate').value,
-        rating: document.getElementById('mvRating').value,
+        rating: document.getElementById('mvRatingId').value,
         runtime: document.getElementById('mvRuntime').value,
         description: document.getElementById('mvDescription').value,
         status:document.getElementById('mvStatus').value,
@@ -445,6 +447,7 @@ async function addShow() {
     })).json()
     console.log(showResponse)
     const nrOfSeasons = sessionStorage.getItem("nrOfSeasons")
+    console.log(nrOfSeasons)
     for (let i = 1; i < nrOfSeasons; i++) {
         const seasonData = {
             title: document.getElementById(`seasonName${i}`).value,
@@ -453,6 +456,7 @@ async function addShow() {
             seasonNumber: i,
             tvShowId: showResponse.id
         }
+        console.log(seasonData)
         const seasonResponse = await (await fetch(`${API_URL}/seasons`, {
             method: 'POST',
             headers: {
@@ -472,13 +476,13 @@ async function addShow() {
                 episodeNumber: j,
                 seasonId: seasonResponse.id
             }
-            const episodeResponse = await (await fetch(`${API_URL}/seasons`, {
+            const episodeResponse = await (await fetch(`${API_URL}/episodes`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem("token")}`
                 },
-                body: JSON.stringify(seasonData)
+                body: JSON.stringify(episodeData)
             })).json()
             console.log(episodeResponse)
         }
