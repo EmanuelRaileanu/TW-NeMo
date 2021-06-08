@@ -7,7 +7,7 @@
     <script src="../scripts/profile.js"></script>
 </head>
 <body id="profileBody">
-<div class="wrapper">
+<div id="wrapper">
     <h1>Account details:</h1>
     <div class="information">
         <div id="username" onclick="changeField(this.id)"></div>
@@ -15,7 +15,8 @@
         <div id="password" onclick="changeField(this.id)"></div>
         <div id="join-date"></div>
     </div>
-    <button class="export" onclick="exportList()">Export data</button>
+    <button id="export" onclick="exportList()">Export data</button>
+    <button id="logout" onclick="logout()">Logout</button>
     <h1>Favorite movies:</h1>
     <ul id="favorite-movies">
     </ul>
@@ -36,6 +37,16 @@
         <input type="text" id="tfield" name="newConf">
     </form>
     <input type="submit" id="submitBtn" value="Submit" form="changeForm">
+</div>
+
+<div id="addMenu">
+    <nav id="add-top-menu">
+        <button onclick="finishedChanges()">✕</button>
+    </nav>
+    <form id="addForm">
+
+    </form>
+    <input type="submit" id="addBtn" value="Submit" form="addForm">
 </div>
 </body>
 </html>
