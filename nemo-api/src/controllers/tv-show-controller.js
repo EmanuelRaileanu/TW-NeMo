@@ -10,6 +10,8 @@ class TvShowController {
     static relatedObject = {
         seasons: q => {
             q.select('id', 'tvShowId', 'title')
+            q.select(Bookshelf.knex.raw('(SELECT COUNT(*) FROM tv_episodes WHERE tv_episodes.seasonId = tv_seasons.id) AS numberOfEpisodes'))
+            q.orderBy('seasonNumber')
         },
         genres: q => {
             q.select('id', 'name')
