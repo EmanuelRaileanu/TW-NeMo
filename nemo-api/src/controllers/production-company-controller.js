@@ -36,12 +36,12 @@ class ProductionCompanyController {
         }))
     }
 
-    static async getCountry(req,res){
-        const country= new Country().query(q => {
+    static async getCountries (req, res) {
+        const country = await new Country().query(q => {
             if (req.query.searchBy && req.query.searchBy !== {}) {
                 q.where('countries.code', 'like', `%${req.query.searchBy}%`)
             }
-        }).fetch()
+        }).fetch({ require: false })
         return res.end(JSON.stringify({
             results: country.toJSON({ omitPivot: true })
         }))
