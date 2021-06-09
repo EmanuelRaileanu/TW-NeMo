@@ -7,7 +7,7 @@ const prodComps = ['Animation Picture Company', 'Davis Entertainment', 'DK Enter
 const AUTH_SERVICE_URL = 'http://stachyon.asuscomm.com:8000'
 const API_URL = 'http://stachyon.asuscomm.com:8081'
 
-let pagination,pageCount,pageSize,maxPageSize
+let pagination, pageCount, pageSize, maxPageSize
 
 window.onload = async function () {
     let genreResponse = await fetch('http://stachyon.asuscomm.com:8081/movies/genres')
@@ -34,6 +34,28 @@ window.onload = async function () {
         ratings.push(el.code)
         ratingIds.push(el.id)
     }
+    pagination = 1
+    const pageNumber = document.getElementById('currentPage')
+    pageNumber.addEventListener('keydown', async event => {
+        if (event.code === 'Enter' || event.keyCode === 13) {
+            pagination = pageNumber.value
+            await renderMovies()
+        }
+    })
+    pageNumber.value = pagination
+
+
+    pageSize = 20
+    const pageSizeInput = document.getElementById('pageSize')
+    pageSizeInput.addEventListener('keydown', async event => {
+        if (event.code === 'Enter' || event.keyCode === 13) {
+            pageSize = pageSizeInput.value
+            pagination = 1
+            pageNumber.value = pagination
+            await renderMovies()
+        }
+    })
+    pageSizeInput.value = pageSize;
     await renderMovies();
     createFiltersMenu();
     document.getElementById("mvSch").addEventListener('keydown', async event => {
@@ -51,30 +73,8 @@ window.onload = async function () {
             document.getElementsByClassName('topnav')[0].append(button)
         }
     }
-    pagination=1
-    const pageNumber=document.getElementById('currentPage')
-    pageNumber.addEventListener('keydown', async event => {
-        if (event.code === 'Enter' || event.keyCode === 13) {
-            pagination=pageNumber.value
-            await renderMovies()
-        }
-    })
-    pageNumber.value=pagination
 
-
-    pageSize=20
-    const pageSizeInput=document.getElementById('pageSize')
-    pageSizeInput.addEventListener('keydown', async event => {
-        if (event.code === 'Enter' || event.keyCode === 13) {
-            pageSize=pageSizeInput.value
-            pagination=1
-            pageNumber.value=pagination
-            await renderMovies()
-        }
-    })
-    pageSizeInput.value=pageSize;
-
-    const ratingBtn=document.getElementById('mvRating')
+    const ratingBtn = document.getElementById('mvRating')
     ratingBtn.addEventListener('keydown', async event => {
         if (event.code === 'Enter' || event.keyCode === 13) {
             const inputField = ratingBtn.value
@@ -100,26 +100,26 @@ window.onload = async function () {
 
 }
 
-async function prevPage(){
-    if(pagination===1)
+async function prevPage () {
+    if (pagination === 1)
         return;
     pagination--
     await renderMovies()
-    const pageNumber=document.getElementById('currentPage')
-    pageNumber.value=pagination
+    const pageNumber = document.getElementById('currentPage')
+    pageNumber.value = pagination
 }
 
-async function nextPage(){
-    if(pagination===pageCount)
+async function nextPage () {
+    if (pagination === pageCount)
         return;
     pagination++
     await renderMovies()
-    const pageNumber=document.getElementById('currentPage')
-    pageNumber.value=pagination
+    const pageNumber = document.getElementById('currentPage')
+    pageNumber.value = pagination
 }
 
 
-function createFiltersMenu() {
+function createFiltersMenu () {
     let menu = document.getElementById('filters');
     menu.innerHTML += '<li>Genres:</li>';
     for (let item of genres) {
@@ -133,25 +133,26 @@ function createFiltersMenu() {
     menu.innerHTML += '<li><button onclick="applyFilters()">Apply filters</button></li>'
 }
 
-async function renderMovies(filters = null) {
+async function renderMovies (filters = null) {
     document.getElementById('list').innerHTML = '';
     const movies = await getMovies(filters)
     for (let i = 0; i < movies.length; i++) {
         document.getElementById('list').innerHTML += `
-            <li id="${movies[i].id}" onclick="displayMovie(this.id)">
+            <li id="${movies[i].id}|${Number(movies[i].isFavorite)}" onclick="displayMovie(this.id)">
                 <img src="${posterBaseUrl}/${movies[i].posterPath}" alt="">
                 <div class="written-content">
                     <h1>${movies[i].title}</h1>
                     <span>${movies[i].description}</span>
                 </div>
                 <div class="vertical-info">
-                    <span>Rating: ${movies[i].tmdbVoteAverage}</span>
+                    <span>Score: ${movies[i].voteAverage || movies[i].tmdbVoteAverage}</span>
                 </div>
+                ${localStorage.getItem('token') ? (movies[i].isFavorite ? '<h1>❤</h1>' : '') : ``}
             </li>`
     }
 }
 
-async function getMovies(filters = null) {
+async function getMovies (filters = null) {
     let url = `${API_URL}/movies?pageSize=${pageSize}&page=${pagination}`
     if (filters && filters !== {}) {
         if (filters.title) {
@@ -178,12 +179,31 @@ async function getMovies(filters = null) {
     if (response.status !== 200) {
         return []
     }
-    const responseJSON= await response.json()
-    pageCount= responseJSON.pageCount
+    const responseJSON = await response.json()
+    pageCount = responseJSON.pageCount
+    let favoriteMovieIds
+    const token = localStorage.getItem('token')
+    if (token) {
+        const response = await fetch(`${API_URL}/movies/favorites`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        if (response.status === 200) {
+            favoriteMovieIds = (await response.json()).map(movie => movie.id)
+        }
+    }
+    if (favoriteMovieIds) {
+        return responseJSON.results.map(movie => {
+            movie.isFavorite = favoriteMovieIds.includes(movie.id)
+            return movie
+        })
+    }
     return responseJSON.results
 }
 
-function findFilters(checkType, filterNames) {
+function findFilters (checkType, filterNames) {
     let filters = [];
     let inputElements = document.getElementsByClassName(checkType);
     for (let i = 0; inputElements[i]; ++i) {
@@ -194,7 +214,7 @@ function findFilters(checkType, filterNames) {
     return filters;
 }
 
-async function applyFilters(sorting = null) {
+async function applyFilters (sorting = null) {
     if (!sorting) {
         const sortValue = document.getElementById('name')
         if (sortValue.checked) {
@@ -203,9 +223,9 @@ async function applyFilters(sorting = null) {
             sorting = 'tmdbVoteAverage'
         }
     }
-    pagination=1
-    const pageNumber=document.getElementById('currentPage')
-    pageNumber.value=pagination
+    pagination = 1
+    const pageNumber = document.getElementById('currentPage')
+    pageNumber.value = pagination
     const filters = {
         genres: findFilters('genres', genres),
         productionCompanies: findFilters('prodComp', prodComps),
@@ -215,7 +235,7 @@ async function applyFilters(sorting = null) {
     await renderMovies(filters);
 }
 
-async function resetFilters() {
+async function resetFilters () {
     for (let item of document.getElementsByClassName('genres')) {
         item.checked = false;
     }
@@ -226,12 +246,14 @@ async function resetFilters() {
     await renderMovies();
 }
 
-async function getMovieById(movieId) {
+async function getMovieById (movieId) {
     return (await (await fetch(`${API_URL}/movies/${movieId}`)).json());
 }
 
-async function displayMovie(movieId) {
+async function displayMovie (id) {
+    const [movieId, isFavorite] = id.split('|')
     const movie = await getMovieById(movieId);
+    sessionStorage.setItem('movieId', movieId)
     document.getElementById('movies-body').style.overflow = 'hidden';
     const sheet = window.document.styleSheets[0];
     sheet.insertRule('body > *:not(#movie-container) { filter: blur(8px); }', sheet.cssRules.length);
@@ -240,6 +262,16 @@ async function displayMovie(movieId) {
     document.getElementById('poster').innerHTML = `<img src="${posterBaseUrl}/${movie.posterPath}" alt="">`;
     document.getElementById('title').innerHTML = `<h1>${movie.title}</h1>`;
     document.getElementById('tagline').innerHTML = `<h4>${movie.tagline}</h4>`;
+    const favoriteButton = document.getElementById('favorite')
+    favoriteButton.style.display = 'none'
+    if (localStorage.getItem('token')) {
+        favoriteButton.style.display = 'flex'
+        if (Number(isFavorite)) {
+            favoriteButton.innerText = '❤'
+        } else {
+            favoriteButton.innerText = '♡'
+        }
+    }
     const genreList = document.getElementById('genre-list');
     genreList.innerHTML = '';
     for (const genre of movie.genres) {
@@ -276,19 +308,32 @@ async function displayMovie(movieId) {
             productionCompaniesList.innerHTML += `
             <li>
                 <h6>${productionCompany.name} ${productionCompany.country ? productionCompany.country.code : ''}</h6>
-                <img src="${productionCompany.logoPath ? `${posterBaseUrl}/${productionCompany.logoPath}` : ''}" alt="">
+                <img src="${productionCompany.logoPath ? `${posterBaseUrl}${productionCompany.logoPath}` : ''}" alt="">
             </li>
         `;
         }
     }
+    if (movie.reviews.length) {
+        const reviewsList = document.getElementById('reviews-list')
+        reviewsList.innerHTML = ''
+        for (const review of movie.reviews) {
+            reviewsList.innerHTML += `
+                <li id="${review.id}">
+                    <h6>${review.score}</h6>
+                    <textarea>${review.text}</textarea>
+                </li>
+            `
+        }
+    }
     document.getElementById('lang').innerHTML = `<strong>${movie.languages.length ? movie.languages.map(l => l.code).join(', ') : ''}</strong>`;
+    document.getElementById('rated').innerHTML = `<strong>${movie.ratingId ? movie.rating.code : ''}</strong>`
     document.getElementById('release').innerText = movie.releaseDate ? movie.releaseDate.split('T')[0] : '';
-    document.getElementById('rating').innerText = `Rating: ${movie.voteAverage}`;
+    document.getElementById('rating').innerText = `Score: ${movie.voteAverage || movie.tmdbVoteAverage}`;
     document.getElementById('runtime').innerText = `${movie.runtimeInMinutes} min`;
     document.getElementById('description').innerHTML = `<p>${movie.description}</p>`;
 }
 
-function exitMovieView(body) {
+function exitMovieView (body) {
     document.getElementById(`movies-body`).style.overflow = 'auto'
     document.getElementById(`${body}`).style.display = 'none'
     const sheet = window.document.styleSheets[0];
@@ -319,7 +364,7 @@ function exitMovieView(body) {
 }
 
 
-function openAddMovieMenu() {
+function openAddMovieMenu () {
     document.getElementById('movies-body').style.overflow = 'hidden'
     const sheet = window.document.styleSheets[0]
     sheet.insertRule('body > *:not(#add-movie-container) { filter: blur(8px); }', sheet.cssRules.length)
@@ -327,7 +372,7 @@ function openAddMovieMenu() {
     document.getElementById('add-movie-container').style.display = 'block'
 }
 
-function addField(fieldName, inputClass, placeholderText, whereToQuery, insertBeforeLocation) {
+function addField (fieldName, inputClass, placeholderText, whereToQuery, insertBeforeLocation) {
 
     let contentPage = document.getElementById('add-movie-content')
     let label = document.createElement('label')
@@ -351,8 +396,7 @@ function addField(fieldName, inputClass, placeholderText, whereToQuery, insertBe
 }
 
 
-
-function addGenreField() {
+function addGenreField () {
     addField('genreField', 'mvGenre', 'Gives the tone of:', async (name) => {
         const index = genres.indexOf(name)
         if (index >= 0) {
@@ -367,7 +411,7 @@ function addGenreField() {
     }, 'addGenreBtn')
 }
 
-function addLanguageField() {
+function addLanguageField () {
     addField('languageField', 'mvLanguage', 'Understood better in:', async (name) => {
         const index = languages.indexOf(name)
         if (index >= 0) {
@@ -381,28 +425,28 @@ function addLanguageField() {
     }, 'addLanguageBtn')
 }
 
-function addProductionField() {
+function addProductionField () {
     addField('prodCompField', 'mvProdComp', 'Dedicated their hearts:', async (name) => {
         const result = await (await fetch(`${API_URL}/production-companies?searchBy=${name}`)).json()
         return result.results
     }, 'addProdCompBtn')
 }
 
-function addActorField() {
+function addActorField () {
     addField('actorField', 'mvActor', 'Deserves rows of applause:', async (name) => {
         const result = await (await fetch(`${API_URL}/actors?searchBy=${name}`)).json()
         return result.results
     }, 'addActorBtn')
 }
 
-function addDirectorField() {
+function addDirectorField () {
     addField('directorField', 'mvDirector', 'The mind which born it all:', async (name) => {
         const result = await (await fetch(`${API_URL}/directors?searchBy=${name}`)).json()
         return result.results
     }, 'addDirectorBtn')
 }
 
-async function addMovie() {
+async function addMovie () {
     let prodComps = []
     const prodCompIds = document.getElementsByClassName("mvProdCompId")
     for (let el of prodCompIds) {
@@ -460,12 +504,41 @@ async function addMovie() {
         },
         body: JSON.stringify(data)
     })).json()
-    if(response.id){
-        const window=document.getElementById('add-movie-content')
-        window.innerHTML='<h1>Movie successfully added</h1>'
+    if (response.id) {
+        const window = document.getElementById('add-movie-content')
+        window.innerHTML = '<h1>Movie successfully added</h1>'
     } else {
-        const window=document.getElementById('add-movie-content')
-        window.innerHTML=`<h1>${response.message}</h1>`
+        const window = document.getElementById('add-movie-content')
+        window.innerHTML = `<h1>${response.message}</h1>`
     }
 
+}
+
+async function changeFavoriteState (buttonId) {
+    const movieId = sessionStorage.getItem('movieId')
+    if (movieId) {
+        const button = document.getElementById(buttonId)
+        const token = localStorage.getItem('token')
+        if (button.innerText === '♡') {
+            const response = await fetch(`${API_URL}/movies/${movieId}/add-favorite`, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            if (response.status === 200) {
+                button.innerText = '❤'
+            }
+        } else {
+            const response = await fetch(`${API_URL}/movies/${movieId}/delete-favorite`, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            if (response.status === 200) {
+                button.innerText = '♡'
+            }
+        }
+    }
 }

@@ -53,6 +53,7 @@
         <button onclick="exitMovieView(`movie-container`)">✕</button>
     </nav>
     <div id="movie-content">
+        <button id="favorite" onclick="changeFavoriteState(this.id)">♡</button>
         <div id="poster"></div>
         <div id="title"></div>
         <div id="tagline"></div>
@@ -60,6 +61,7 @@
             <ul id="genre-list"></ul>
         </div>
         <div id="lang"></div>
+        <div id="rated"></div>
         <div id="release"></div>
         <div id="rating"></div>
         <div id="runtime"></div>
@@ -72,6 +74,9 @@
         </div>
         <div id="production-companies">
             <ul id="production-companies-list"></ul>
+        </div>
+        <div id="reviews">
+            <ul id="reviews-list"></ul>
         </div>
     </div>
 </div>

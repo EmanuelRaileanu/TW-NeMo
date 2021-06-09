@@ -34,6 +34,27 @@ window.onload = async function () {
         ratings.push(el.code)
         ratingIds.push(el.id)
     }
+    pagination=1
+    const pageNumber=document.getElementById('currentPage')
+    pageNumber.addEventListener('keydown', async event => {
+        if (event.code === 'Enter' || event.keyCode === 13) {
+            pagination=pageNumber.value
+            await renderMovies()
+        }
+    })
+    pageNumber.value=pagination
+
+    pageSize=20
+    const pageSizeInput=document.getElementById('pageSize')
+    pageSizeInput.addEventListener('keydown', async event => {
+        if (event.code === 'Enter' || event.keyCode === 13) {
+            pageSize=pageSizeInput.value
+            pagination=1
+            pageNumber.value=pagination
+            await renderShows()
+        }
+    })
+    pageSizeInput.value=pageSize;
     await renderShows();
     createFiltersMenu();
     document.getElementById("shSch").addEventListener('keydown', async event => {
@@ -67,28 +88,6 @@ window.onload = async function () {
 
 
     sessionStorage.setItem("nrOfSeasons", "1")
-
-    pagination = 1
-    const pageNumber = document.getElementById('currentPage')
-    pageNumber.addEventListener('keydown', async event => {
-        if (event.code === 'Enter' || event.keyCode === 13) {
-            pagination = pageNumber.value
-            await renderMovies()
-        }
-    })
-    pageNumber.value = pagination
-
-    pageSize = 20
-    const pageSizeInput = document.getElementById('pageSize')
-    pageSizeInput.addEventListener('keydown', async event => {
-        if (event.code === 'Enter' || event.keyCode === 13) {
-            pageSize = pageSizeInput.value
-            pagination = 1
-            pageNumber.value = pagination
-            await renderShows()
-        }
-    })
-    pageSizeInput.value = pageSize;
 
 
     addProdCompField()
@@ -143,15 +142,16 @@ async function renderShows(filters = null) {
     const tvShows = await getShows(filters);
     for (let i = 0; i < tvShows.length; i++) {
         document.getElementById('list').innerHTML += `
-            <li id="${tvShows[i].id}" onclick="displayShow(this.id)">
+            <li id="${tvShows[i].id}|${Number(tvShows[i].isFavorite)}" onclick="displayShow(this.id)">
                 <img src="${posterBaseUrl}/${tvShows[i].posterPath}" alt="">
                 <div class="written-content">
                     <h1>${tvShows[i].title}</h1>
                     <span>${tvShows[i].description}</span>
                 </div>
                 <div class="vertical-info">
-                    <span>Rating: ${tvShows[i].tmdbVoteAverage}</span>
+                    <span>Rating: ${tvShows[i].voteAverage || tvShows[i].tmdbVoteAverage}</span>
                 </div>
+                ${localStorage.getItem('token') ? (tvShows[i].isFavorite ? '<h1>❤</h1>' : '') : ``}
             </li>`
     }
 }
@@ -183,7 +183,27 @@ async function getShows(filters = null) {
     if (response.status !== 200) {
         return []
     }
-    return (await response.json()).results
+    let favoriteShowIds
+    const token = localStorage.getItem('token')
+    const responseJSON = await response.json()
+    if (token) {
+        const response = await fetch(`${API_URL}/shows/favorites`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        if (response.status === 200) {
+            favoriteShowIds = (await response.json()).map(show => show.id)
+        }
+    }
+    if (favoriteShowIds) {
+        return responseJSON.results.map(show => {
+            show.isFavorite = favoriteShowIds.includes(show.id)
+            return show
+        })
+    }
+    return responseJSON.results
 }
 
 function findFilters(checkType, filterNames) {
@@ -233,8 +253,10 @@ async function getShowById(showId) {
     return (await (await fetch(`${API_URL}/shows/${showId}`)).json());
 }
 
-async function displayShow(showId) {
+async function displayShow (id) {
+    const [showId, isFavorite] = id.split('|')
     const show = await getShowById(showId);
+    sessionStorage.setItem('tvShowId', showId)
     document.getElementById('movies-body').style.overflow = 'hidden';
     const sheet = window.document.styleSheets[0];
     sheet.insertRule('body > *:not(#movie-container) { filter: blur(8px); }', sheet.cssRules.length);
@@ -243,6 +265,16 @@ async function displayShow(showId) {
     document.getElementById('poster').innerHTML = `<img src="${posterBaseUrl}/${show.posterPath}" alt="">`;
     document.getElementById('title').innerHTML = `<h1>${show.title}</h1>`;
     document.getElementById('tagline').innerHTML = `<h4>${show.tagline}</h4>`;
+    const favoriteButton = document.getElementById('favorite')
+    favoriteButton.style.display = 'none'
+    if (localStorage.getItem('token')) {
+        favoriteButton.style.display = 'flex'
+        if (Number(isFavorite)) {
+            favoriteButton.innerText = '❤'
+        } else {
+            favoriteButton.innerText = '♡'
+        }
+    }
     const genreList = document.getElementById('genre-list');
     genreList.innerHTML = ''
     for (const genre of show.genres) {
@@ -304,7 +336,7 @@ async function displayShow(showId) {
     }
     document.getElementById('lang').innerHTML = `<strong>${show.languages.length ? show.languages[0].code : ''}</strong>`;
     document.getElementById('release').innerText = show.firstAirDate.split('T')[0];
-    document.getElementById('rating').innerText = `Rating: ${show.voteAverage}`;
+    document.getElementById('rating').innerText = `Rating: ${show.voteAverage || show.tmdbVoteAverage}`;
     document.getElementById('runtime').innerText = `${show.seasons.length} seasons`;
     document.getElementById('description').innerHTML = `<p>${show.description}</p>`;
 }
@@ -363,6 +395,16 @@ async function getSeasonDetails(id) {
                 <h3>Air date: ${seasonJSON.airDate.split('T')[0]}</h3>
                 <p>${seasonJSON.description}</p>
             `
+            if (seasonJSON.episodes && seasonJSON.episodes.length) {
+                let episodesDiv = '<div id="episodes"><h3>Episodes</h3><ul id="episodes-list">'
+                for (const [index, episode] of seasonJSON.episodes.entries()) {
+                    episodesDiv += `<li id="${episode.id}">
+                        Episode ${index + 1}: ${episode.name}
+                    </li>`
+                }
+                episodesDiv += '</div></ul>'
+                seasonContent.innerHTML += episodesDiv
+            }
         }
     } else {
         seasonContent.style.display = 'none';
@@ -591,5 +633,34 @@ async function addShow() {
     } else {
         const window = document.getElementById('add-movie-content')
         window.innerHTML = `<h1>${lastResponse.message}</h1>`
+    }
+}
+
+async function changeFavoriteState (buttonId) {
+    const tvShowId = sessionStorage.getItem('tvShowId')
+    if (tvShowId) {
+        const button = document.getElementById(buttonId)
+        const token = localStorage.getItem('token')
+        if (button.innerText === '♡') {
+            const response = await fetch(`${API_URL}/shows/${tvShowId}/add-favorite`, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            if (response.status === 200) {
+                button.innerText = '❤'
+            }
+        } else {
+            const response = await fetch(`${API_URL}/shows/${tvShowId}/delete-favorite`, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            if (response.status === 200) {
+                button.innerText = '♡'
+            }
+        }
     }
 }

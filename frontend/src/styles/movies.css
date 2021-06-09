@@ -160,6 +160,15 @@ body::-webkit-scrollbar-thumb {
     margin-top: 3%;
 }
 
+#reviews {
+    grid-area: reviews;
+    font-size: 30px;
+    display: flex;
+    flex-direction: column;
+    margin-right: auto;
+    margin-top: 3%;
+}
+
 #description {
     grid-area: description;
     padding: 5vw;
@@ -168,6 +177,11 @@ body::-webkit-scrollbar-thumb {
 #lang {
     grid-area: language;
     font-size: 25px;
+}
+
+#rated {
+    grid-area: rated;
+    font-size: 23px;
 }
 
 #release {
@@ -200,6 +214,7 @@ body::-webkit-scrollbar-thumb {
     color: white;
     grid-template-areas:
             'poster title language'
+            'poster title rated'
             'poster tagline release'
             'poster genres runtime'
             'poster genres rating   '
@@ -207,8 +222,26 @@ body::-webkit-scrollbar-thumb {
             'actors actors actors'
             'directors directors directors'
             'seasons seasons seasons'
-            'prodcomp prodcomp prodcomp';
+            'prodcomp prodcomp prodcomp'
+            'reviews reviews reviews';
     font-family: 'Titillium Web', sans-serif;
+    position: relative;
+}
+
+#favorite {
+    position: absolute;
+    top: 0;
+    right: 3%;
+    background: inherit;
+    color: white;
+    cursor: pointer;
+    border: 0;
+    border-radius: 10%;
+    font-size: 30px;
+}
+
+#favorite:hover {
+    background: rgba(63, 95, 118, 0.43);
 }
 
 #movie-content > * {
@@ -333,6 +366,19 @@ body::-webkit-scrollbar-thumb {
     justify-content: space-between;
 }
 
+#reviews-list {
+    list-style-type: none;
+    width: 100%;
+}
+
+#reviews-list > * {
+    padding: 10px;
+    margin: 0;
+    background: rgba(63, 95, 118, 0.43);
+    display: flex;
+    justify-content: space-between;
+}
+
 #production-companies-list > * img {
     height: 25px;
 }
@@ -351,6 +397,21 @@ h6 {
 }
 
 #seasons-list > * {
+    display: flex;
+    flex-direction: column;
+    padding: 3%;
+}
+
+#episodes-list {
+    margin-top: 5%;
+    padding: 5% 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    font-size: 25px;
+}
+
+#episodes-list > * {
     display: flex;
     flex-direction: column;
     padding: 3%;
@@ -622,6 +683,7 @@ a:hover, .addMovie:hover, #add-movie-content button:hover {
             'tagline'
             'genres'
             'language'
+            'rated'
             'release'
             'runtime'
             'rating'
@@ -660,4 +722,5 @@ a:hover, .addMovie:hover, #add-movie-content button:hover {
         margin-left: -2%;
     }
 }
+
 
