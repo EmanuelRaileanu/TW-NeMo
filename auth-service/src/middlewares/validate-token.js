@@ -28,7 +28,7 @@ const validateToken = (func) => async (req, res) => {
         return res.end(JSON.stringify({ message: 'Unauthorized' }))
     }
     req.token = token
-    req.user = await new User({ id: authData.id }).fetch({ require: false })
+    req.user = await new User({ id: authData.id }).fetch({ require: false, withRelated: ['role'] })
     if (!req.user) {
         res.writeHead(401, CORS_HEADERS)
         return res.end(JSON.stringify({ message: 'Unauthorized' }))
