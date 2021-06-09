@@ -21,7 +21,7 @@ class TvShowController {
             q.select('id', 'name')
         },
         productionCompanies: q => {
-            q.select('id', 'name')
+            q.select('id', 'name', 'logoPath')
         },
         actors: q => {
             q.select('id', 'name', 'profilePhotoPath')
