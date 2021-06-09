@@ -66,7 +66,7 @@ class DirectorController {
             await director.save(updateBody, { method: 'update', patch: 'true', transacting: t })
             await attachToDirector(director, req.body, t)
         })
-        const updatedDirector = await new director({ id: req.params.directorId }).fetch({
+        const updatedDirector = await new Director({ id: req.params.directorId }).fetch({
             require: false,
             withRelated: [DirectorController.relatedObject]
         })
