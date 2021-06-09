@@ -15,10 +15,10 @@
         <button class="dropbtn">Sort</button>
         <ul class="dropdown-content">
             <li>
-                <input type="radio" id="name" name="sortType" onclick="applyFilters('name')" checked>By name
+                <input type="radio" id="name" name="sortType" onclick="applyFilters('title')" checked>By name
             </li>
             <li>
-                <input type="radio" id="rat" name="sortType" onclick="applyFilters('rating')">By rating
+                <input type="radio" id="rat" name="sortType" onclick="applyFilters('tmdbVoteAverage')">By rating
             </li>
             <li>
                 <input type="radio" id="asc" name="orderType" onclick="applyFilters()" checked>Ascending
@@ -34,9 +34,14 @@
 
         </ul>
     </div>
-    <button class="addMovie" onclick="openAddMovieMenu()">Add movie</button>
 </nav>
-
+<ul id="pageButtons">
+    <a onclick="prevPage()" class="previous">&#8249;</a>
+    <input id="currentPage" type="text" placeholder="Page#">
+    <p id="pageInfSeparatator">:</p>
+    <input id="pageSize" type="text" placeholder="Size">
+    <a onclick="nextPage()" class="next">&#8250;</a>
+</ul>
 <div class="content-container">
     <div id="controls">
 
@@ -69,8 +74,8 @@
             <ul id="production-companies-list"></ul>
         </div>
     </div>
-    <footer></footer>
 </div>
+<footer></footer>
 <div id="add-movie-container">
     <nav id="add-top-menu">
         <button onclick="exitMovieView(`add-movie-container`)">✕</button>
@@ -103,6 +108,5 @@
         <button id="addMovieBtn" onclick="addMovie()">Add movie</button>
     </div>
 </div>
-<footer></footer>
 </body>
 </html>

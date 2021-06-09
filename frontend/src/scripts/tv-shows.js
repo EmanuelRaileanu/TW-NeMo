@@ -4,7 +4,10 @@ let genres = [], genreIds = []
 let languages = [], languageIds = []
 let ratings = [], ratingIds = []
 const prodComps = ['20th Century Fox Television', '20th Television', 'Anonymous Content', 'BBC Studios', 'Berlanti Productions', 'Bonanza Productions', 'Bunim-Murray Productions (BMP)', 'Carter Bays', 'Caryn Mandabach Productions', 'DC Entertainment', 'Mad Ghost Productions', 'Michael Landon Productions', 'National Broadcasting Company', 'NBCUniversal', 'Nickelodeon Animation Studio', 'Paramount Television Studios', 'Primrose Hill Productions', 'Screen Yorkshire', 'Tiger Aspect Productions', 'Warner Bros. Television'];
+const AUTH_SERVICE_URL = 'http://stachyon.asuscomm.com:8000'
 const API_URL = 'http://stachyon.asuscomm.com:8081'
+let pagination,pageCount,pageSize,maxPageSize
+
 
 window.onload = async function () {
     let genreResponse = await fetch(`${API_URL}/shows/genres`)
@@ -51,8 +54,41 @@ window.onload = async function () {
             }
         }
     })
+    const userDetails = await (await fetch(`${AUTH_SERVICE_URL}/users/${localStorage.getItem("username")}`)).json()
+    if (['Owner', 'Admin'].includes(userDetails.role.name)) {
+        //    <button class="addMovie" onclick="openAddShowMenu()">Add Show</button>
+        const button=document.createElement('button')
+        button.setAttribute('class','addMovie')
+        button.setAttribute('onclick','openAddShowMenu()')
+        button.innerText='Add show'
+        document.getElementsByClassName('topnav')[0].append(button)
+    }
+
 
     sessionStorage.setItem("nrOfSeasons", "1")
+
+    pagination=1
+    const pageNumber=document.getElementById('currentPage')
+    pageNumber.addEventListener('keydown', async event => {
+        if (event.code === 'Enter' || event.keyCode === 13) {
+            pagination=pageNumber.value
+            await renderMovies()
+        }
+    })
+    pageNumber.value=pagination
+
+    pageSize=20
+    const pageSizeInput=document.getElementById('pageSize')
+    pageSizeInput.addEventListener('keydown', async event => {
+        if (event.code === 'Enter' || event.keyCode === 13) {
+            pageSize=pageSizeInput.value
+            pagination=1
+            pageNumber.value=pagination
+            await renderShows()
+        }
+    })
+    pageSizeInput.value=pageSize;
+
 
     addProdCompField()
 
@@ -67,6 +103,28 @@ window.onload = async function () {
     addSeasonFields()
 
 }
+
+async function prevPage(){
+    if(pagination===1)
+        return;
+    pagination--
+    console.log(pagination)
+    await renderShows()
+    const pageNumber=document.getElementById('currentPage')
+    pageNumber.value=pagination
+}
+
+async function nextPage(){
+    if(pagination===pageCount)
+        return;
+    pagination++
+    console.log(pagination)
+    await renderShows()
+    const pageNumber=document.getElementById('currentPage')
+    pageNumber.value=pagination
+}
+
+
 
 function createFiltersMenu () {
     let menu = document.getElementById('filters');
@@ -94,14 +152,14 @@ async function renderShows (filters = null) {
                     <span>${tvShows[i].description}</span>
                 </div>
                 <div class="vertical-info">
-                    <span>Rating: ${tvShows[i].voteAverage}</span>
+                    <span>Rating: ${tvShows[i].tmdbVoteAverage}</span>
                 </div>
             </li>`
     }
 }
 
 async function getShows (filters = null) {
-    let url = `${API_URL}/shows?pageSize=20`
+    let url = `${API_URL}/shows?pageSize=${pageSize}&page=${pagination}`
     if (filters && filters !== {}) {
         if (filters.title) {
             url += `&searchBy=${filters.title}`
@@ -142,6 +200,17 @@ function findFilters (checkType, filterNames) {
 }
 
 async function applyFilters (sorting = null) {
+    if (!sorting) {
+        const sortValue = document.getElementById('name')
+        if (sortValue.checked) {
+            sorting = 'title'
+        } else {
+            sorting = 'tmdbVoteAverage'
+        }
+    }
+    pagination=1
+    const pageNumber=document.getElementById('currentPage')
+    pageNumber.value=pagination
     const filters = {
         genres: findFilters('genres', genres),
         productionCompanies: findFilters('prodComp', prodComps),

@@ -61,12 +61,12 @@ class TvEpisodeController{
         if (!['Admin', 'Owner'].includes(req.user.role.name)) {
             throw new APIError('This operation is forbidden', 403)
         }
-        const tvSeason = await new TvSeason({ id: req.body.tvSeasonId }).fetch({ require: false })
+        const tvSeason = await new TvSeason({ id: req.body.seasonId }).fetch({ require: false })
         if (!tvSeason) {
-            throw new APIError(`There is no tv show with the id ${req.body.tvSeasonId}`, 404)
+            throw new APIError(`There is no tv show with the id ${req.body.seasonId}`, 404)
         }
         let episode = await new TvEpisode().query(q => {
-            q.where('tv_episodes.name', 'like', `${req.body.title}`, 'and','tv_episodes.seasonId',`${req.body.tvSeasonId}`)
+            q.where('tv_episodes.name', 'like', `${req.body.title}`, 'and','tv_episodes.seasonId',`${req.body.seasonId}`)
         }).fetch({ require: false })
         if (episode) {
             throw new APIError('There is already an episode with this name', 409)

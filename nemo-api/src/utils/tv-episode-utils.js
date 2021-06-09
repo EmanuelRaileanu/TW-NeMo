@@ -21,5 +21,5 @@ export const attachToEpisode= async (episode, body, t = null) => {
 
 export const detachAll = async (episode, t = null) => {
     await episode.actors().detach(episode.related('actors').map(actor => actor.id), { transacting: t })
-    await episode.episodes().detach(episode.related('directors').map(director => director.id), { transacting: t })
+    await episode.directors().detach(episode.related('directors').map(director => director.id), { transacting: t })
 }
