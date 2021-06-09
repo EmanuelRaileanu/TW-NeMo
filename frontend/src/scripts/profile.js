@@ -713,30 +713,44 @@ function addSeason() {
         '<label>The name of the season:</label><br>' +
         '<input id="seasonNameInput" type="text" maxlength="50" placeholder="Fresh from the oven"><br>' +
         '<input id="seasonId" type="hidden">' +
-        '<label>Description:</label><br>' +
+        '<label id="descLabel">Description:</label><br>' +
         '<input id="seasonDescriptionInput" type="text" maxlength="50" placeholder="The story until now"><br>' +
-        '<label>Season number:</label><br>' +
+        '<label id="seasonNumberLabel">Season number:</label><br>' +
         '<input id="seasonNumberInput" type="text" placeholder="Will it ever stop?" ><br>' +
-        '<label>Air date:</label><br>' +
+        '<label id="seasonAirLabel"l>Air date:</label><br>' +
         '<input id="airDateInput" type="text" placeholder="yyyy/mm/dd" ><br>' +
         '<button id="addMenuSubmitBtn" onclick="submitSeason(`POST`)">Submit</button>'
 
+    const showInput = document.getElementById('seasonShowInput')
+    showInput.addEventListener('keydown', async event => {
+        if (event.code === 'Enter' || event.keyCode === 13) {
+            const inputField = showInput.value
+            const index = await (await fetch(`${API_URL}/shows?searchBy=${inputField}`)).json()
+            if (index['results'].length > 0) {
+                const show = await (await fetch(`${API_URL}/shows/${index['results'][0].id}`)).json()
+                showInput.value = show.title
+                document.getElementById('seasonShowId').value = show.id
+                showInput.style.color = "green"
+            } else {
+                showInput.style.color = "red"
+            }
+        }
+    })
 }
 
 async function submitSeason(method, id = '') {
     let data
     if (method !== 'DELETE') {
-
         data = {
-            name: document.getElementById('prodCompNameInput').value,
-            description: document.getElementById('prodCompDescriptionInput').value,
-            countryId: document.getElementById('prodCompCountryId').value,
-            headquarters: document.getElementById('prodCompHeadInput').value
+            title: document.getElementById('seasonNameInput').value,
+            description: document.getElementById('seasonDescriptionInput').value,
+            airDate: document.getElementById('airDateInput').value,
+            tvShowId: document.getElementById('seasonShowId').value,
+            seasonNumber: document.getElementById('seasonNumberInput').value
         }
-        if (method === 'POST') {
-            data['movieIds'] = []
-            data['tvShowIds'] = []
-        }
+    }
+    if(method!=='POST'){
+        id=document.getElementById('seasonId')
     }
     const link = method === 'POST' ? `${API_URL}/seasons` : `${API_URL}/seasons/${id}`
     const actorResponse = await (await fetch(link, {
@@ -759,25 +773,12 @@ function editSeason() {
     seasonInput.setAttribute('placeholder', 'The name of the season you want to edit')
     let show, searchedSeason
     const fieldList = document.getElementById('addMenuFieldList')
-    console.log(fieldList.childNodes)
-    showInput.addEventListener('keydown', async event => {
-        if (event.code === 'Enter' || event.keyCode === 13) {
-            const inputField = showInput.value
-            const index = await (await fetch(`${API_URL}/shows?searchBy=${inputField}`)).json()
-            if (index['results'].length > 0) {
-                show = await (await fetch(`${API_URL}/shows/${index['results'][0].id}`)).json()
-                console.log(show)
-                showInput.value = show.title
-                document.getElementById('seasonShowId').value = show.id
-                showInput.style.color = "green"
-            } else {
-                showInput.style.color = "red"
-            }
-        }
-    })
 
+    document.getElementById('addMenuSubmitBtn').setAttribute('onclick', `submitSeason('PUT')`)
     seasonInput.addEventListener('keydown', async event => {
         if (event.code === 'Enter' || event.keyCode === 13) {
+            const showId=document.getElementById('seasonShowId').value
+            const show = await (await fetch(`${API_URL}/shows/${showId}`)).json()
             if (show) {
                 const inputField = seasonInput.value
                 for (const season of show['seasons']) {
@@ -790,12 +791,12 @@ function editSeason() {
                 }
                 if (searchedSeason) {
                     document.getElementById('seasonId').value = searchedSeason.id
-                    searchedSeason= await(await fetch(`${API_URL}/seasons/${searchedSeason.id}`)).json()
+                    searchedSeason = await (await fetch(`${API_URL}/seasons/${searchedSeason.id}`)).json()
                     console.log(searchedSeason)
                     seasonInput.style.color = "green"
-                    fieldList.childNodes[11].value=searchedSeason.description
-                    fieldList.childNodes[16].value=searchedSeason.seasonNumber
-                    fieldList.childNodes[20].value=searchedSeason.airDate.replace(/T.*/, '')
+                    fieldList.childNodes[11].value = searchedSeason.description
+                    fieldList.childNodes[16].value = searchedSeason.seasonNumber
+                    fieldList.childNodes[20].value = searchedSeason.airDate.replace(/T.*/, '')
                 } else {
                     seasonInput.style.color = "red"
                 }
@@ -807,36 +808,185 @@ function editSeason() {
 }
 
 function deleteSeason() {
-    document.getElementById('addMenuFieldList').innerHTML = '<label>The season you want to delete:</label><br>' +
-        '<input id="actorName" type="text"><br>' +
-        '<button id="addMenuSubmitBtn">Delete director</button>'
+    editSeason()
+    const fieldList = document.getElementById('addMenuFieldList')
+    fieldList.removeChild(document.getElementById('descLabel'))
+    fieldList.removeChild(document.getElementById('seasonDescriptionInput'))
+    fieldList.removeChild(document.getElementById('seasonNumberLabel'))
+    fieldList.removeChild(document.getElementById('seasonNumberInput'))
+    fieldList.removeChild(document.getElementById('seasonAirLabel'))
+    fieldList.removeChild(document.getElementById('airDateInput'))
+    const actNameField = document.getElementById('seasonNameInput')
+    document.getElementById('addMenuSubmitBtn').setAttribute('onclick', `submitSeason('DELETE')`)
+}
 
-    const actNameField = document.getElementById('actorName')
-    let idActor
-    actNameField.addEventListener('keydown', async event => {
+
+function openEpisodeMenu() {
+    let fields = document.createElement('div')
+    fields.setAttribute('id', 'addMenuFullBody')
+    let buttonList = document.createElement('nav')
+    buttonList.setAttribute('id', 'addMenuButtonList')
+    buttonList.innerHTML += '<button id="addActorBtn" onclick="addEpisode()">Add episode</button>' +
+        '<button id="editActorBtn" onclick="editEpisode()">Edit episode</button>' +
+        '<button id="deleteActorBtn" onclick="deleteEpisode()">Delete episode</button><br>'
+    fields.append(buttonList)
+    let fieldList = document.createElement('div')
+    fieldList.setAttribute('id', 'addMenuFieldList')
+    fields.append(fieldList)
+    openGeneralMenu(fields)
+    addEpisode()
+}
+
+function addEpisode() {
+    document.getElementById('addMenuFieldList').innerHTML = '<label>The name of the show:</label><br>' +
+        '<input id="seasonShowInput" type="text" maxlength="50" placeholder="I heard that name"><br>' +
+        '<input id="seasonShowId" type="hidden">' +
+        '<label>The name of the season:</label><br>' +
+        '<input id="seasonNameInput" type="text" maxlength="50" placeholder="Fresh from the oven"><br>' +
+        '<input id="seasonId" type="hidden">' +
+        '<label>The name of the episode:</label><br>' +
+        '<input id="episodeNameInput" type="text" maxlength="50" placeholder="Saw it trending on twitter"><br>' +
+        '<input id="episodeId" type="hidden">' +
+        '<label id="descLabel">Description:</label><br>' +
+        '<input id="seasonDescriptionInput" type="text" maxlength="50" placeholder="The story until now"><br>' +
+        '<label id="seasonNumberLabel">Season number:</label><br>' +
+        '<input id="seasonNumberInput" type="text" placeholder="Will it ever stop?" ><br>' +
+        '<label id="seasonAirLabel"l>Air date:</label><br>' +
+        '<input id="airDateInput" type="text" placeholder="yyyy/mm/dd" ><br>' +
+        '<button id="addMenuSubmitBtn" onclick="submitEpisode(`POST`)">Submit</button>'
+
+    let show, searchedSeason
+    const showInput = document.getElementById('seasonShowInput')
+    const fieldList = document.getElementById('addMenuFieldList')
+    showInput.addEventListener('keydown', async event => {
         if (event.code === 'Enter' || event.keyCode === 13) {
-            const inputField = actNameField.value
-            const index = await (await fetch(`${API_URL}/production-companies?searchBy=${inputField}`)).json()
+            const inputField = showInput.value
+            const index = await (await fetch(`${API_URL}/shows?searchBy=${inputField}`)).json()
             if (index['results'].length > 0) {
-                const actor = index['results'][0]
-                actNameField.value = actor.name
-                actNameField.style.color = "green"
-                idActor = actor.id
-                document.getElementById('addMenuSubmitBtn').setAttribute('onclick', `submitProdComp('DELETE', '${idActor}')`)
+                show = await (await fetch(`${API_URL}/shows/${index['results'][0].id}`)).json()
+                showInput.value = show.title
+                document.getElementById('seasonShowId').value = show.id
+                showInput.style.color = "green"
             } else {
-                actNameField.style.color = "red"
+                showInput.style.color = "red"
+            }
+        }
+    })
+
+    const seasonInput = document.getElementById('seasonNameInput')
+    seasonInput.addEventListener('keydown', async event => {
+        if (event.code === 'Enter' || event.keyCode === 13) {
+            if (show) {
+                const inputField = seasonInput.value
+                for (const season of show['seasons']) {
+                    if (season['title'] === inputField) {
+                        searchedSeason = season
+                        document.getElementById('seasonId').value=season['id']
+                        break
+                    }
+                }
+                if (searchedSeason) {
+                    document.getElementById('seasonId').value = searchedSeason.id
+                    searchedSeason = await (await fetch(`${API_URL}/seasons/${searchedSeason.id}`)).json()
+                    console.log(searchedSeason)
+                    seasonInput.style.color = "green"
+                    fieldList.childNodes[11].value = searchedSeason.description
+                    fieldList.childNodes[16].value = searchedSeason.seasonNumber
+                    fieldList.childNodes[20].value = searchedSeason.airDate.replace(/T.*/, '')
+                } else {
+                    seasonInput.style.color = "red"
+                }
+            } else {
+                showInput.style.color = "red"
             }
         }
     })
 }
 
-function openEpisodeMenu() {
-    console.log("I'll open the episodes menu")
-    //make window visible
-    /*add the fields: seasonId
-                      title
-                      description
-                      airDate
-                      episodeNumber
-    */
+async function submitEpisode(method, id = '') {
+    let data
+    if (method !== 'DELETE') {
+        data = {
+            title: document.getElementById('episodeNameInput').value,
+            description: document.getElementById('seasonDescriptionInput').value,
+            airDate: document.getElementById('airDateInput').value,
+            tvSeasonId: document.getElementById('seasonId').value,
+            seasonId:document.getElementById('seasonId').value,
+            episodeNumber: document.getElementById('seasonNumberInput').value
+        }
+    }
+    if(method!=='POST'){
+        id=document.getElementById('episodeId').value
+    }
+    console.log(data)
+    console.log(id)
+    const link = method === 'POST' ? `${API_URL}/episodes` : `${API_URL}/episodes/${id}`
+    const actorResponse = await (await fetch(link, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify(data)
+    })).json()
+    const positiveResponse = method === 'POST' ? 'Episode successfully added' : method === 'PUT' ? 'Episode successfully updated' : 'Episode successfully deleted'
+    document.getElementById('addMenuFieldList').innerHTML = `<h1>${actorResponse.message ? actorResponse.message : positiveResponse}</h1>`
+}
+
+async function editEpisode() {
+    addEpisode()
+    const showInput = document.getElementById('seasonShowInput')
+    showInput.setAttribute('placeholder', 'The show which contains the season')
+    const seasonInput = document.getElementById('seasonNameInput')
+    seasonInput.setAttribute('placeholder', 'The name of the season you want to edit')
+    const episodeInput = document.getElementById('episodeNameInput')
+    episodeInput.setAttribute('placeholder', 'The episode you want to edit')
+    document.getElementById('addMenuSubmitBtn').setAttribute('onclick', `submitEpisode('PUT')`)
+    let searchedSeason, searchedEpisode
+    const fieldList = document.getElementById('addMenuFieldList')
+    episodeInput.addEventListener('keydown', async event => {
+        if (event.code === 'Enter' || event.keyCode === 13) {
+            const seasonId=document.getElementById('seasonId').value
+            searchedSeason = await (await fetch(`${API_URL}/seasons/${seasonId}`)).json()
+            if (searchedSeason) {
+                const inputField = episodeInput.value
+                for (const episode of searchedSeason['episodes']) {
+                    if (episode['name'] === inputField) {
+                        searchedEpisode = episode
+                        document.getElementById('episodeId').value=episode['id']
+                        break
+                    }
+                }
+                if (searchedEpisode) {
+                    console.log(searchedEpisode)
+                    document.getElementById('seasonId').value = searchedSeason.id
+                    searchedEpisode = await (await fetch(`${API_URL}/episodes/${searchedEpisode.id}`)).json()
+                    console.log(searchedEpisode)
+                    episodeInput.style.color = "green"
+                    fieldList.childNodes[17].value = searchedEpisode.description
+                    fieldList.childNodes[21].value = searchedEpisode.episodeNumber
+                    fieldList.childNodes[25].value = searchedEpisode.airDate.replace(/T.*/, '')
+                    document.getElementById().value=searchedEpisode['id']
+                } else {
+                    episodeInput.style.color = "red"
+                }
+            } else {
+                seasonInput.style.color = "red"
+            }
+        }
+    })
+
+}
+
+async function deleteEpisode() {
+    await editEpisode()
+    const fieldList = document.getElementById('addMenuFieldList')
+    fieldList.removeChild(document.getElementById('descLabel'))
+    fieldList.removeChild(document.getElementById('seasonDescriptionInput'))
+    fieldList.removeChild(document.getElementById('seasonNumberLabel'))
+    fieldList.removeChild(document.getElementById('seasonNumberInput'))
+    fieldList.removeChild(document.getElementById('seasonAirLabel'))
+    fieldList.removeChild(document.getElementById('airDateInput'))
+    document.getElementById('addMenuSubmitBtn').setAttribute('onclick', `submitEpisode('DELETE')`)
+
 }

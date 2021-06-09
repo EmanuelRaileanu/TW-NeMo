@@ -10,15 +10,15 @@ body {
     justify-content: space-between;
 }
 
-body::-webkit-scrollbar {
+body::-webkit-scrollbar, #addMenu::-webkit-scrollbar {
     width: 0.5em;
 }
 
-body::-webkit-scrollbar-track {
+body::-webkit-scrollbar-track, #addMenu::-webkit-scrollbar-track {
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }
 
-body::-webkit-scrollbar-thumb {
+body::-webkit-scrollbar-thumb, #addMenu::-webkit-scrollbar-thumb {
     background-color: darkgrey;
     outline: 1px solid slategrey;
 }
@@ -155,6 +155,11 @@ li > button {
 
 }
 
+#addMenu{
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
 #addMenu {
     height:85vh;
 }
@@ -277,6 +282,11 @@ li > button {
 
 #addMenuFieldList > * {
     background: inherit;
+
+}
+
+#addMenuFieldList > :not[input]{
+    margin:0;
 }
 
 #addMenuFieldList input {
@@ -295,6 +305,7 @@ li > button {
 #addMenuFieldList input:focus {
     background: rgba(63, 95, 118, 0.43);
 }
+
 
 @media only screen and (max-width: 1024px) {
 

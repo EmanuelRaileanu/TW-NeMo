@@ -24,6 +24,7 @@ body::-webkit-scrollbar-thumb {
     display: flex;
     justify-content: center;
     margin: 5vh 2vw 20vh;
+
     width: 70vw;
 }
 
@@ -525,7 +526,7 @@ h6 {
 
 
 /* Style the search box inside the navigation bar */
-.topnav input[type=text], #add-movie-content input[type=text] {
+.topnav input[type=text], #add-movie-content input[type=text], #currentPage, #pageSize {
     padding: 10px;
     margin: 1vw;
     width: 100%;
@@ -540,14 +541,59 @@ h6 {
 #add-movie-content input[type=text]{
     width:50%;
 }
+#currentPage, #pageSize {
+    width:4vw;
+}
 
-.topnav input[type=text]:focus , #add-movie-content input[type=text]{
+.topnav input[type=text]:focus , #add-movie-content input[type=text]:focus, #currentPage:focus, #pageSize:focus {
     background: rgba(63, 95, 118, 0.43);
 }
 
 .topnav :last-child {
     margin-left: 1vw;
 
+}
+
+
+a {
+    position:relative;
+    text-decoration: none;
+    display: inline-block;
+    padding: 16px 24px;
+    background: inherit;
+    color: white;
+    font-size: 16px;
+    border: 1px solid #1ab188;
+    border-radius: 10px;
+
+}
+
+a:hover {
+    background-color: #1ab188;
+    color: black;
+}
+
+.previous {
+    background-color: inherit;
+    color: white;
+}
+
+.next {
+    background-color: inherit;
+    color: white;
+}
+
+#pageButtons {
+    margin:0;
+    padding:0;
+    display: flex;
+    flex-direction: row;
+}
+
+#pageInfSeparatator{
+    color:white;
+    justify-self: center;
+    align-self: center;
 }
 
 /* When the screen is less than 600px wide, stack the links and the search field vertically instead of horizontally */
