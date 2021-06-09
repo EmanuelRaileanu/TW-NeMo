@@ -136,6 +136,171 @@ paths:
                         type: integer
                       pageCount:
                         type: integer
+    post:
+      tags:
+        - Movies
+      summary: Add a movie
+      operationId: add-movie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ratingId:
+                  type: string
+                  format: uuid
+                title:
+                  type: string
+                tagline:
+                  type: string
+                description:
+                  type: string
+                status:
+                  type: string
+                releaseDate:
+                  type: string
+                  format: date
+                runtimeInMinutes:
+                  type: integer
+                budget:
+                  type: number
+                revenue:
+                  type: number
+                posterPath:
+                  type: string
+                backdropPath:
+                  type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  ratingId:
+                    type: string
+                    format: uuid
+                  title:
+                    type: string
+                  tagline:
+                    type: string
+                  description:
+                    type: string
+                  voteAverage:
+                    type: number
+                  numberOfVotes:
+                    type: integer
+                  tmdbVoteAverage:
+                    type: number
+                  tmdbNumberOfVotes:
+                    type: integer
+                  status:
+                    type: string
+                  releaseDate:
+                    type: string
+                    format: date
+                  runtimeInMinutes:
+                    type: integer
+                  budget:
+                    type: number
+                  revenue:
+                    type: number
+                  posterPath:
+                    type: string
+                  backdropPath:
+                    type: string
+                  tmdbId:
+                    type: string
+                  imdbId:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  genres:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                  productionCompanies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                  rating:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      code:
+                        type: string
+                  languages:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        code:
+                          type: string
+                  reviews:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        score:
+                          type: number
+                        text:
+                          type: string
+                        createdAt:
+                          type: string
+                          format: uuid
+                  actors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        profilePhotoPath:
+                          type: string
+                  directors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        profilePhotoPath:
+                          type: string
   /movies/{movieId}:
     get:
       tags:
@@ -232,26 +397,30 @@ paths:
                       code:
                         type: string
                   languages:
-                    type: object
-                    properties:
-                      id:
-                        type: string
-                        format: uuid
-                      code:
-                        type: string
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        code:
+                          type: string
                   reviews:
-                    type: object
-                    properties:
-                      id:
-                        type: string
-                        format: uuid
-                      score:
-                        type: number
-                      text:
-                        type: string
-                      createdAt:
-                        type: string
-                        format: uuid
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        score:
+                          type: number
+                        text:
+                          type: string
+                        createdAt:
+                          type: string
+                          format: uuid
                   actors:
                     type: array
                     items:
@@ -261,6 +430,8 @@ paths:
                           type: string
                           format: uuid
                         name:
+                          type: string
+                        profilePhotoPath:
                           type: string
                   directors:
                     type: array
@@ -272,6 +443,3220 @@ paths:
                           format: uuid
                         name:
                           type: string
+                        profilePhotoPath:
+                          type: string
+    put:
+      tags:
+        - Movies
+      summary: Update a movie
+      operationId: update-movie
+      parameters:
+        - in: path
+          name: movieId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ratingId:
+                  type: string
+                  format: uuid
+                title:
+                  type: string
+                tagline:
+                  type: string
+                description:
+                  type: string
+                status:
+                  type: string
+                releaseDate:
+                  type: string
+                  format: date
+                runtimeInMinutes:
+                  type: integer
+                budget:
+                  type: number
+                revenue:
+                  type: number
+                posterPath:
+                  type: string
+                backdropPath:
+                  type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  ratingId:
+                    type: string
+                    format: uuid
+                  title:
+                    type: string
+                  tagline:
+                    type: string
+                  description:
+                    type: string
+                  voteAverage:
+                    type: number
+                  numberOfVotes:
+                    type: integer
+                  tmdbVoteAverage:
+                    type: number
+                  tmdbNumberOfVotes:
+                    type: integer
+                  status:
+                    type: string
+                  releaseDate:
+                    type: string
+                    format: date
+                  runtimeInMinutes:
+                    type: integer
+                  budget:
+                    type: number
+                  revenue:
+                    type: number
+                  posterPath:
+                    type: string
+                  backdropPath:
+                    type: string
+                  tmdbId:
+                    type: string
+                  imdbId:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  genres:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                  productionCompanies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                  rating:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      code:
+                        type: string
+                  languages:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        code:
+                          type: string
+                  reviews:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        score:
+                          type: number
+                        text:
+                          type: string
+                        createdAt:
+                          type: string
+                          format: uuid
+                  actors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        profilePhotoPath:
+                          type: string
+                  directors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        profilePhotoPath:
+                          type: string
+    delete:
+      tags:
+        - Movies
+      summary: Delete a movie
+      operationId: delete-movie
+      parameters:
+        - in: path
+          name: movieId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+
+  /movies/genres:
+    get:
+      tags:
+        - Movies
+      security: [ ]
+      summary: Get a list of movie genres
+      operationId: get-movie-genres
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    name:
+                      type: string
+  /movies/languages:
+    get:
+      tags:
+        - Movies
+      security: [ ]
+      summary: Get a list of movie languages
+      operationId: get-movie-languages
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    code:
+                      type: string
+  /movies/ratings:
+    get:
+      tags:
+        - Movies
+      security: [ ]
+      summary: Get a list of movie ratings
+      operationId: get-movie-ratings
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    code:
+                      type: string
+  /movies/export:
+    get:
+      tags:
+        - Movies
+      security: [ ]
+      summary: Export data in different formats
+      operationId: export-movies
+      parameters:
+        - in: query
+          name: format
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: criterion
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/octet-stream:
+              schema:
+
+  /movies/favorites:
+    get:
+      tags:
+        - Movies
+      summary: Get a logged user's favorite movies
+      operationId: get-movie-favorites
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    ratingId:
+                      type: string
+                      format: uuid
+                    title:
+                      type: string
+                    tagline:
+                      type: string
+                    description:
+                      type: string
+                    voteAverage:
+                      type: number
+                    numberOfVotes:
+                      type: integer
+                    tmdbVoteAverage:
+                      type: number
+                    tmdbNumberOfVotes:
+                      type: integer
+                    status:
+                      type: string
+                    releaseDate:
+                      type: string
+                      format: date
+                    runtimeInMinutes:
+                      type: integer
+                    budget:
+                      type: number
+                    revenue:
+                      type: number
+                    posterPath:
+                      type: string
+                    backdropPath:
+                      type: string
+                    tmdbId:
+                      type: string
+                    imdbId:
+                      type: string
+                    createdAt:
+                      type: string
+                      format: date-time
+                    updatedAt:
+                      type: string
+                      format: date-time
+                    genres:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          name:
+                            type: string
+                    productionCompanies:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          name:
+                            type: string
+                    rating:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        code:
+                          type: string
+                    languages:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          code:
+                            type: string
+                    reviews:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          score:
+                            type: number
+                          text:
+                            type: string
+                          createdAt:
+                            type: string
+                            format: uuid
+                    actors:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          name:
+                            type: string
+                          profilePhotoPath:
+                            type: string
+                    directors:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          name:
+                            type: string
+                          profilePhotoPath:
+                            type: string
+  /movies/{movieId}/add-favorite:
+    post:
+      tags:
+        - Movies
+      summary: Add a movie to favorites
+      operationId: add-favorite-movie
+      parameters:
+        - in: path
+          name: movieId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Added movie to favorites
+  /movies/{movieId}/delete-favorite:
+    delete:
+      tags:
+        - Movies
+      summary: Remove a movie from favorites
+      operationId: delete-favorite-movie
+      parameters:
+        - in: path
+          name: movieId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Removed movie from favorites
+  /movies/{movieId}/reviews:
+    post:
+      tags:
+        - Movies
+      summary: Add a movie review
+      operationId: add-movie-review
+      parameters:
+        - in: path
+          name: movieId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          applicatiion/json:
+            schema:
+              type: object
+              properties:
+                score:
+                  type: string
+                text:
+                  type: string
+                  required: false
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  userId:
+                    type: string
+                    format: uuid
+                  movieId:
+                    type: string
+                    format: uuid
+                  score:
+                    type: string
+                  text:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+    put:
+      tags:
+        - Movies
+      summary: Update a movie review
+      opeartionId: update-movie-review
+      parameters:
+        - in: path
+          name: movieId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                score:
+                  type: string
+                text:
+                  type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  userId:
+                    type: string
+                    format: uuid
+                  movieId:
+                    type: string
+                    format: uuid
+                  score:
+                    type: string
+                  text:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+    delete:
+      tags:
+        - Movies
+      summary: Delete a movie review
+      operationId: delte-movie-review
+      parameters:
+        - in: path
+          name: movieId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Review successfully deleted
+  /shows:
+    get:
+      tags:
+        - TV Shows
+      security: [ ]
+      summary: Get a list of tv shows
+      operationId: get-shows
+      parameters:
+        - in: query
+          name: page
+          required: false
+          default: 1
+          schema:
+            type: integer
+        - in: query
+          name: pageSize
+          required: false
+          default: 20
+          schema:
+            type: integer
+        - in: query
+          name: filters[genres][]
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: filters[productionCompanies][]
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: filters[rating][]
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: filters[languages][]
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: searchBy
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: orderBy[column]
+          required: false
+          default: [ voteAverage, tmdbVoteAverage ]
+          schema:
+            type: string
+        - in: query
+          name: orderBy[direction]
+          required: false
+          default: DESC
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        ratingId:
+                          type: string
+                          format: uuid
+                        title:
+                          type: string
+                        tagline:
+                          type: string
+                        description:
+                          type: string
+                        voteAverage:
+                          type: number
+                        numberOfVotes:
+                          type: integer
+                        tmdbVoteAverage:
+                          type: number
+                        tmdbNumberOfVotes:
+                          type: integer
+                        status:
+                          type: string
+                        firstAirDate:
+                          type: string
+                          format: date
+                        lastAirDate:
+                          type: string
+                          format: date
+                        inProduction:
+                          type: boolean
+                        runtimeInMinutes:
+                          type: inger
+                        posterPath:
+                          type: string
+                        backdropPath:
+                          type: string
+                        tmdbId:
+                          type: string
+                        createdAt:
+                          type: string
+                          format: date-time
+                        updatedAt:
+                          type: string
+                          format: date-time
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: integer
+                      pageSize:
+                        type: integer
+                      rowCount:
+                        type: integer
+                      pageCount:
+                        type: integer
+    post:
+      tags:
+        - TV Shows
+      summary: Add a tv show
+      operationId: add-show
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ratingId:
+                  type: string
+                  format: uuid
+                title:
+                  type: string
+                tagline:
+                  type: string
+                description:
+                  type: string
+                status:
+                  type: string
+                firstAirDate:
+                  type: string
+                lastAirDate:
+                  type: string
+                inProduction:
+                  type: boolean
+                runtimeInMinutes:
+                  type: integer
+                posterPath:
+                  type: string
+                backdropPath:
+                  type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  ratingId:
+                    type: string
+                    format: uuid
+                  title:
+                    type: string
+                  tagline:
+                    type: string
+                  description:
+                    type: string
+                  voteAverage:
+                    type: number
+                  numberOfVotes:
+                    type: integer
+                  tmdbVoteAverage:
+                    type: number
+                  tmdbNumberOfVotes:
+                    type: integer
+                  status:
+                    type: string
+                  firstAirDate:
+                    type: string
+                    format: date
+                  lastAirDate:
+                    type: string
+                    format: date
+                  inProduction:
+                    type: boolean
+                  runtimeInMinutes:
+                    type: inger
+                  posterPath:
+                    type: string
+                  backdropPath:
+                    type: string
+                  tmdbId:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  seasons:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        tvShowId:
+                          type: string
+                          format: uuid
+                        numberOfEpisodes:
+                          type: integer
+                  genres:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                  productionCompanies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                  rating:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      code:
+                        type: string
+                  languages:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        code:
+                          type: string
+                  reviews:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        score:
+                          type: number
+                        text:
+                          type: string
+                        createdAt:
+                          type: string
+                          format: uuid
+                  actors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        profilePhotoPath:
+                          type: string
+                  directors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        profilePhotoPath:
+                          type: string
+  /shows/{showId}:
+    get:
+      tags:
+        - TV Shows
+      security: [ ]
+      summary: Get tv show details
+      operationId: tv-show-details
+      parameters:
+        - in: path
+          name: showId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  ratingId:
+                    type: string
+                    format: uuid
+                  title:
+                    type: string
+                  tagline:
+                    type: string
+                  description:
+                    type: string
+                  voteAverage:
+                    type: number
+                  numberOfVotes:
+                    type: integer
+                  tmdbVoteAverage:
+                    type: number
+                  tmdbNumberOfVotes:
+                    type: integer
+                  status:
+                    type: string
+                  firstAirDate:
+                    type: string
+                    format: date
+                  lastAirDate:
+                    type: string
+                    format: date
+                  inProduction:
+                    type: boolean
+                  runtimeInMinutes:
+                    type: inger
+                  posterPath:
+                    type: string
+                  backdropPath:
+                    type: string
+                  tmdbId:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  seasons:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        tvShowId:
+                          type: string
+                          format: uuid
+                        numberOfEpisodes:
+                          type: integer
+                  genres:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                  productionCompanies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                  rating:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      code:
+                        type: string
+                  languages:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        code:
+                          type: string
+                  reviews:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        score:
+                          type: number
+                        text:
+                          type: string
+                        createdAt:
+                          type: string
+                          format: uuid
+                  actors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        profilePhotoPath:
+                          type: string
+                  directors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        profilePhotoPath:
+                          type: string
+    put:
+      tags:
+        - TV Shows
+      summary: Update a tv show
+      operationId: update-show
+      parameters:
+        - in: path
+          name: showId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ratingId:
+                  type: string
+                  format: uuid
+                title:
+                  type: string
+                tagline:
+                  type: string
+                description:
+                  type: string
+                status:
+                  type: string
+                firstAirDate:
+                  type: string
+                lastAirDate:
+                  type: string
+                inProduction:
+                  type: boolean
+                runtimeInMinutes:
+                  type: integer
+                posterPath:
+                  type: string
+                backdropPath:
+                  type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  ratingId:
+                    type: string
+                    format: uuid
+                  title:
+                    type: string
+                  tagline:
+                    type: string
+                  description:
+                    type: string
+                  voteAverage:
+                    type: number
+                  numberOfVotes:
+                    type: integer
+                  tmdbVoteAverage:
+                    type: number
+                  tmdbNumberOfVotes:
+                    type: integer
+                  status:
+                    type: string
+                  firstAirDate:
+                    type: string
+                    format: date
+                  lastAirDate:
+                    type: string
+                    format: date
+                  inProduction:
+                    type: boolean
+                  runtimeInMinutes:
+                    type: inger
+                  posterPath:
+                    type: string
+                  backdropPath:
+                    type: string
+                  tmdbId:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  seasons:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        tvShowId:
+                          type: string
+                          format: uuid
+                        numberOfEpisodes:
+                          type: integer
+                  genres:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                  productionCompanies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                  rating:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      code:
+                        type: string
+                  languages:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        code:
+                          type: string
+                  reviews:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        score:
+                          type: number
+                        text:
+                          type: string
+                        createdAt:
+                          type: string
+                          format: uuid
+                  actors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        profilePhotoPath:
+                          type: string
+                  directors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        profilePhotoPath:
+                          type: string
+    delete:
+      tags:
+        - TV Shows
+      summary: Delete a tv show
+      operationId: delete-show
+      parameters:
+        - in: path
+          name: showId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: TV show successfully deleted
+  /shows/genres:
+    get:
+      tags:
+        - TV Shows
+      summary: Get a list of tv show genres
+      operationId: get-tv-show-genres
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    name: string
+  /shows/export:
+    get:
+      tags:
+        - TV Shows
+      security: [ ]
+      summary: Export data in different formats
+      operationId: export-tv-shows
+      parameters:
+        - in: query
+          name: format
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: criterion
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/octet-stream:
+              schema:
+  /shows/favorites:
+    get:
+      tags:
+        - TV Shows
+      summary: Get a logged user's favorite tv shows
+      operationId: get-tv-show-favorites
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    ratingId:
+                      type: string
+                      format: uuid
+                    title:
+                      type: string
+                    tagline:
+                      type: string
+                    description:
+                      type: string
+                    voteAverage:
+                      type: number
+                    numberOfVotes:
+                      type: integer
+                    tmdbVoteAverage:
+                      type: number
+                    tmdbNumberOfVotes:
+                      type: integer
+                    status:
+                      type: string
+                    firstAirDate:
+                      type: string
+                      format: date
+                    lastAirDate:
+                      type: string
+                      format: date
+                    inProduction:
+                      type: boolean
+                    runtimeInMinutes:
+                      type: inger
+                    posterPath:
+                      type: string
+                    backdropPath:
+                      type: string
+                    tmdbId:
+                      type: string
+                    createdAt:
+                      type: string
+                      format: date-time
+                    updatedAt:
+                      type: string
+                      format: date-time
+                    seasons:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          tvShowId:
+                            type: string
+                            format: uuid
+                          numberOfEpisodes:
+                            type: integer
+                    genres:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          name:
+                            type: string
+                    productionCompanies:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          name:
+                            type: string
+                    rating:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        code:
+                          type: string
+                    languages:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          code:
+                            type: string
+                    reviews:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          score:
+                            type: number
+                          text:
+                            type: string
+                          createdAt:
+                            type: string
+                            format: uuid
+                    actors:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          name:
+                            type: string
+                          profilePhotoPath:
+                            type: string
+                    directors:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          name:
+                            type: string
+                          profilePhotoPath:
+                            type: string
+  /shows/{showId}/add-favorite:
+    post:
+      tags:
+        - TV Shows
+      summary: Add a tv show to favorites
+      operationId: add-favorite-tv-show
+      parameters:
+        - in: path
+          name: showId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Added tv show to favorites
+  /shows/{showId}/delete-favorite:
+    delete:
+      tags:
+        - TV Shows
+      summary: Remove a tv show from favorites
+      operationId: delete-favorite-tv-show
+      parameters:
+        - in: path
+          name: showId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Removed tv show from favorites
+  /shows/{showId}/reviews:
+    post:
+      tags:
+        - TV Shows
+      summary: Add a tv show review
+      operationId: add-tv-show-review
+      parameters:
+        - in: path
+          name: showId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          applicatiion/json:
+            schema:
+              type: object
+              properties:
+                score:
+                  type: string
+                text:
+                  type: string
+                  required: false
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  userId:
+                    type: string
+                    format: uuid
+                  movieId:
+                    type: string
+                    format: uuid
+                  score:
+                    type: string
+                  text:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+    put:
+      tags:
+        - TV Shows
+      summary: Update a tv show review
+      opeartionId: update-tv-show-review
+      parameters:
+        - in: path
+          name: showId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                score:
+                  type: string
+                text:
+                  type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  userId:
+                    type: string
+                    format: uuid
+                  movieId:
+                    type: string
+                    format: uuid
+                  score:
+                    type: string
+                  text:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+    delete:
+      tags:
+        - TV Shows
+      summary: Delete a tv show review
+      operationId: delte-tv-show-review
+      parameters:
+        - in: path
+          name: showId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Review successfully deleted
+  /seasons:
+    post:
+      tags:
+        - TV Seasons
+      summary: Add a tv season
+      operationId: add-tv-season
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tvShowId:
+                  type: string
+                  format: uuid
+                airDate:
+                  type: string
+                  format: date
+                title:
+                  type: string
+                description:
+                  type: string
+                seasonNumber:
+                  type: integer
+                posterPath:
+                  type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  tvShowId:
+                    type: string
+                    format: uuid
+                  airDate:
+                    type: string
+                    format: date
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  seasonNumber:
+                    type: integer
+                  posterPath:
+                    type: string
+                  voteAverage:
+                    type: number
+                  numberOfVotes:
+                    type: integer
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  episodes:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        seasonId:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+  /seasons/{seasonId}:
+    get:
+      tags:
+        - TV Seasons
+      security: [ ]
+      summary: Get tv season details
+      operationId: season-details
+      parameters:
+        - in: path
+          name: seasonId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  tvShowId:
+                    type: string
+                    format: uuid
+                  airDate:
+                    type: string
+                    format: date
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  seasonNumber:
+                    type: integer
+                  posterPath:
+                    type: string
+                  voteAverage:
+                    type: number
+                  numberOfVotes:
+                    type: integer
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  episodes:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        seasonId:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+    put:
+      tags:
+        - TV Seasons
+      summary: Update a tv season
+      operationId: update-season
+      parameters:
+        - in: path
+          name: seasonId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tvShowId:
+                  type: string
+                  format: uuid
+                airDate:
+                  type: string
+                  format: date
+                title:
+                  type: string
+                description:
+                  type: string
+                seasonNumber:
+                  type: integer
+                posterPath:
+                  type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  tvShowId:
+                    type: string
+                    format: uuid
+                  airDate:
+                    type: string
+                    format: date
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  seasonNumber:
+                    type: integer
+                  posterPath:
+                    type: string
+                  voteAverage:
+                    type: number
+                  numberOfVotes:
+                    type: integer
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  episodes:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        seasonId:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+    delete:
+      tags:
+        - TV Seasons
+      summary: Delete a tv season
+      operationId: delete-season
+      parameters:
+        - in: path
+          name: seasonId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: TV season successfully deleted
+  /episodes:
+    post:
+      tags:
+        - TV Episodes
+      summary: Add a tv episode
+      operationId: add-episode
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                seasonId:
+                  type: string
+                  format: uuid
+                airDate:
+                  type: string
+                  format: date
+                episodeNumber:
+                  type: integer
+                name:
+                  type: string
+                description:
+                  type: string
+                posterPath:
+                  type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  seasonId:
+                    type: string
+                    format: uuid
+                  airDate:
+                    type: string
+                    format: date
+                  episodeNumber:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  posterPath:
+                    type: string
+                  voteAverage:
+                    type: number
+                  numberOfVotes:
+                    type: integer
+                  tmdbVoteAverage:
+                    type: number
+                  tmdbNumberOfVotes:
+                    type: integer
+                  tmdbId:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  actors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                          format: uuid
+                        profilePhotoPath:
+                          type: string
+                  directors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                          format: uuid
+                        profilePhotoPath:
+                          type: string
+  /episodes/{episodeId}:
+    get:
+      tags:
+        - TV Episodes
+      security: [ ]
+      summary: Get tv episode details
+      operationId: episode-details
+      parameters:
+        - in: path
+          name: episodeId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  seasonId:
+                    type: string
+                    format: uuid
+                  airDate:
+                    type: string
+                    format: date
+                  episodeNumber:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  posterPath:
+                    type: string
+                  voteAverage:
+                    type: number
+                  numberOfVotes:
+                    type: integer
+                  tmdbVoteAverage:
+                    type: number
+                  tmdbNumberOfVotes:
+                    type: integer
+                  tmdbId:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  actors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                          format: uuid
+                        profilePhotoPath:
+                          type: string
+                  directors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                          format: uuid
+                        profilePhotoPath:
+                          type: string
+    put:
+      tags:
+        - TV Episodes
+      summary: Update a tv episode
+      operationId: update-episode
+      parameters:
+        - in: path
+          name: episodeId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                seasonId:
+                  type: string
+                  format: uuid
+                airDate:
+                  type: string
+                  format: date
+                episodeNumber:
+                  type: integer
+                name:
+                  type: string
+                description:
+                  type: string
+                posterPath:
+                  type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  seasonId:
+                    type: string
+                    format: uuid
+                  airDate:
+                    type: string
+                    format: date
+                  episodeNumber:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  posterPath:
+                    type: string
+                  voteAverage:
+                    type: number
+                  numberOfVotes:
+                    type: integer
+                  tmdbVoteAverage:
+                    type: number
+                  tmdbNumberOfVotes:
+                    type: integer
+                  tmdbId:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  actors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                          format: uuid
+                        profilePhotoPath:
+                          type: string
+                  directors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                          format: uuid
+                        profilePhotoPath:
+                          type: string
+    delete:
+      tags:
+        - TV Episodes
+      summary: Delete a tv episode
+      operationId: delete-episode
+      parameters:
+        - in: path
+          name: episodeId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Episode successfully deleted
+  /actors:
+    get:
+      tags:
+        - Actors
+      security: [ ]
+      summary: Get a list of actors
+      operationId: get-actors
+      parameters:
+        - in: query
+          name: page
+          required: false
+          default: 1
+          schema:
+            type: integer
+        - in: query
+          name: pageSize
+          required: false
+          default: 20
+          schema:
+            type: integer
+        - in: query
+          name: searchBy
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        gender:
+                          type: boolean
+                        birthDate:
+                          type: string
+                          format: date
+                        placeOfBirth:
+                          type: string
+                        biography:
+                          type: string
+                        profilePhotoPath:
+                          type: string
+                        tmdbId:
+                          type: string
+                        imdbId:
+                          type: string
+                        createdAt:
+                          type: string
+                        updatedAt:
+                          type: string
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: integer
+                      pageSize:
+                        type: integer
+                      rowCount:
+                        type: integer
+                      pageCount:
+                        type: integer
+    post:
+      tags:
+        - Actors
+      summary: Add an actor
+      operationId: add-actor
+      requestBody:
+        content:
+          applicatin/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                gender:
+                  type: boolean
+                birthDate:
+                  type: string
+                  format: date
+                placeOfBirth:
+                  type: string
+                biography:
+                  type: string
+                profilePhotoPath:
+                  type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  gender:
+                    type: boolean
+                  birthDate:
+                    type: string
+                    format: date
+                  placeOfBirth:
+                    type: string
+                  biography:
+                    type: string
+                  profilePhotoPath:
+                    type: string
+                  tmdbId:
+                    type: string
+                  imdbId:
+                    type: string
+                  createdAt:
+                    type: string
+                  updatedAt:
+                    type: string
+                  movies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        title:
+                          type: string
+                  tvShows:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        title:
+                          type: string
+  /actors/{actorId}:
+    get:
+      tags:
+        - Actors
+      security: [ ]
+      summary: Get actor details
+      operationId: actor-details
+      parameters:
+        - in: path
+          name: actorId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  gender:
+                    type: boolean
+                  birthDate:
+                    type: string
+                    format: date
+                  placeOfBirth:
+                    type: string
+                  biography:
+                    type: string
+                  profilePhotoPath:
+                    type: string
+                  tmdbId:
+                    type: string
+                  imdbId:
+                    type: string
+                  createdAt:
+                    type: string
+                  updatedAt:
+                    type: string
+                  movies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        title:
+                          type: string
+                  tvShows:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        title:
+                          type: string
+    put:
+      tags:
+        - Actors
+      summary: Update an actor
+      operationId: update-actor
+      parameters:
+        - in: path
+          name: actorId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          applicatin/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                gender:
+                  type: boolean
+                birthDate:
+                  type: string
+                  format: date
+                placeOfBirth:
+                  type: string
+                biography:
+                  type: string
+                profilePhotoPath:
+                  type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  gender:
+                    type: boolean
+                  birthDate:
+                    type: string
+                    format: date
+                  placeOfBirth:
+                    type: string
+                  biography:
+                    type: string
+                  profilePhotoPath:
+                    type: string
+                  tmdbId:
+                    type: string
+                  imdbId:
+                    type: string
+                  createdAt:
+                    type: string
+                  updatedAt:
+                    type: string
+                  movies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        title:
+                          type: string
+                  tvShows:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        title:
+                          type: string
+    delete:
+      tags:
+        - Actors
+      summary: Delete an actor
+      operationId: delete-actor
+      parameters:
+        - in: path
+          name: actorId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Actor successfully deleted
+  /directors:
+    get:
+      tags:
+        - Directors
+      security: [ ]
+      summary: Get a list of directors
+      operationId: get-directors
+      parameters:
+        - in: query
+          name: page
+          required: false
+          default: 1
+          schema:
+            type: integer
+        - in: query
+          name: pageSize
+          required: false
+          default: 20
+          schema:
+            type: integer
+        - in: query
+          name: searchBy
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        gender:
+                          type: boolean
+                        birthDate:
+                          type: string
+                          format: date
+                        placeOfBirth:
+                          type: string
+                        biography:
+                          type: string
+                        profilePhotoPath:
+                          type: string
+                        tmdbId:
+                          type: string
+                        imdbId:
+                          type: string
+                        createdAt:
+                          type: string
+                        updatedAt:
+                          type: string
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: integer
+                      pageSize:
+                        type: integer
+                      rowCount:
+                        type: integer
+                      pageCount:
+                        type: integer
+    post:
+      tags:
+        - Directors
+      summary: Add a director
+      operationId: add-director
+      requestBody:
+        content:
+          applicatin/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                gender:
+                  type: boolean
+                birthDate:
+                  type: string
+                  format: date
+                placeOfBirth:
+                  type: string
+                biography:
+                  type: string
+                profilePhotoPath:
+                  type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  gender:
+                    type: boolean
+                  birthDate:
+                    type: string
+                    format: date
+                  placeOfBirth:
+                    type: string
+                  biography:
+                    type: string
+                  profilePhotoPath:
+                    type: string
+                  tmdbId:
+                    type: string
+                  imdbId:
+                    type: string
+                  createdAt:
+                    type: string
+                  updatedAt:
+                    type: string
+                  movies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        title:
+                          type: string
+                  tvShows:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        title:
+                          type: string
+  /directors/{directorId}:
+    get:
+      tags:
+        - Directors
+      security: [ ]
+      summary: Get director details
+      operationId: director-details
+      parameters:
+        - in: path
+          name: directorId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  gender:
+                    type: boolean
+                  birthDate:
+                    type: string
+                    format: date
+                  placeOfBirth:
+                    type: string
+                  biography:
+                    type: string
+                  profilePhotoPath:
+                    type: string
+                  tmdbId:
+                    type: string
+                  imdbId:
+                    type: string
+                  createdAt:
+                    type: string
+                  updatedAt:
+                    type: string
+                  movies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        title:
+                          type: string
+                  tvShows:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        title:
+                          type: string
+    put:
+      tags:
+        - Directors
+      summary: Update a director
+      operationId: update-director
+      parameters:
+        - in: path
+          name: directorId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          applicatin/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                gender:
+                  type: boolean
+                birthDate:
+                  type: string
+                  format: date
+                placeOfBirth:
+                  type: string
+                biography:
+                  type: string
+                profilePhotoPath:
+                  type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  gender:
+                    type: boolean
+                  birthDate:
+                    type: string
+                    format: date
+                  placeOfBirth:
+                    type: string
+                  biography:
+                    type: string
+                  profilePhotoPath:
+                    type: string
+                  tmdbId:
+                    type: string
+                  imdbId:
+                    type: string
+                  createdAt:
+                    type: string
+                  updatedAt:
+                    type: string
+                  movies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        title:
+                          type: string
+                  tvShows:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        title:
+                          type: string
+    delete:
+      tags:
+        - Directors
+      summary: Delete a director
+      operationId: delete-director
+      parameters:
+        - in: path
+          name: directorId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Director successfully deleted
+  /production-companies:
+    get:
+      tags:
+        - Production Companies
+      security: [ ]
+      summary: Get a list of production companies
+      operationId: get-production-companies
+      parameters:
+        - in: query
+          name: page
+          required: false
+          default: 1
+          schema:
+            type: integer
+        - in: query
+          name: pageSize
+          required: false
+          default: 20
+          schema:
+            type: integer
+        - in: query
+          name: searchBy
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        description:
+                          type: string
+                        headquarters:
+                          type: string
+                        logoPath:
+                          type: string
+                        homepage:
+                          type: string
+                        countryId:
+                          type: string
+                          format: uuid
+                        tmdbId:
+                          type: string
+                        createdAt:
+                          type: string
+                        updatedAt:
+                          type: string
+                        country:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                            code:
+                              type: string
+                              example: en
+                        movies:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                format: uuid
+                              title:
+                                type: strng
+                                format: uuid
+                        tvShows:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                format: uuid
+                              title:
+                                type: strng
+                                format: uuid
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: integer
+                      pageSize:
+                        type: integer
+                      rowCount:
+                        type: integer
+                      pageCount:
+                        type: integer
+    post:
+      tags:
+        - Production Companies
+      summary: Add production company
+      operationId: add-production-company\
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                headquarters:
+                  type: string
+                logoPath:
+                  type: string
+                homepage:
+                  type: string
+                countryId:
+                  type: string
+                  format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  headquarters:
+                    type: string
+                  logoPath:
+                    type: string
+                  homepage:
+                    type: string
+                  countryId:
+                    type: string
+                    format: uuid
+                  tmdbId:
+                    type: string
+                  createdAt:
+                    type: string
+                  updatedAt:
+                    type: string
+                  country:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      code:
+                        type: string
+                        example: en
+                  movies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        title:
+                          type: strng
+                          format: uuid
+                  tvShows:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        title:
+                          type: strng
+                          format: uuid
+  /production-companies/countries:
+    get:
+      tags:
+        - Production Companies
+      security: [ ]
+      summary: Get production company contries
+      operationId: get-countries
+      parameters:
+        - in: query
+          name: searchBy
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      code:
+                        type: string
+                      createdAt:
+                        type: string
+                        format: date-time
+                      updatedAt:
+                        type: string
+                        format: date-time
+  /production-companies/{productionCompanyId}:
+    get:
+      tags:
+        - Production Companies
+      security: [ ]
+      summary: Get production company details
+      opearationId: production-company-details
+      parameters:
+        - in: path
+          name: productionCompanyId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  headquarters:
+                    type: string
+                  logoPath:
+                    type: string
+                  homepage:
+                    type: string
+                  countryId:
+                    type: string
+                    format: uuid
+                  tmdbId:
+                    type: string
+                  createdAt:
+                    type: string
+                  updatedAt:
+                    type: string
+                  country:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      code:
+                        type: string
+                        example: en
+                  movies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        title:
+                          type: strng
+                          format: uuid
+                  tvShows:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        title:
+                          type: strng
+                          format: uuid
+    put:
+      tags:
+        - Production Companies
+      summary: Update production company
+      operationId: update-production-company
+      parameters:
+        - in: path
+          name: productionCompanyId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                headquarters:
+                  type: string
+                logoPath:
+                  type: string
+                homepage:
+                  type: string
+                countryId:
+                  type: string
+                  format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  headquarters:
+                    type: string
+                  logoPath:
+                    type: string
+                  homepage:
+                    type: string
+                  countryId:
+                    type: string
+                    format: uuid
+                  tmdbId:
+                    type: string
+                  createdAt:
+                    type: string
+                  updatedAt:
+                    type: string
+                  country:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      code:
+                        type: string
+                        example: en
+                  movies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        title:
+                          type: strng
+                          format: uuid
+                  tvShows:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        title:
+                          type: strng
+                          format: uuid
+    delete:
+      tags:
+        - Production Companies
+      summary: Delete a production company
+      operationId: delete-production-company
+      parameters:
+        - in: path
+          name: productionCompanyId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Production company successfully deleted
+
 components:
   securitySchemes:
     httpBearer:

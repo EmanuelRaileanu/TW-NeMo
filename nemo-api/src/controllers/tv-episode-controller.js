@@ -8,10 +8,10 @@ import TvSeason from '../models/tv-season.js'
 class TvEpisodeController{
     static relatedObject = {
         actors: q => {
-            q.select('id', 'name')
+            q.select('id', 'name', 'profilePhotoPath')
         },
         directors: q => {
-            q.select('id', 'name')
+            q.select('id', 'name', 'profilePhotoPath')
         }
     }
     static minimalColumns = ['title', 'description', 'airDate', 'seasonId','episodeNumber']
