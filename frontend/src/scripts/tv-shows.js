@@ -6,7 +6,7 @@ let ratings = [], ratingIds = []
 const prodComps = ['20th Century Fox Television', '20th Television', 'Anonymous Content', 'BBC Studios', 'Berlanti Productions', 'Bonanza Productions', 'Bunim-Murray Productions (BMP)', 'Carter Bays', 'Caryn Mandabach Productions', 'DC Entertainment', 'Mad Ghost Productions', 'Michael Landon Productions', 'National Broadcasting Company', 'NBCUniversal', 'Nickelodeon Animation Studio', 'Paramount Television Studios', 'Primrose Hill Productions', 'Screen Yorkshire', 'Tiger Aspect Productions', 'Warner Bros. Television'];
 const AUTH_SERVICE_URL = 'http://stachyon.asuscomm.com:8000'
 const API_URL = 'http://stachyon.asuscomm.com:8081'
-let pagination,pageCount,pageSize,maxPageSize
+let pagination, pageCount, pageSize, maxPageSize
 
 
 window.onload = async function () {
@@ -74,14 +74,16 @@ window.onload = async function () {
             }
         }
     })
-    const userDetails = await (await fetch(`${AUTH_SERVICE_URL}/users/${localStorage.getItem("username")}`)).json()
-    if (['Owner', 'Admin'].includes(userDetails.role.name)) {
-        //    <button class="addMovie" onclick="openAddShowMenu()">Add Show</button>
-        const button=document.createElement('button')
-        button.setAttribute('class','addMovie')
-        button.setAttribute('onclick','openAddShowMenu()')
-        button.innerText='Add show'
-        document.getElementsByClassName('topnav')[0].append(button)
+    if (localStorage.getItem("username")) {
+        const userDetails = await (await fetch(`${AUTH_SERVICE_URL}/users/${localStorage.getItem("username")}`)).json()
+        if (['Owner', 'Admin'].includes(userDetails.role.name)) {
+            //    <button class="addMovie" onclick="openAddShowMenu()">Add Show</button>
+            const button = document.createElement('button')
+            button.setAttribute('class', 'addMovie')
+            button.setAttribute('onclick', 'openAddShowMenu()')
+            button.innerText = 'Add show'
+            document.getElementsByClassName('topnav')[0].append(button)
+        }
     }
 
 
@@ -102,27 +104,26 @@ window.onload = async function () {
 
 }
 
-async function prevPage(){
-    if(pagination===1)
+async function prevPage() {
+    if (pagination === 1)
         return;
     pagination--
     await renderShows()
-    const pageNumber=document.getElementById('currentPage')
-    pageNumber.value=pagination
+    const pageNumber = document.getElementById('currentPage')
+    pageNumber.value = pagination
 }
 
-async function nextPage(){
-    if(pagination===pageCount)
+async function nextPage() {
+    if (pagination === pageCount)
         return;
     pagination++
     await renderShows()
-    const pageNumber=document.getElementById('currentPage')
-    pageNumber.value=pagination
+    const pageNumber = document.getElementById('currentPage')
+    pageNumber.value = pagination
 }
 
 
-
-function createFiltersMenu () {
+function createFiltersMenu() {
     let menu = document.getElementById('filters');
     menu.innerHTML += '<li>Genres:</li>';
     for (let item of genres) {
@@ -136,7 +137,7 @@ function createFiltersMenu () {
     menu.innerHTML += '<li><button onclick="applyFilters()">Apply filters</button></li>'
 }
 
-async function renderShows (filters = null) {
+async function renderShows(filters = null) {
     document.getElementById('list').innerHTML = '';
     const tvShows = await getShows(filters);
     for (let i = 0; i < tvShows.length; i++) {
@@ -155,7 +156,7 @@ async function renderShows (filters = null) {
     }
 }
 
-async function getShows (filters = null) {
+async function getShows(filters = null) {
     let url = `${API_URL}/shows?pageSize=${pageSize}&page=${pagination}`
     if (filters && filters !== {}) {
         if (filters.title) {
@@ -205,7 +206,7 @@ async function getShows (filters = null) {
     return responseJSON.results
 }
 
-function findFilters (checkType, filterNames) {
+function findFilters(checkType, filterNames) {
     let filters = [];
     let inputElements = document.getElementsByClassName(checkType);
     for (let i = 0; inputElements[i]; ++i) {
@@ -216,7 +217,7 @@ function findFilters (checkType, filterNames) {
     return filters;
 }
 
-async function applyFilters (sorting = null) {
+async function applyFilters(sorting = null) {
     if (!sorting) {
         const sortValue = document.getElementById('name')
         if (sortValue.checked) {
@@ -225,9 +226,9 @@ async function applyFilters (sorting = null) {
             sorting = 'tmdbVoteAverage'
         }
     }
-    pagination=1
-    const pageNumber=document.getElementById('currentPage')
-    pageNumber.value=pagination
+    pagination = 1
+    const pageNumber = document.getElementById('currentPage')
+    pageNumber.value = pagination
     const filters = {
         genres: findFilters('genres', genres),
         productionCompanies: findFilters('prodComp', prodComps),
@@ -237,7 +238,7 @@ async function applyFilters (sorting = null) {
     await renderShows(filters);
 }
 
-async function resetFilters () {
+async function resetFilters() {
     for (let item of document.getElementsByClassName('genres')) {
         item.checked = false;
     }
@@ -248,7 +249,7 @@ async function resetFilters () {
     await renderShows();
 }
 
-async function getShowById (showId) {
+async function getShowById(showId) {
     return (await (await fetch(`${API_URL}/shows/${showId}`)).json());
 }
 
@@ -340,7 +341,7 @@ async function displayShow (id) {
     document.getElementById('description').innerHTML = `<p>${show.description}</p>`;
 }
 
-function exitShowView (body) {
+function exitShowView(body) {
     document.getElementById(`movies-body`).style.overflow = 'auto'
     document.getElementById(`${body}`).style.display = 'none'
     const sheet = window.document.styleSheets[0];
@@ -372,7 +373,7 @@ function exitShowView (body) {
 
 const dropdownArrows = ['▼', '▲']
 
-function changeArrowDirection (id) {
+function changeArrowDirection(id) {
     const htmlDropdownArrow = document.querySelector(`[id='${id}'] > nav div > *:last-child`);
     if (htmlDropdownArrow.innerHTML === dropdownArrows[0]) {
         htmlDropdownArrow.innerHTML = dropdownArrows[1];
@@ -381,7 +382,7 @@ function changeArrowDirection (id) {
     }
 }
 
-async function getSeasonDetails (id) {
+async function getSeasonDetails(id) {
     changeArrowDirection(id);
     const seasonContent = document.getElementById(id).querySelector('.season-content');
     if (!seasonContent.style.display || seasonContent.style.display === 'none') {
@@ -410,7 +411,7 @@ async function getSeasonDetails (id) {
     }
 }
 
-function openAddShowMenu () {
+function openAddShowMenu() {
     document.getElementById('movies-body').style.overflow = 'hidden'
     const sheet = window.document.styleSheets[0]
     sheet.insertRule('body > *:not(#add-movie-container) { filter: blur(8px); }', sheet.cssRules.length)
@@ -419,7 +420,7 @@ function openAddShowMenu () {
 }
 
 
-function addField (fieldName, inputClass, placeholderText, whereToQuery, insertBeforeLocation) {
+function addField(fieldName, inputClass, placeholderText, whereToQuery, insertBeforeLocation) {
     let contentPage = document.getElementById('add-movie-content')
     let label = document.createElement('label')
     label.setAttribute('class', fieldName)
@@ -441,7 +442,7 @@ function addField (fieldName, inputClass, placeholderText, whereToQuery, insertB
     contentPage.insertBefore(label, document.getElementById(insertBeforeLocation))
 }
 
-function addGenreField () {
+function addGenreField() {
     addField('genreField', 'shGenre', 'Gives the tone of:', async (name) => {
         const index = genres.indexOf(name)
         if (index >= 0) {
@@ -456,7 +457,7 @@ function addGenreField () {
     }, 'addGenreBtn')
 }
 
-function addLanguageField () {
+function addLanguageField() {
     addField('languageField', 'shLanguage', 'Understood better in:', async (name) => {
         const index = languages.indexOf(name)
         if (index >= 0) {
@@ -470,28 +471,28 @@ function addLanguageField () {
     }, 'addLanguageBtn')
 }
 
-function addActorField () {
+function addActorField() {
     addField('actorField', 'shActor', 'Deserves rows of applause:', async (name) => {
         const result = await (await fetch(`${API_URL}/actors?searchBy=${name}`)).json()
         return result.results
     }, 'addActorBtn')
 }
 
-function addDirectorField () {
+function addDirectorField() {
     addField('directorField', 'shDirector', 'The mind which born it all:', async (name) => {
         const result = await (await fetch(`${API_URL}/directors?searchBy=${name}`)).json()
         return result.results
     }, 'addDirectorBtn')
 }
 
-function addProdCompField () {
+function addProdCompField() {
     addField('prodCompField', 'shProdComp', 'Dedicated their hearts:', async (name) => {
         const result = await (await fetch(`${API_URL}/production-companies?searchBy=${name}`)).json()
         return result.results
     }, 'addProdCompBtn')
 }
 
-function addSeasonFields () {
+function addSeasonFields() {
     const seasonNumber = sessionStorage.getItem('nrOfSeasons')
     sessionStorage.setItem('nrOfSeasons', (parseInt(seasonNumber) + 1).toString())
     let contentPage = document.getElementById('add-movie-content')
@@ -510,7 +511,7 @@ function addSeasonFields () {
     addEpisodeFields(seasonNumber)
 }
 
-function addEpisodeFields (seasonNumber) {
+function addEpisodeFields(seasonNumber) {
     let contentPage = document.getElementById(`seasonField${seasonNumber}`)
     let nrOfEpisodes = document.getElementById(`nrOfEpisodes${seasonNumber}`)
     let label = document.createElement('label')
@@ -526,7 +527,7 @@ function addEpisodeFields (seasonNumber) {
     contentPage.insertBefore(label, document.getElementById(`addNextEpisode${seasonNumber}`))
 }
 
-async function addShow () {
+async function addShow() {
     let lastResponse
     let prodComps = []
     const prodCompIds = document.getElementsByClassName("shProdCompId")
@@ -623,15 +624,15 @@ async function addShow () {
                 body: JSON.stringify(episodeData)
             })).json()
             console.log(episodeResponse)
-            lastResponse=episodeResponse
+            lastResponse = episodeResponse
         }
     }
-    if(lastResponse.id){
-        const window=document.getElementById('add-movie-content')
-        window.innerHTML='<h1>Movie successfully added</h1>'
+    if (lastResponse.id) {
+        const window = document.getElementById('add-movie-content')
+        window.innerHTML = '<h1>Movie successfully added</h1>'
     } else {
-        const window=document.getElementById('add-movie-content')
-        window.innerHTML=`<h1>${lastResponse.message}</h1>`
+        const window = document.getElementById('add-movie-content')
+        window.innerHTML = `<h1>${lastResponse.message}</h1>`
     }
 }
 

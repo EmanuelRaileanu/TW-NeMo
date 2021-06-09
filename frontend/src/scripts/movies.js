@@ -63,13 +63,15 @@ window.onload = async function () {
             await applyFilters();
         }
     })
-    const userDetails = await (await fetch(`${AUTH_SERVICE_URL}/users/${localStorage.getItem("username")}`)).json()
-    if (['Owner', 'Admin'].includes(userDetails.role.name)) {
-        const button = document.createElement('button')
-        button.setAttribute('class', 'addMovie')
-        button.setAttribute('onclick', 'openAddMovieMenu()')
-        button.innerText = 'Add movie'
-        document.getElementsByClassName('topnav')[0].append(button)
+    if(localStorage.getItem("username")){
+        const userDetails = await (await fetch(`${AUTH_SERVICE_URL}/users/${localStorage.getItem("username")}`)).json()
+        if (['Owner', 'Admin'].includes(userDetails.role.name)) {
+            const button = document.createElement('button')
+            button.setAttribute('class', 'addMovie')
+            button.setAttribute('onclick', 'openAddMovieMenu()')
+            button.innerText = 'Add movie'
+            document.getElementsByClassName('topnav')[0].append(button)
+        }
     }
 
     const ratingBtn = document.getElementById('mvRating')

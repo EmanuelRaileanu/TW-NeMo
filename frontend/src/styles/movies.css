@@ -629,9 +629,10 @@ a {
 
 }
 
-a:hover {
-    background-color: #1ab188;
-    color: black;
+a:hover, .addMovie:hover, #add-movie-content button:hover {
+
+    background-color: rgba(63, 95, 118, 0.43);
+    cursor: pointer;
 }
 
 .previous {
