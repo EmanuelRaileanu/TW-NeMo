@@ -88,7 +88,7 @@ export default class UserController {
     }
 
     static async changeUserRole (req, res) {
-        if (req.user.role.name !== ROLES.OWNER) {
+        if (req.user.related('role').get('name') !== ROLES.OWNER) {
             throw new APIError(`Only the ${ROLES.OWNER} class can edit user roles`, 403)
         }
         if (!req.body) {
@@ -104,7 +104,7 @@ export default class UserController {
         if (!role) {
             throw new APIError('No such role was found', 404)
         }
-        await new User({ id: req.params.userId }).save({ role: req.body.role }, { method: 'update', patch: true })
+        await new User({ id: req.params.userId }).save({ roleId: role.id }, { method: 'update', patch: true })
         return res.end(JSON.stringify({ message: 'Role updated successfully' }))
     }
 }
