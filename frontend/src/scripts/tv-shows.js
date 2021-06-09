@@ -1,7 +1,8 @@
 const posterBaseUrl = 'https://image.tmdb.org/t/p/original/'
+const alternativeImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Question_mark_%28black%29.svg/768px-Question_mark_%28black%29.svg.png'
 let genres = [], genreIds = []
 let languages = [], languageIds = []
-let ratings=[],ratingIds=[]
+let ratings = [], ratingIds = []
 const prodComps = ['20th Century Fox Television', '20th Television', 'Anonymous Content', 'BBC Studios', 'Berlanti Productions', 'Bonanza Productions', 'Bunim-Murray Productions (BMP)', 'Carter Bays', 'Caryn Mandabach Productions', 'DC Entertainment', 'Mad Ghost Productions', 'Michael Landon Productions', 'National Broadcasting Company', 'NBCUniversal', 'Nickelodeon Animation Studio', 'Paramount Television Studios', 'Primrose Hill Productions', 'Screen Yorkshire', 'Tiger Aspect Productions', 'Warner Bros. Television'];
 const API_URL = 'http://stachyon.asuscomm.com:8081'
 
@@ -30,15 +31,15 @@ window.onload = async function () {
         ratings.push(el.code)
         ratingIds.push(el.id)
     }
-    await renderShows({sorting: 'name'});
+    await renderShows();
     createFiltersMenu();
     document.getElementById("shSch").addEventListener('keydown', async event => {
         if (event.code === 'Enter' || event.keyCode === 13)
             await applyFilters();
     })
-    const ratingButton=document.getElementById("mvRating")
-        ratingButton.addEventListener('keydown', async event => {
-        if (event.code === 'Enter' || event.keyCode === 13){
+    const ratingButton = document.getElementById("mvRating")
+    ratingButton.addEventListener('keydown', async event => {
+        if (event.code === 'Enter' || event.keyCode === 13) {
             const index = ratings.indexOf(document.getElementById("mvRating").value)
             if (index >= 0) {
                 console.log(ratings)
@@ -67,7 +68,7 @@ window.onload = async function () {
 
 }
 
-function createFiltersMenu() {
+function createFiltersMenu () {
     let menu = document.getElementById('filters');
     menu.innerHTML += '<li>Genres:</li>';
     for (let item of genres) {
@@ -81,13 +82,13 @@ function createFiltersMenu() {
     menu.innerHTML += '<li><button onclick="applyFilters()">Apply filters</button></li>'
 }
 
-async function renderShows(filters = null) {
+async function renderShows (filters = null) {
     document.getElementById('list').innerHTML = '';
     const tvShows = await getShows(filters);
     for (let i = 0; i < tvShows.length; i++) {
         document.getElementById('list').innerHTML += `
             <li id="${tvShows[i].id}" onclick="displayShow(this.id)">
-                <img src="${posterBaseUrl}/${tvShows[i].posterPath}" alt="Image not found">
+                <img src="${posterBaseUrl}/${tvShows[i].posterPath}" alt="">
                 <div class="written-content">
                     <h1>${tvShows[i].title}</h1>
                     <span>${tvShows[i].description}</span>
@@ -99,33 +100,37 @@ async function renderShows(filters = null) {
     }
 }
 
-
-async function getShows(filters = null) {
-    let shows = (await (await fetch(`${API_URL}/shows`)).json()).results;
+async function getShows (filters = null) {
+    let url = `${API_URL}/shows?pageSize=20`
     if (filters && filters !== {}) {
-        if (filters.name) {
-            shows = shows.filter(show => show.name.toLowerCase().includes(filters.name.toLowerCase()));
+        if (filters.title) {
+            url += `&searchBy=${filters.title}`
         }
         if (filters.genres && filters.genres.length) {
-            shows = shows.filter(show => show.genres.find(genre => filters.genres.includes(genre.name)));
+            for (const genre of filters.genres) {
+                url += `&filters[genres]=${genre}`
+            }
         }
         if (filters.productionCompanies && filters.productionCompanies.length) {
-            shows = shows.filter(show => show.productionCompanies.find(productionCompany => filters.productionCompanies.includes(productionCompany.name)));
+            for (const productionCompany of filters.productionCompanies) {
+                url += `&filters[productionCompanies]=${productionCompany}`
+            }
         }
-        if (filters.sorting !== null || document.getElementById('rat').checked) {
-            if (document.getElementById('rat').checked)
-                shows.sort((show1, show2) => parseFloat(show1.voteAverage) - parseFloat(show2.voteAverage));
-            else
-                shows.sort((show1, show2) => show1.title.localeCompare(show2.name))
+        if (filters.sorting) {
+            url += `&orderBy[column]=${filters.sorting}`
         }
     }
     if (document.getElementById('desc').checked) {
-        shows.reverse();
+        url += '&orderBy[direction]=desc'
     }
-    return shows;
+    const response = await fetch(url)
+    if (response.status !== 200) {
+        return []
+    }
+    return (await response.json()).results
 }
 
-function findFilters(checkType, filterNames) {
+function findFilters (checkType, filterNames) {
     let filters = [];
     let inputElements = document.getElementsByClassName(checkType);
     for (let i = 0; inputElements[i]; ++i) {
@@ -136,17 +141,17 @@ function findFilters(checkType, filterNames) {
     return filters;
 }
 
-async function applyFilters(sorting = null) {
+async function applyFilters (sorting = null) {
     const filters = {
         genres: findFilters('genres', genres),
         productionCompanies: findFilters('prodComp', prodComps),
-        name: document.getElementById("shSch").value,
-        sorting: document.getElementById('rat').checked ? sorting : 'name'
+        title: document.getElementById("shSch").value,
+        sorting: document.getElementById('rat').checked ? sorting : 'title'
     }
     await renderShows(filters);
 }
 
-async function resetFilters() {
+async function resetFilters () {
     for (let item of document.getElementsByClassName('genres')) {
         item.checked = false;
     }
@@ -157,18 +162,18 @@ async function resetFilters() {
     await renderShows();
 }
 
-async function getShowById(showId) {
+async function getShowById (showId) {
     return (await (await fetch(`${API_URL}/shows/${showId}`)).json());
 }
 
-async function displayShow(showId) {
+async function displayShow (showId) {
     const show = await getShowById(showId);
     document.getElementById('movies-body').style.overflow = 'hidden';
     const sheet = window.document.styleSheets[0];
     sheet.insertRule('body > *:not(#movie-container) { filter: blur(8px); }', sheet.cssRules.length);
     sheet.insertRule(`#movie-container { background: linear-gradient(rgba(19, 35, 47, 0.90), rgba(19, 35, 47, 0.90)), url('${posterBaseUrl}/${show.backdropPath}') no-repeat center fixed; }`, sheet.cssRules.length);
     document.getElementById('movie-container').style.display = 'block';
-    document.getElementById('poster').innerHTML = `<img src="${posterBaseUrl}/${show.posterPath}" alt="Image not found">`;
+    document.getElementById('poster').innerHTML = `<img src="${posterBaseUrl}/${show.posterPath}" alt="">`;
     document.getElementById('title').innerHTML = `<h1>${show.title}</h1>`;
     document.getElementById('tagline').innerHTML = `<h4>${show.tagline}</h4>`;
     const genreList = document.getElementById('genre-list');
@@ -194,15 +199,41 @@ async function displayShow(showId) {
             </li>
         `;
     }
-    const productionCompaniesList = document.getElementById('production-companies-list');
-    productionCompaniesList.innerHTML = '';
-    for (const productionCompany of show.productionCompanies) {
-        productionCompaniesList.innerHTML += `
+    if (show.actors.length) {
+        const actorsList = document.getElementById('actors-list')
+        actorsList.innerHTML = '';
+        for (const actor of show.actors) {
+            actorsList.innerHTML += `
+                <li>
+                    <img src="${actor.profilePhotoPath ? `${posterBaseUrl}${actor.profilePhotoPath}` : alternativeImageUrl}" alt="">
+                    <p>${actor.name}</p>
+                </li>
+            `
+        }
+    }
+    if (show.directors.length) {
+        const directorsList = document.getElementById('directors-list')
+        directorsList.innerHTML = '';
+        for (const director of show.directors) {
+            directorsList.innerHTML += `
+                <li>
+                    <img src="${director.profilePhotoPath ? `${posterBaseUrl}${director.profilePhotoPath}` : alternativeImageUrl}" alt="">
+                    <p>${director.name}</p>
+                </li>
+            `
+        }
+    }
+    if (show.productionCompanies.length) {
+        const productionCompaniesList = document.getElementById('production-companies-list');
+        productionCompaniesList.innerHTML = '';
+        for (const productionCompany of show.productionCompanies) {
+            productionCompaniesList.innerHTML += `
             <li>
                 <h6>${productionCompany.name} ${productionCompany.countryId ? productionCompany.country.code : ''}</h6>
                 <img src="${productionCompany.logoPath ? `${posterBaseUrl}/${productionCompany.logoPath}` : ''}" alt="">
             </li>
         `;
+        }
     }
     document.getElementById('lang').innerHTML = `<strong>${show.languages.length ? show.languages[0].code : ''}</strong>`;
     document.getElementById('release').innerText = show.firstAirDate.split('T')[0];
@@ -211,7 +242,7 @@ async function displayShow(showId) {
     document.getElementById('description').innerHTML = `<p>${show.description}</p>`;
 }
 
-function exitShowView(body) {
+function exitShowView (body) {
     document.getElementById(`movies-body`).style.overflow = 'auto'
     document.getElementById(`${body}`).style.display = 'none'
     const sheet = window.document.styleSheets[0];
@@ -243,7 +274,7 @@ function exitShowView(body) {
 
 const dropdownArrows = ['▼', '▲']
 
-function changeArrowDirection(id) {
+function changeArrowDirection (id) {
     const htmlDropdownArrow = document.querySelector(`[id='${id}'] > nav div > *:last-child`);
     if (htmlDropdownArrow.innerHTML === dropdownArrows[0]) {
         htmlDropdownArrow.innerHTML = dropdownArrows[1];
@@ -271,7 +302,7 @@ async function getSeasonDetails (id) {
     }
 }
 
-function openAddShowMenu() {
+function openAddShowMenu () {
     document.getElementById('movies-body').style.overflow = 'hidden'
     const sheet = window.document.styleSheets[0]
     sheet.insertRule('body > *:not(#add-movie-container) { filter: blur(8px); }', sheet.cssRules.length)
@@ -280,7 +311,7 @@ function openAddShowMenu() {
 }
 
 
-function addField(fieldName, inputClass, placeholderText, whereToQuery, insertBeforeLocation) {
+function addField (fieldName, inputClass, placeholderText, whereToQuery, insertBeforeLocation) {
     let contentPage = document.getElementById('add-movie-content')
     let label = document.createElement('label')
     label.setAttribute('class', fieldName)
@@ -302,7 +333,7 @@ function addField(fieldName, inputClass, placeholderText, whereToQuery, insertBe
     contentPage.insertBefore(label, document.getElementById(insertBeforeLocation))
 }
 
-function addGenreField() {
+function addGenreField () {
     addField('genreField', 'shGenre', 'Gives the tone of:', async (name) => {
         const index = genres.indexOf(name)
         if (index >= 0) {
@@ -317,7 +348,7 @@ function addGenreField() {
     }, 'addGenreBtn')
 }
 
-function addLanguageField() {
+function addLanguageField () {
     addField('languageField', 'shLanguage', 'Understood better in:', async (name) => {
         const index = languages.indexOf(name)
         if (index >= 0) {
@@ -331,28 +362,28 @@ function addLanguageField() {
     }, 'addLanguageBtn')
 }
 
-function addActorField() {
+function addActorField () {
     addField('actorField', 'shActor', 'Deserves rows of applause:', async (name) => {
         const result = await (await fetch(`${API_URL}/actors?searchBy=${name}`)).json()
         return result.results
     }, 'addActorBtn')
 }
 
-function addDirectorField() {
+function addDirectorField () {
     addField('directorField', 'shDirector', 'The mind which born it all:', async (name) => {
         const result = await (await fetch(`${API_URL}/directors?searchBy=${name}`)).json()
         return result.results
     }, 'addDirectorBtn')
 }
 
-function addProdCompField() {
+function addProdCompField () {
     addField('prodCompField', 'shProdComp', 'Dedicated their hearts:', async (name) => {
         const result = await (await fetch(`${API_URL}/production-companies?searchBy=${name}`)).json()
         return result.results
     }, 'addProdCompBtn')
 }
 
-function addSeasonFields() {
+function addSeasonFields () {
     const seasonNumber = sessionStorage.getItem('nrOfSeasons')
     sessionStorage.setItem('nrOfSeasons', (parseInt(seasonNumber) + 1).toString())
     let contentPage = document.getElementById('add-movie-content')
@@ -371,7 +402,7 @@ function addSeasonFields() {
     addEpisodeFields(seasonNumber)
 }
 
-function addEpisodeFields(seasonNumber) {
+function addEpisodeFields (seasonNumber) {
     let contentPage = document.getElementById(`seasonField${seasonNumber}`)
     let nrOfEpisodes = document.getElementById(`nrOfEpisodes${seasonNumber}`)
     let label = document.createElement('label')
@@ -387,7 +418,7 @@ function addEpisodeFields(seasonNumber) {
     contentPage.insertBefore(label, document.getElementById(`addNextEpisode${seasonNumber}`))
 }
 
-async function addShow() {
+async function addShow () {
     let prodComps = []
     const prodCompIds = document.getElementsByClassName("shProdCompId")
     for (let el of prodCompIds) {
@@ -430,7 +461,7 @@ async function addShow() {
         rating: document.getElementById('mvRatingId').value,
         runtime: document.getElementById('mvRuntime').value,
         description: document.getElementById('mvDescription').value,
-        status:document.getElementById('mvStatus').value,
+        status: document.getElementById('mvStatus').value,
         productionCompanyIds: prodComps,
         actorIds: actors,
         directorIds: directors,

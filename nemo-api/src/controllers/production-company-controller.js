@@ -2,7 +2,7 @@ import ProductionCompany from '../models/production-company.js'
 import APIError from '../../../shared-utilities/APIError.js'
 import Bookshelf from '../bookshelf.js'
 import { attachToProductionCompany, checkTableArrays, detachAll } from '../utils/production-company-utils.js'
-import Country from "../models/country";
+import Country from "../models/country.js";
 
 class ProductionCompanyController {
     static relatedObject = {

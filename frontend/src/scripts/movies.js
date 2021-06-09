@@ -1,4 +1,5 @@
 const posterBaseUrl = 'https://image.tmdb.org/t/p/original/';
+const alternativeImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Question_mark_%28black%29.svg/768px-Question_mark_%28black%29.svg.png'
 let genres = [], genreIds = []
 let languages = [], languageIds = []
 const prodComps = ['Animation Picture Company', 'Davis Entertainment', 'DK Entertainment', 'Ghost Horse', 'Goldcrest', 'Goldfinch Studios', 'Good Neighbors Media', 'I Aint Playin Films', 'Mattel Entertainment', 'MISR International Films', 'Movie City Films', 'Pacific Western', 'Paws', 'Rainmaker Entertainment', 'Red Vessel Entertainment', 'Sailor Bear', 'Scared Sheetless', 'Solar Productions', 'Sullivan Bluth Studios', 'United Artists', 'Universal Pictures', 'Zero Trans Fat Productions'];
@@ -22,7 +23,7 @@ window.onload = async function () {
         languages.push(el.code)
         languageIds.push(el.id)
     }
-    await renderMovies({sorting: 'name'});
+    await renderMovies();
     createFiltersMenu();
     document.getElementById("mvSch").addEventListener('keydown', async event => {
         if (event.code === 'Enter' || event.keyCode === 13) {
@@ -44,7 +45,7 @@ window.onload = async function () {
 }
 
 
-function createFiltersMenu() {
+function createFiltersMenu () {
     let menu = document.getElementById('filters');
     menu.innerHTML += '<li>Genres:</li>';
     for (let item of genres) {
@@ -58,13 +59,13 @@ function createFiltersMenu() {
     menu.innerHTML += '<li><button onclick="applyFilters()">Apply filters</button></li>'
 }
 
-async function renderMovies(filters = null) {
+async function renderMovies (filters = null) {
     document.getElementById('list').innerHTML = '';
     const movies = await getMovies(filters)
     for (let i = 0; i < movies.length; i++) {
         document.getElementById('list').innerHTML += `
             <li id="${movies[i].id}" onclick="displayMovie(this.id)">
-                <img src="${posterBaseUrl}/${movies[i].posterPath}" alt="Image not found">
+                <img src="${posterBaseUrl}/${movies[i].posterPath}" alt="">
                 <div class="written-content">
                     <h1>${movies[i].title}</h1>
                     <span>${movies[i].description}</span>
@@ -76,32 +77,37 @@ async function renderMovies(filters = null) {
     }
 }
 
-async function getMovies(filters = null) {
-    let movies = (await (await fetch(`${API_URL}/movies`)).json()).results;
+async function getMovies (filters = null) {
+    let url = `${API_URL}/movies?pageSize=20`
     if (filters && filters !== {}) {
-        if (filters.name) {
-            movies = movies.filter(movie => movie.title.toLowerCase().includes(filters.name.toLowerCase()));
+        if (filters.title) {
+            url += `&searchBy=${filters.title}`
         }
         if (filters.genres && filters.genres.length) {
-            movies = movies.filter(movie => movie.genres.find(genre => filters.genres.includes(genre.name)));
+            for (const genre of filters.genres) {
+                url += `&filters[genres]=${genre}`
+            }
         }
         if (filters.productionCompanies && filters.productionCompanies.length) {
-            movies = movies.filter(movie => movie.productionCompanies.find(productionCompany => filters.productionCompanies.includes(productionCompany.name)));
+            for (const productionCompany of filters.productionCompanies) {
+                url += `&filters[productionCompanies]=${productionCompany}`
+            }
         }
-        if (filters.sorting !== null || document.getElementById('rat').checked) {
-            if (document.getElementById('rat').checked)
-                movies.sort((movie1, movie2) => Number(movie1.voteAverage) - Number(movie2.voteAverage));
-            else
-                movies.sort((movie1, movie2) => movie1.title.localeCompare(movie2.title))
+        if (filters.sorting) {
+            url += `&orderBy[column]=${filters.sorting}`
         }
     }
     if (document.getElementById('desc').checked) {
-        movies.reverse();
+        url += '&orderBy[direction]=desc'
     }
-    return movies;
+    const response = await fetch(url)
+    if (response.status !== 200) {
+        return []
+    }
+    return (await response.json()).results
 }
 
-function findFilters(checkType, filterNames) {
+function findFilters (checkType, filterNames) {
     let filters = [];
     let inputElements = document.getElementsByClassName(checkType);
     for (let i = 0; inputElements[i]; ++i) {
@@ -112,17 +118,17 @@ function findFilters(checkType, filterNames) {
     return filters;
 }
 
-async function applyFilters(sorting = null) {
+async function applyFilters (sorting = null) {
     const filters = {
         genres: findFilters('genres', genres),
         productionCompanies: findFilters('prodComp', prodComps),
-        name: document.getElementById("mvSch").value,
+        title: document.getElementById("mvSch").value,
         sorting: sorting
     }
     await renderMovies(filters);
 }
 
-async function resetFilters() {
+async function resetFilters () {
     for (let item of document.getElementsByClassName('genres')) {
         item.checked = false;
     }
@@ -133,18 +139,18 @@ async function resetFilters() {
     await renderMovies();
 }
 
-async function getMovieById(movieId) {
-    return (await getMovies()).find(movie => Number(movie.id) === Number(movieId));
+async function getMovieById (movieId) {
+    return (await (await fetch(`${API_URL}/movies/${movieId}`)).json());
 }
 
-async function displayMovie(movieId) {
+async function displayMovie (movieId) {
     const movie = await getMovieById(movieId);
     document.getElementById('movies-body').style.overflow = 'hidden';
     const sheet = window.document.styleSheets[0];
     sheet.insertRule('body > *:not(#movie-container) { filter: blur(8px); }', sheet.cssRules.length);
-    sheet.insertRule(`#movie-container { background: linear-gradient(rgba(19, 35, 47, 0.90), rgba(19, 35, 47, 0.90)), url('${posterBaseUrl}/${movie.backdrop_path}') no-repeat center fixed; }`, sheet.cssRules.length);
+    sheet.insertRule(`#movie-container { background: linear-gradient(rgba(19, 35, 47, 0.90), rgba(19, 35, 47, 0.90)), url('${posterBaseUrl}/${movie.backdropPath}') no-repeat center fixed; }`, sheet.cssRules.length);
     document.getElementById('movie-container').style.display = 'block';
-    document.getElementById('poster').innerHTML = `<img src="${posterBaseUrl}/${movie.poster_path}" alt="Image not found">`;
+    document.getElementById('poster').innerHTML = `<img src="${posterBaseUrl}/${movie.posterPath}" alt="">`;
     document.getElementById('title').innerHTML = `<h1>${movie.title}</h1>`;
     document.getElementById('tagline').innerHTML = `<h4>${movie.tagline}</h4>`;
     const genreList = document.getElementById('genre-list');
@@ -152,24 +158,50 @@ async function displayMovie(movieId) {
     for (const genre of movie.genres) {
         genreList.innerHTML += `<li><span>${genre.name}</span></li>`;
     }
-    const productionCompaniesList = document.getElementById('production-companies-list');
-    productionCompaniesList.innerHTML = '';
-    for (const productionCompany of movie.production_companies) {
-        productionCompaniesList.innerHTML += `
+    if (movie.actors.length) {
+        const actorsList = document.getElementById('actors-list')
+        actorsList.innerHTML = '';
+        for (const actor of movie.actors) {
+            actorsList.innerHTML += `
+                <li>
+                    <img src="${actor.profilePhotoPath ? `${posterBaseUrl}${actor.profilePhotoPath}` : alternativeImageUrl}" alt="">
+                    <p>${actor.name}</p>
+                </li>
+            `
+        }
+    }
+    if (movie.directors.length) {
+        const directorsList = document.getElementById('directors-list')
+        directorsList.innerHTML = '';
+        for (const director of movie.directors) {
+            directorsList.innerHTML += `
+                <li>
+                    <img src="${director.profilePhotoPath ? `${posterBaseUrl}${director.profilePhotoPath}` : alternativeImageUrl}" alt="">
+                    <p>${director.name}</p>
+                </li>
+            `
+        }
+    }
+    if (movie.productionCompanies.length) {
+        const productionCompaniesList = document.getElementById('production-companies-list');
+        productionCompaniesList.innerHTML = '';
+        for (const productionCompany of movie.productionCompanies) {
+            productionCompaniesList.innerHTML += `
             <li>
-                <h6>${productionCompany.name} ${productionCompany.origin_country}</h6>
-                <img src="${productionCompany.logo_path ? `${posterBaseUrl}/${productionCompany.logo_path}` : ''}" alt="">
+                <h6>${productionCompany.name} ${productionCompany.country ? productionCompany.country.code : ''}</h6>
+                <img src="${productionCompany.logoPath ? `${posterBaseUrl}/${productionCompany.logoPath}` : ''}" alt="">
             </li>
         `;
+        }
     }
-    document.getElementById('lang').innerHTML = `<strong>${movie.original_language}</strong>`;
-    document.getElementById('release').innerText = movie.release_date;
-    document.getElementById('rating').innerText = `Rating: ${movie.vote_average}`;
-    document.getElementById('runtime').innerText = `${movie.runtime} min`;
-    document.getElementById('description').innerHTML = `<p>${movie.overview}</p>`;
+    document.getElementById('lang').innerHTML = `<strong>${movie.languages.length ? movie.languages.map(l => l.code).join(', ') : ''}</strong>`;
+    document.getElementById('release').innerText = movie.releaseDate ? movie.releaseDate.split('T')[0] : '';
+    document.getElementById('rating').innerText = `Rating: ${movie.voteAverage}`;
+    document.getElementById('runtime').innerText = `${movie.runtimeInMinutes} min`;
+    document.getElementById('description').innerHTML = `<p>${movie.description}</p>`;
 }
 
-function exitMovieView(body) {
+function exitMovieView (body) {
     document.getElementById(`movies-body`).style.overflow = 'auto'
     document.getElementById(`${body}`).style.display = 'none'
     const sheet = window.document.styleSheets[0];
@@ -200,7 +232,7 @@ function exitMovieView(body) {
 }
 
 
-function openAddMovieMenu() {
+function openAddMovieMenu () {
     document.getElementById('movies-body').style.overflow = 'hidden'
     const sheet = window.document.styleSheets[0]
     sheet.insertRule('body > *:not(#add-movie-container) { filter: blur(8px); }', sheet.cssRules.length)
@@ -208,7 +240,7 @@ function openAddMovieMenu() {
     document.getElementById('add-movie-container').style.display = 'block'
 }
 
-function addField(fieldName, inputClass, placeholderText, whereToQuery, insertBeforeLocation) {
+function addField (fieldName, inputClass, placeholderText, whereToQuery, insertBeforeLocation) {
 
     let contentPage = document.getElementById('add-movie-content')
     let label = document.createElement('label')
@@ -232,7 +264,7 @@ function addField(fieldName, inputClass, placeholderText, whereToQuery, insertBe
     contentPage.insertBefore(label, document.getElementById(insertBeforeLocation))
 }
 
-function addGenreField() {
+function addGenreField () {
     addField('genreField', 'mvGenre', 'Gives the tone of:', async (name) => {
         const index = genres.indexOf(name)
         if (index >= 0) {
@@ -247,7 +279,7 @@ function addGenreField() {
     }, 'addGenreBtn')
 }
 
-function addLanguageField() {
+function addLanguageField () {
     addField('languageField', 'mvLanguage', 'Understood better in:', async (name) => {
         const index = languages.indexOf(name)
         if (index >= 0) {
@@ -261,28 +293,28 @@ function addLanguageField() {
     }, 'addLanguageBtn')
 }
 
-function addProductionField() {
+function addProductionField () {
     addField('prodCompField', 'mvProdComp', 'Dedicated their hearts:', async (name) => {
         const result = await (await fetch(`${API_URL}/production-companies?searchBy=${name}`)).json()
         return result.results
     }, 'addProdCompBtn')
 }
 
-function addActorField() {
+function addActorField () {
     addField('actorField', 'mvActor', 'Deserves rows of applause:', async (name) => {
         const result = await (await fetch(`${API_URL}/actors?searchBy=${name}`)).json()
         return result.results
     }, 'addActorBtn')
 }
 
-function addDirectorField() {
+function addDirectorField () {
     addField('directorField', 'mvDirector', 'The mind which born it all:', async (name) => {
         const result = await (await fetch(`${API_URL}/directors?searchBy=${name}`)).json()
         return result.results
     }, 'addDirectorBtn')
 }
 
-async function addMovie() {
+async function addMovie () {
     let prodComps = []
     const prodCompIds = document.getElementsByClassName("mvProdCompId")
     for (let el of prodCompIds) {
@@ -332,7 +364,6 @@ async function addMovie() {
         genreIds: genres,
         languageIds: languages
     }
-    console.log(data)
     const response = await fetch(`${API_URL}/movies`, {
         method: 'POST',
         headers: {

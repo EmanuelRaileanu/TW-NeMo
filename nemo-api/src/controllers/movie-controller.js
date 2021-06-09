@@ -6,6 +6,10 @@ import MovieGenre from '../models/movie-genre.js'
 import MovieReview from '../models/movie-review.js'
 import Language from "../models/language.js";
 import Rating from '../models/rating.js'
+import ObjectsToCsv from 'objects-to-csv'
+import { CORS_HEADERS } from '../middlewares/cors.js'
+import { ChartJSNodeCanvas } from 'chartjs-node-canvas'
+import sharp from 'sharp'
 
 class MovieController {
     static relatedObject = {
@@ -16,10 +20,10 @@ class MovieController {
             q.select('id', 'name')
         },
         actors: q => {
-            q.select('id', 'name')
+            q.select('id', 'name', 'profilePhotoPath')
         },
         directors: q => {
-            q.select('id', 'name')
+            q.select('id', 'name', 'profilePhotoPath')
         },
         rating: q => {
             q.select('id', 'code')
@@ -128,6 +132,96 @@ class MovieController {
             columns: ['id', 'code']
         })
         return res.end(JSON.stringify(ratings.toJSON()))
+    }
+
+    static async exportMovies (req, res) {
+        if (['svg', 'webp'].includes(req.query.format)) {
+            if (req.query.criterion === 'rating') {
+                const movies = await new Movie().query(q => {
+                    q.select(Bookshelf.knex.raw('ratings.code AS rating, COUNT(*) AS count'))
+                    q.innerJoin('ratings', 'ratings.id', 'movies.ratingId')
+                    q.groupBy('ratings.code')
+                }).fetchAll({ require: false })
+                const chart = new ChartJSNodeCanvas({ type: req.query.format, width: 800, height: 600 })
+                const ratings = movies.map(movie => movie.get('rating'))
+                const data = movies.map(movie => movie.get('count'))
+                const image = chart.renderToBufferSync({
+                    type: 'bar',
+                    data: {
+                        labels: ratings,
+                        datasets: [{
+                            label: 'Number of movies',
+                            data,
+                            backgroundColor: movies.map(movie => `rgba(${Math.round(Math.random() * 255)}, ${Math.round(Math.random() * 255)}, ${Math.round(Math.random() * 255)}, 1)`),
+                            borderWidth: 1
+                        }]
+                    }
+                })
+                res.writeHead(200, {
+                    ...CORS_HEADERS,
+                    'Content-Type': 'application/octet-stream',
+                    'Content-Disposition': `attachment; filename=nemo_movies.${req.query.format}`
+                })
+                if (req.query.format === 'webp') {
+                    return res.end(await sharp(image).webp().toBuffer())
+                } else {
+                    return res.end(image.toString())
+                }
+            } else {
+                const movies = await new Movie().query(q => {
+                    q.select(Bookshelf.knex.raw('movie_genres.name AS genre, COUNT(*) AS count'))
+                    q.join('movies_genres', 'movies_genres.movieId', 'movies.id')
+                    q.join('movie_genres', 'movie_genres.id', 'movies_genres.genreId')
+                    q.groupBy('movie_genres.name')
+                }).fetchAll({ require: false })
+                const chart = new ChartJSNodeCanvas({ type: 'svg', width: 800, height: 600 })
+                const ratings = movies.map(movie => movie.get('genre'))
+                const data = movies.map(movie => movie.get('count'))
+                const image = chart.renderToBufferSync({
+                    type: 'bar',
+                    data: {
+                        labels: ratings,
+                        datasets: [{
+                            label: 'Number of movies',
+                            data,
+                            backgroundColor: movies.map(movie => `rgba(${Math.round(Math.random() * 255)}, ${Math.round(Math.random() * 255)}, ${Math.round(Math.random() * 255)}, 1)`),
+                            borderWidth: 1
+                        }]
+                    }
+                })
+                res.writeHead(200, {
+                    ...CORS_HEADERS,
+                    'Content-Type': 'application/octet-stream',
+                    'Content-Disposition': `attachment; filename=nemo_movies.${req.query.format}`
+                })
+                if (req.query.format === 'webp') {
+                    return res.end(await sharp(image).webp().toBuffer())
+                } else {
+                    return res.end(image.toString())
+                }
+            }
+        } else {
+            const movies = await new Movie().fetchAll({ require: false, withRelated: [MovieController.relatedObject] })
+            const parsedMovies = await Promise.all(movies.toJSON().map(async movie => {
+                movie.genres = movie.genres.map(genre => genre.name).join(',')
+                movie.productionCompanies = movie.productionCompanies.map(productionCompany => productionCompany.name).join(',')
+                movie.actors = movie.actors.map(actor => actor.name).join(',')
+                movie.directors = movie.directors.map(director => director.name).join(',')
+                movie.rating = movie.rating && movie.rating.code
+                movie.languages = movie.languages.map(language => language.code).join(',')
+                delete movie.ratingId
+                delete movie.createdAt
+                delete movie.updatedAt
+                delete movie.reviews
+                return movie
+            }))
+            res.writeHead(200, {
+                ...CORS_HEADERS,
+                'Content-Type': 'application/octet-stream',
+                'Content-Disposition': 'attachment; filename=nemo_movies.csv'
+            })
+            return res.end(await new ObjectsToCsv(parsedMovies).toString())
+        }
     }
 
     static async updateMovie (req, res) {
