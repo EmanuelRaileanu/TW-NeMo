@@ -88,7 +88,7 @@ export default class UserController {
     }
 
     static async changeUserRole (req, res) {
-        if (req.user.role.name !== ROLES.OWNER) {
+        if (req.user.related('role').get('name') !== ROLES.OWNER) {
             throw new APIError(`Only the ${ROLES.OWNER} class can edit user roles`, 403)
         }
         if (!req.body) {
