@@ -313,7 +313,6 @@ async function displayMovie (id) {
         `;
         }
     }
-    console.log(movie)
     if (movie.reviews.length) {
         const reviewsList = document.getElementById('reviews-list')
         reviewsList.innerHTML = ''
