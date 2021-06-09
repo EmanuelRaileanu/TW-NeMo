@@ -333,7 +333,10 @@ class MovieController {
     }
 
     static async addReview (req, res) {
-        const movie = await new Movie({ id: req.params.movieId }).fetch({ require: false })
+        const movie = await new Movie({ id: req.params.movieId }).fetch({
+            require: false,
+            withRelated: [MovieController.relatedObject]
+        })
         if (!movie) {
             throw new APIError(`There is no movie with the id ${req.params.id}`, 404)
         }
@@ -341,11 +344,17 @@ class MovieController {
             throw new APIError('score is required', 400)
         }
         validateReviewBody(req.body)
-        const addedReview = await new MovieReview({
-            userId: req.user.id,
-            movieId: movie.id,
-            score: req.body.score,
-            text: req.body.text || null
+        let addedReview
+        await Bookshelf.transaction(async t => {
+            const numberOfVotes = movie.related('reviews').toJSON().length + 1
+            const voteAverage = (movie.related('reviews').toJSON().map(review => review.score).reduce((a, b) => a + b, 0) + req.body.score) / numberOfVotes
+            await movie.save({ numberOfVotes, voteAverage }, { method: 'update', patch: true, transacting: t })
+            addedReview = await new MovieReview({
+                userId: req.user.id,
+                movieId: movie.id,
+                score: req.body.score,
+                text: req.body.text || null
+            }).save(null, { method: 'insert', transacting: t })
         })
         return res.end(JSON.stringify(addedReview.toJSON()))
     }

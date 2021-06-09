@@ -279,6 +279,7 @@ class TvShowController {
         }
         await Bookshelf.transaction(async t => {
             await detachAll(show, t)
+            await show.detach(show.related('seasons').map(season => season.id), { transacting: t })
             await show.destroy({ transacting: t })
         })
         return res.end(JSON.stringify({ message: "TV show successfully deleted" }))

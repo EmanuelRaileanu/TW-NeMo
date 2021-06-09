@@ -132,6 +132,7 @@ async function loadFavorites() {
                 <div class="Title">
                     <h1>${movie.title}</h1>
                 </div>
+                <button onclick="deleteEntity('movie','${movie.id}')">✕</button>
             </li>`
         }
     }
@@ -153,6 +154,7 @@ async function loadFavorites() {
                 <div class="Title">
                     <h1>${show.title}</h1>
                 </div>
+                <button onclick="deleteEntity('show','${show.id}')">✕</button>
             </li>`
         }
     }
@@ -289,11 +291,22 @@ async function submitForm(submitButtonId) {
     }
 }
 
-async function deleteMedia(type, id) {
+async function deleteEntity (type, id) {
+    const token = localStorage.getItem('token')
     if (type === 'show') {
-        shows = shows.filter(show => show.id.toString() !== id);
+        await fetch(`${API_URL}/shows/${id}/delete-favorite`, {
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
     } else {
-        movies = movies.filter(movie => movie.id.toString() !== id);
+        await fetch(`${API_URL}/movies/${id}/delete-favorite`, {
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
     }
     await loadFavorites();
 }
