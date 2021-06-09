@@ -376,7 +376,7 @@ function openMediaMenu(type, name) {
     fieldList.setAttribute('id', 'addMenuFieldList')
     fields.append(fieldList)
     openGeneralMenu(fields)
-    editMedia('shows')
+    editMedia(type)
 }
 
 async function submitMedia(method, type) {
@@ -387,10 +387,11 @@ async function submitMedia(method, type) {
             description: document.getElementById('pieceOfMediaDescription').value,
             tagline: document.getElementById('pieceOfMediaTagline').value,
             status: document.getElementById('pieceOfMediaStatus').value,
-            releaseDate: document.getElementById('pieceOfMediaDate').value
-
+            releaseDate: document.getElementById('pieceOfMediaDate').value,
+            firstAirDate: document.getElementById('pieceOfMediaDate').value
         }
     }
+    console.log(data)
     const id=document.getElementById('pieceOfMediaId').value
     const mediaResponse = await (await fetch(`${API_URL}/${type}/${id}`, {
         method: method,
@@ -400,7 +401,10 @@ async function submitMedia(method, type) {
         },
         body: JSON.stringify(data)
     })).json()
-    document.getElementById('addMenuFieldList').innerHTML = mediaResponse.message ? mediaResponse.message : 'Media successfully deleted'
+    let successMessage='Media successfully '
+    successMessage+= method === 'DELETE' ? 'deleted' : 'modified'
+    console.log(successMessage)
+    document.getElementById('addMenuFieldList').innerHTML = mediaResponse.message ? mediaResponse.message :  successMessage
 }
 
 function deleteMedia(type) {
@@ -414,7 +418,7 @@ function deleteMedia(type) {
     fieldList.removeChild(document.getElementById('mediaRelease'))
     fieldList.removeChild(document.getElementById('pieceOfMediaDate'))
 
-    document.getElementById('addMenuSubmitBtn').setAttribute('onclick', `submitMedia('DELETE',${type})`)
+    document.getElementById('addMenuSubmitBtn').setAttribute('onclick', `submitMedia('DELETE','${type}')`)
 }
 
 function editMedia(type) {
@@ -430,7 +434,7 @@ function editMedia(type) {
         '<input id="pieceOfMediaStatus" type="text"><br>' +
         '<label id="mediaRelease">Release date:</label><br>' +
         '<input id="pieceOfMediaDate" type="text"><br>' +
-        `<button id="addMenuSubmitBtn" onclick="submitMedia('PUT',${type})">Submit</button>`
+        `<button id="addMenuSubmitBtn" onclick="submitMedia('PUT','${type}')">Submit</button>`
     const nameField = document.getElementById('pieceOfMediaName')
     nameField.addEventListener('keydown', async event => {
         if (event.code === 'Enter' || event.keyCode === 13) {
@@ -443,7 +447,12 @@ function editMedia(type) {
                 fieldList.childNodes[7].value = index['results'][0].description
                 fieldList.childNodes[11].value = index['results'][0].tagline
                 fieldList.childNodes[15].value = index['results'][0].status
-                fieldList.childNodes[19].value = index['results'][0].firstAirDate.replace(/T.*/, '')
+                if(type==='shows'){
+                    fieldList.childNodes[19].value = index['results'][0].firstAirDate.replace(/T.*/, '')
+                } else {
+                    fieldList.childNodes[19].value = index['results'][0].releaseDate.replace(/T.*/, '')
+                }
+
             } else {
                 nameField.style.color = "red"
             }
@@ -705,8 +714,8 @@ function addProdComp() {
         if (event.code === 'Enter' || event.keyCode === 13) {
             const inputField = countryInput.value
             const index = await (await fetch(`${API_URL}/production-companies/countries?searchBy=${inputField}`)).json()
-            if (index['results'].length > 0) {
-                const actor = index['results'][0]
+            if (index['results']) {
+                const actor = index['results']
                 countryInput.value = actor.code
                 countryInput.style.color = "green"
                 document.getElementById('prodCompCountryId').value = actor.id
@@ -754,6 +763,7 @@ function editProdComp() {
         if (event.code === 'Enter' || event.keyCode === 13) {
             const inputField = nameInput.value
             const index = await (await fetch(`${API_URL}/production-companies?searchBy=${inputField}`)).json()
+            console.log(index['results'])
             if (index['results'].length > 0) {
                 const actor = index['results'][0]
                 nameInput.value = actor.name
@@ -773,7 +783,7 @@ function editProdComp() {
 function deleteProdComp() {
     document.getElementById('addMenuFieldList').innerHTML = '<label>The name of the company you want to delete:</label><br>' +
         '<input id="actorName" type="text"><br>' +
-        '<button id="addMenuSubmitBtn">Delete director</button>'
+        '<button id="addMenuSubmitBtn">Delete company</button>'
 
     const actNameField = document.getElementById('actorName')
     let idActor

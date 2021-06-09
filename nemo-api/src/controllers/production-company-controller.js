@@ -37,13 +37,23 @@ class ProductionCompanyController {
     }
 
     static async getCountry(req,res){
-        const country= new Country().query(q => {
+        const country= await new Country().query(q => {
             if (req.query.searchBy && req.query.searchBy !== {}) {
                 q.where('countries.code', 'like', `%${req.query.searchBy}%`)
             }
         }).fetch()
         return res.end(JSON.stringify({
             results: country.toJSON({ omitPivot: true })
+        }))
+    }
+
+    static async getCountryById(req,res){
+        const country= await new Country({ id: req.params.countryId }).fetch({require:false})
+        if(!country){
+            throw new APIError('There is no country with this id')
+        }
+        return res.end(JSON.stringify({
+            results: country.toJSON({omniPivot: true})
         }))
     }
 
