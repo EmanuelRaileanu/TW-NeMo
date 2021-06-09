@@ -72,6 +72,19 @@ window.onload = async function () {
     })
     pageSizeInput.value=pageSize;
 
+    const ratingBtn=document.getElementById('mvRating')
+    ratingBtn.addEventListener('keydown', async event => {
+        if (event.code === 'Enter' || event.keyCode === 13) {
+            const inputField = ratingBtn.value
+            const index = ratings.indexOf(inputField)
+            if (index >= 0) {
+                ratingBtn.style.color = "green"
+            } else {
+                ratingBtn.style.color = "red"
+            }
+        }
+    })
+
     addProductionField()
 
     addGenreField()
@@ -89,7 +102,6 @@ async function prevPage(){
     if(pagination===1)
         return;
     pagination--
-    console.log(pagination)
     await renderMovies()
     const pageNumber=document.getElementById('currentPage')
     pageNumber.value=pagination
@@ -99,7 +111,6 @@ async function nextPage(){
     if(pagination===pageCount)
         return;
     pagination++
-    console.log(pagination)
     await renderMovies()
     const pageNumber=document.getElementById('currentPage')
     pageNumber.value=pagination
@@ -325,11 +336,10 @@ function addField(fieldName, inputClass, placeholderText, whereToQuery, insertBe
         if (event.code === 'Enter' || event.keyCode === 13) {
             const inputField = label.childNodes[0].value
             const index = await whereToQuery(inputField)
-            console.log(index)
             if (index.length > 0) {
                 label.childNodes[0].value = index[0].name
                 label.childNodes[0].style.color = "green"
-                label.childNodes[1].value = index[0].id
+                label.childNodes[2].value = index[0].id
             } else {
                 label.childNodes[0].style.color = "red"
             }
@@ -337,6 +347,8 @@ function addField(fieldName, inputClass, placeholderText, whereToQuery, insertBe
     })
     contentPage.insertBefore(label, document.getElementById(insertBeforeLocation))
 }
+
+
 
 function addGenreField() {
     addField('genreField', 'mvGenre', 'Gives the tone of:', async (name) => {
@@ -428,7 +440,7 @@ async function addMovie() {
         title: document.getElementById('mvTitle').value,
         tagline: document.getElementById('mvTagline').value,
         releaseDate: document.getElementById('mvReleaseDate').value,
-        rating: document.getElementById('mvRating').value,
+        ratingId: ratingIds[ratings.indexOf(document.getElementById('mvRating').value)],
         status: document.getElementById('mvStatus').value,
         runtime: document.getElementById('mvRuntime').value,
         description: document.getElementById('mvDescription').value,
@@ -438,13 +450,20 @@ async function addMovie() {
         genreIds: genres,
         languageIds: languages
     }
-    const response = await fetch(`${API_URL}/movies`, {
+    const response = await (await fetch(`${API_URL}/movies`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem("token")}`
         },
         body: JSON.stringify(data)
-    })
-    console.log(response.json())
+    })).json()
+    if(response.id){
+        const window=document.getElementById('add-movie-content')
+        window.innerHTML='<h1>Movie successfully added</h1>'
+    } else {
+        const window=document.getElementById('add-movie-content')
+        window.innerHTML=`<h1>${response.message}</h1>`
+    }
+
 }

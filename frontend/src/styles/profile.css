@@ -63,7 +63,7 @@ div.information :last-child {
     padding-bottom: 30px;
 }
 
-#wrapper button, #submitBtn, #addMenuButtonList > *, #addMenuFieldList  button {
+#wrapper button, #submitBtn, #addMenuButtonList > *, #addMenuFieldList  button , #exportMenuButtons button{
     background: inherit;
     color: white;
     padding: 16px;
@@ -91,9 +91,18 @@ div.information :last-child {
     margin-right: auto;
 }
 
-#wrapper button:hover, #submitBtn:hover, #addMenuButtonList > *:hover, #addMenuFieldList button:hover {
+#wrapper button:hover, #submitBtn:hover, #addMenuButtonList > *:hover, #addMenuFieldList button:hover, #exportMenuButtons button:hover {
     background-color: #1ab188;
     cursor: pointer;
+}
+
+#exportMenuButtons {
+    margin-top:5vh;
+}
+
+#exportMenuButtons button {
+    display:block;
+    margin: 1vh auto 0;
 }
 
 ul {
@@ -289,7 +298,7 @@ li > button {
     margin:0;
 }
 
-#addMenuFieldList input {
+#addMenuFieldList input , #exportMenuButtons input{
     padding: 10px;
     margin: 1vw auto;
     display:block;
@@ -302,7 +311,7 @@ li > button {
     outline: none;
 }
 
-#addMenuFieldList input:focus {
+#addMenuFieldList input:focus , #exportMenuButtons input:focus {
     background: rgba(63, 95, 118, 0.43);
 }
 

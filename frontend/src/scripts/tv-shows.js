@@ -45,7 +45,6 @@ window.onload = async function () {
         if (event.code === 'Enter' || event.keyCode === 13) {
             const index = ratings.indexOf(document.getElementById("mvRating").value)
             if (index >= 0) {
-                console.log(ratings)
                 ratingButton.value = ratings[index]
                 ratingButton.style.color = "green"
                 document.getElementById('mvRatingId').value = ratingIds[index]
@@ -108,7 +107,6 @@ async function prevPage(){
     if(pagination===1)
         return;
     pagination--
-    console.log(pagination)
     await renderShows()
     const pageNumber=document.getElementById('currentPage')
     pageNumber.value=pagination
@@ -118,7 +116,6 @@ async function nextPage(){
     if(pagination===pageCount)
         return;
     pagination++
-    console.log(pagination)
     await renderShows()
     const pageNumber=document.getElementById('currentPage')
     pageNumber.value=pagination
@@ -488,6 +485,7 @@ function addEpisodeFields (seasonNumber) {
 }
 
 async function addShow () {
+    let lastResponse
     let prodComps = []
     const prodCompIds = document.getElementsByClassName("shProdCompId")
     for (let el of prodCompIds) {
@@ -547,7 +545,6 @@ async function addShow () {
     })).json()
     console.log(showResponse)
     const nrOfSeasons = sessionStorage.getItem("nrOfSeasons")
-    console.log(nrOfSeasons)
     for (let i = 1; i < nrOfSeasons; i++) {
         const seasonData = {
             title: document.getElementById(`seasonName${i}`).value,
@@ -556,7 +553,6 @@ async function addShow () {
             seasonNumber: i,
             tvShowId: showResponse.id
         }
-        console.log(seasonData)
         const seasonResponse = await (await fetch(`${API_URL}/seasons`, {
             method: 'POST',
             headers: {
@@ -585,6 +581,14 @@ async function addShow () {
                 body: JSON.stringify(episodeData)
             })).json()
             console.log(episodeResponse)
+            lastResponse=episodeResponse
         }
+    }
+    if(lastResponse.id){
+        const window=document.getElementById('add-movie-content')
+        window.innerHTML='<h1>Movie successfully added</h1>'
+    } else {
+        const window=document.getElementById('add-movie-content')
+        window.innerHTML=`<h1>${lastResponse.message}</h1>`
     }
 }
