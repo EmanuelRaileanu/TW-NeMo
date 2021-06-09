@@ -8,7 +8,7 @@ const router = new Router()
 
 router.get('/', cors(catchErrors(ProductionCompanyController.getProductionCompanies)))
 router.get('/:productionCompanyId', cors(catchErrors(ProductionCompanyController.getProductionCompanyById)))
-router.get('/countries', cors(catchErrors(ProductionCompanyController.getCountry)))
+router.get('/countries', cors(catchErrors(ProductionCompanyController.getCountries)))
 
 // Admin routes
 router.post('/', cors(catchErrors(validateToken(ProductionCompanyController.addProductionCompany))))
