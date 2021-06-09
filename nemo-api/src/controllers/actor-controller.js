@@ -33,7 +33,6 @@ class ActorController {
     }
 
     static async getActorById (req, res) {
-        console.log("am intrat")
         const actor = await new Actor({ id: req.params.actorId }).fetch({
             require: false,
             withRelated: [ActorController.relatedObject]

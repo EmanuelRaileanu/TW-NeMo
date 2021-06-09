@@ -8,6 +8,7 @@ const router = new Router()
 
 router.get('/', cors(catchErrors(ProductionCompanyController.getProductionCompanies)))
 router.get('/:productionCompanyId', cors(catchErrors(ProductionCompanyController.getProductionCompanyById)))
+router.get('/countries/:countryId', cors(catchErrors(ProductionCompanyController.getCountryById)))
 router.get('/countries', cors(catchErrors(ProductionCompanyController.getCountries)))
 
 // Admin routes

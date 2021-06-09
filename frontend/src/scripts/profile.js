@@ -16,8 +16,14 @@ window.onload = async function () {
 
 function loadAdminOptions() {
     let contentPage = document.getElementById('wrapper')
-    let actorButton = document.createElement('button')
 
+    let adminButton = document.createElement('button')
+    adminButton.setAttribute('id', 'changeAdmBtn')
+    adminButton.setAttribute('onclick', 'openAdminMenu()')
+    adminButton.innerHTML = 'Admin menu'
+    contentPage.insertBefore(adminButton, document.getElementById(`export`))
+
+    let actorButton = document.createElement('button')
     actorButton.setAttribute('id', 'addActorBtn')
     actorButton.setAttribute('onclick', 'openActorMenu()')
     actorButton.innerHTML = 'Actor menu'
@@ -49,13 +55,13 @@ function loadAdminOptions() {
 
     let movieButton = document.createElement('button')
     movieButton.setAttribute('id', 'delMovieBtn')
-    movieButton.setAttribute('onclick', 'openMovieMenu()')
+    movieButton.setAttribute('onclick', 'openMediaMenu(\'movies\',\'movie\')')
     movieButton.innerHTML = 'Movie menu'
     contentPage.insertBefore(movieButton, document.getElementById(`export`))
 
     let showButton = document.createElement('button')
     showButton.setAttribute('id', 'delShowBtn')
-    showButton.setAttribute('onclick', 'openShowMenu()')
+    showButton.setAttribute('onclick', 'openMediaMenu(\'shows\',\'show\')')
     showButton.innerHTML = 'Show menu'
     contentPage.insertBefore(showButton, document.getElementById(`export`))
 
@@ -155,8 +161,26 @@ async function loadFavorites() {
 
 function exportList() {
     let exportBody = document.createElement('div')
+    exportBody.setAttribute('id','exportMenuButtons')
+    exportBody.innerHTML='<button onclick="exportMedia(`movies`)">Export movies</button>'+
+        '<button onclick="exportMedia(`shows`)">Export shows</button>'
+    let wrapper=document.createElement('div')
+    wrapper.append(exportBody)
+    openGeneralMenu(wrapper)
+}
 
-    openGeneralMenu(exportBody)
+function exportMedia(type){
+    let exportBody=document.getElementById('exportMenuButtons')
+    exportBody.innerHTML=`<button onclick="redirectToExport('${type}')">Export CSV</button><br>` +
+        `<button onclick="redirectToExport('${type}', 'svg')">Export by genres (svg)</button><br>` +
+        `<button onclick="redirectToExport('${type}','webp')">Export by genres (webp)</button><br>` +
+        `<button onclick="redirectToExport('${type}','svg','rating')">Export by rating (svg)</button><br>` +
+        `<button onclick="redirectToExport('${type}','webp','rating')">Export by rating (webp)</button><br>`
+}
+
+function redirectToExport(category,format=null,criterion=null){
+        const restOfTheLink= !criterion ? !format ? `` : `?format=${format}` : `?format=${format}&criterion=${criterion}`
+        window.location.replace(`${API_URL}/${category}/export${restOfTheLink}`)
 }
 
 function changeField(field) {
@@ -282,12 +306,62 @@ function finishedChanges(body) {
 
 }
 
-function openShowMenu(){
-    openMediaMenu('shows','show')
+async function changeUserRole(){
+    let body=document.getElementById('exportMenuButtons')
+    let userId=document.getElementById('userId').value
+    let userRole=document.getElementById('userRole').value
+    const userDetails = await (await fetch(`${AUTH_SERVICE_URL}/users/${localStorage.getItem("username")}`)).json()
+    const data={
+        role:userRole
+    }
+    if(userRole==='Owner' && userDetails.role.name!=='Owner'){
+        body.innerHTML='<h1>You don`t have permission for that</h1>'
+        return
+    }
+    let roleResponse= await fetch(`${AUTH_SERVICE_URL}/users/${userId}/change-role`,{
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem("token")}`
+        },
+        body:JSON.stringify(data)
+    })
+    if(roleResponse.status===200){
+        body.innerHTML='<h1>Role successfully changed</h1>'
+    } else{
+        body.innerHTML=`<h1>${roleResponse.message}</h1>`
+    }
 }
 
-function openMovieMenu(){
-    openMediaMenu('movies','movie')
+function openAdminMenu(){
+    let exportBody = document.createElement('div')
+    exportBody.setAttribute('id','exportMenuButtons')
+    exportBody.innerHTML='<label>Choose the username:</label><br>' +
+        '<input id="usernameInput" type="text"><br>' +
+        '<input id="userId" type="hidden">' +
+        '<label>Choose the role:</label><br>' +
+        '<input id="userRole" type="text"><br>' +
+        '<button onclick="changeUserRole()">Submit</button>'
+    let wrapper=document.createElement('div')
+    wrapper.append(exportBody)
+    openGeneralMenu(wrapper)
+    let body=document.getElementById('exportMenuButtons')
+    console.log(body.childNodes)
+    const userField=document.getElementById('usernameInput')
+    userField.addEventListener('keydown', async event => {
+        if (event.code === 'Enter' || event.keyCode === 13) {
+            const name=userField.value
+            const userDetails = await (await fetch(`${AUTH_SERVICE_URL}/users/${name}`)).json()
+            console.log(userDetails)
+            if(userDetails){
+                userField.style.color='green'
+                body.childNodes[4].value=userDetails.id
+                body.childNodes[7].value=userDetails.role.name
+            } else {
+                userField.style.color='red'
+            }
+        }
+    })
 }
 
 function openMediaMenu(type, name) {
@@ -302,7 +376,7 @@ function openMediaMenu(type, name) {
     fieldList.setAttribute('id', 'addMenuFieldList')
     fields.append(fieldList)
     openGeneralMenu(fields)
-    editMedia('shows')
+    editMedia(type)
 }
 
 async function submitMedia(method, type) {
@@ -313,13 +387,12 @@ async function submitMedia(method, type) {
             description: document.getElementById('pieceOfMediaDescription').value,
             tagline: document.getElementById('pieceOfMediaTagline').value,
             status: document.getElementById('pieceOfMediaStatus').value,
-            releaseDate: document.getElementById('pieceOfMediaDate').value
-
+            releaseDate: document.getElementById('pieceOfMediaDate').value,
+            firstAirDate: document.getElementById('pieceOfMediaDate').value
         }
     }
-    const id=document.getElementById('pieceOfMediaId').value
     console.log(data)
-    console.log(id)
+    const id=document.getElementById('pieceOfMediaId').value
     const mediaResponse = await (await fetch(`${API_URL}/${type}/${id}`, {
         method: method,
         headers: {
@@ -328,7 +401,10 @@ async function submitMedia(method, type) {
         },
         body: JSON.stringify(data)
     })).json()
-    document.getElementById('addMenuFieldList').innerHTML = mediaResponse.message ? mediaResponse.message : 'Media successfully deleted'
+    let successMessage='Media successfully '
+    successMessage+= method === 'DELETE' ? 'deleted' : 'modified'
+    console.log(successMessage)
+    document.getElementById('addMenuFieldList').innerHTML = mediaResponse.message ? mediaResponse.message :  successMessage
 }
 
 function deleteMedia(type) {
@@ -342,11 +418,10 @@ function deleteMedia(type) {
     fieldList.removeChild(document.getElementById('mediaRelease'))
     fieldList.removeChild(document.getElementById('pieceOfMediaDate'))
 
-    document.getElementById('addMenuSubmitBtn').setAttribute('onclick', `submitMedia('DELETE',${type})`)
+    document.getElementById('addMenuSubmitBtn').setAttribute('onclick', `submitMedia('DELETE','${type}')`)
 }
 
 function editMedia(type) {
-    console.log(type)
     let fieldList = document.getElementById('addMenuFieldList')
     fieldList.innerHTML = '<label>The title of the media you want to edit:</label><br>' +
         '<input id="pieceOfMediaName" type="text"><br>' +
@@ -359,22 +434,25 @@ function editMedia(type) {
         '<input id="pieceOfMediaStatus" type="text"><br>' +
         '<label id="mediaRelease">Release date:</label><br>' +
         '<input id="pieceOfMediaDate" type="text"><br>' +
-        `<button id="addMenuSubmitBtn" onclick="submitMedia('PUT',${type})">Submit</button>`
+        `<button id="addMenuSubmitBtn" onclick="submitMedia('PUT','${type}')">Submit</button>`
     const nameField = document.getElementById('pieceOfMediaName')
-    console.log(fieldList.childNodes)
     nameField.addEventListener('keydown', async event => {
         if (event.code === 'Enter' || event.keyCode === 13) {
             const inputField = nameField.value
             const index = await (await fetch(`${API_URL}/${type}?searchBy=${inputField}`)).json()
             if (index['results'].length > 0) {
-                console.log(index['results'])
                 nameField.value = index['results'][0].title
                 nameField.style.color = "green"
                 document.getElementById('pieceOfMediaId').value = index['results'][0].id
                 fieldList.childNodes[7].value = index['results'][0].description
                 fieldList.childNodes[11].value = index['results'][0].tagline
                 fieldList.childNodes[15].value = index['results'][0].status
-                fieldList.childNodes[19].value = index['results'][0].firstAirDate.replace(/T.*/, '')
+                if(type==='shows'){
+                    fieldList.childNodes[19].value = index['results'][0].firstAirDate.replace(/T.*/, '')
+                } else {
+                    fieldList.childNodes[19].value = index['results'][0].releaseDate.replace(/T.*/, '')
+                }
+
             } else {
                 nameField.style.color = "red"
             }
@@ -635,11 +713,9 @@ function addProdComp() {
     countryInput.addEventListener('keydown', async event => {
         if (event.code === 'Enter' || event.keyCode === 13) {
             const inputField = countryInput.value
-            console.log('here')
-            const index = await (await fetch(`${API_URL}/production-companies/country?searchBy=${inputField}`)).json()
-            console.log(index)
-            if (index['results'].length > 0) {
-                const actor = index['results'][0]
+            const index = await (await fetch(`${API_URL}/production-companies/countries?searchBy=${inputField}`)).json()
+            if (index['results']) {
+                const actor = index['results']
                 countryInput.value = actor.code
                 countryInput.style.color = "green"
                 document.getElementById('prodCompCountryId').value = actor.id
@@ -687,6 +763,7 @@ function editProdComp() {
         if (event.code === 'Enter' || event.keyCode === 13) {
             const inputField = nameInput.value
             const index = await (await fetch(`${API_URL}/production-companies?searchBy=${inputField}`)).json()
+            console.log(index['results'])
             if (index['results'].length > 0) {
                 const actor = index['results'][0]
                 nameInput.value = actor.name
@@ -706,7 +783,7 @@ function editProdComp() {
 function deleteProdComp() {
     document.getElementById('addMenuFieldList').innerHTML = '<label>The name of the company you want to delete:</label><br>' +
         '<input id="actorName" type="text"><br>' +
-        '<button id="addMenuSubmitBtn">Delete director</button>'
+        '<button id="addMenuSubmitBtn">Delete company</button>'
 
     const actNameField = document.getElementById('actorName')
     let idActor
@@ -811,7 +888,6 @@ function editSeason() {
     seasonInput.setAttribute('placeholder', 'The name of the season you want to edit')
     let show, searchedSeason
     const fieldList = document.getElementById('addMenuFieldList')
-    console.log(fieldList.childNodes)
     document.getElementById('addMenuSubmitBtn').setAttribute('onclick', `submitSeason('PUT')`)
     seasonInput.addEventListener('keydown', async event => {
         if (event.code === 'Enter' || event.keyCode === 13) {
@@ -820,8 +896,6 @@ function editSeason() {
             if (show) {
                 const inputField = seasonInput.value
                 for (const season of show['seasons']) {
-                    console.log('O iteratie')
-                    console.log(season)
                     if (season['title'] === inputField) {
                         searchedSeason = season
                         break
@@ -830,7 +904,6 @@ function editSeason() {
                 if (searchedSeason) {
                     document.getElementById('seasonId').value = searchedSeason.id
                     searchedSeason = await (await fetch(`${API_URL}/seasons/${searchedSeason.id}`)).json()
-                    console.log(searchedSeason)
                     seasonInput.style.color = "green"
                     fieldList.childNodes[12].value = searchedSeason.description
                     fieldList.childNodes[16].value = searchedSeason.seasonNumber
@@ -926,7 +999,6 @@ function addEpisode() {
                 if (searchedSeason) {
                     document.getElementById('seasonId').value = searchedSeason.id
                     searchedSeason = await (await fetch(`${API_URL}/seasons/${searchedSeason.id}`)).json()
-                    console.log(searchedSeason)
                     seasonInput.style.color = "green"
                     fieldList.childNodes[11].value = searchedSeason.description
                     fieldList.childNodes[16].value = searchedSeason.seasonNumber
@@ -956,8 +1028,6 @@ async function submitEpisode(method, id = '') {
     if (method !== 'POST') {
         id = document.getElementById('episodeId').value
     }
-    console.log(data)
-    console.log(id)
     const link = method === 'POST' ? `${API_URL}/episodes` : `${API_URL}/episodes/${id}`
     const actorResponse = await (await fetch(link, {
         method: method,
@@ -996,10 +1066,8 @@ async function editEpisode() {
                     }
                 }
                 if (searchedEpisode) {
-                    console.log(searchedEpisode)
                     document.getElementById('seasonId').value = searchedSeason.id
                     searchedEpisode = await (await fetch(`${API_URL}/episodes/${searchedEpisode.id}`)).json()
-                    console.log(searchedEpisode)
                     episodeInput.style.color = "green"
                     fieldList.childNodes[17].value = searchedEpisode.description
                     fieldList.childNodes[21].value = searchedEpisode.episodeNumber

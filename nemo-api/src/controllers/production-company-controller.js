@@ -47,6 +47,16 @@ class ProductionCompanyController {
         }))
     }
 
+    static async getCountryById(req,res){
+        const country= await new Country({ id: req.params.countryId }).fetch({require:false})
+        if(!country){
+            throw new APIError('There is no country with this id')
+        }
+        return res.end(JSON.stringify({
+            results: country.toJSON({omniPivot: true})
+        }))
+    }
+
     static async getProductionCompanyById (req, res) {
         const company = await new ProductionCompany({ id: req.params.productionCompanyId }).fetch({
             require: false,
