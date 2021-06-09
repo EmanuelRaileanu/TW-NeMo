@@ -104,7 +104,7 @@ export default class UserController {
         if (!role) {
             throw new APIError('No such role was found', 404)
         }
-        await new User({ id: req.params.userId }).save({ role: req.body.role }, { method: 'update', patch: true })
+        await new User({ id: req.params.userId }).save({ roleId: role.id }, { method: 'update', patch: true })
         return res.end(JSON.stringify({ message: 'Role updated successfully' }))
     }
 }
